@@ -20,20 +20,15 @@
             padding: 24px;
         }
         header {
-            margin-bottom: 40px;
+            margin-bottom: 24px;
         }
         .blog-head {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 16px;
-        }
-        .blog-head h1 {
-            font-size: 26px;
-            font-weight: 600;
-            line-height: 1.8;
         }
         #search-input {
             width: 320px;
@@ -48,110 +43,87 @@
             border-color: #409eff;
             box-shadow: 0 0 0 3px rgba(64, 158, 255, 0.15);
         }
-        /* 主体左右布局 */
-        .main-wrap {
-            display: flex;
-            gap: 32px;
-        }
-        /* 左侧文章区 */
-        .article-main {
-            flex: 1;
-        }
-        /* 右侧分类导航侧边栏 */
-        .cate-sidebar {
-            width: 220px;
-            flex-shrink: 0;
-            position: sticky;
-            top: 24px;
-            height: fit-content;
+
+        /* 1. 资源管理器面包屑路径栏 */
+        .path-bar {
             background: #fff;
-            padding: 20px;
+            padding: 12px 16px;
             border-radius: 10px;
             box-shadow: 0 1px 6px rgba(0,0,0,0.06);
-        }
-        /* 分类标题居中 */
-        .cate-sidebar h3 {
-            font-size: 17px;
             margin-bottom: 16px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #eee;
-            text-align: center;
-        }
-        .cate-nav-list {
-            list-style: none;
-        }
-        .cate-nav-list > li {
-            margin-bottom: 10px;
-        }
-        /* 一级分类行：按钮+文字同行，文字统一左对齐 */
-        .cate-top-row {
             display: flex;
             align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
         }
-        .cate-toggle-btn {
-            width: 18px;
-            margin-right: 4px;
+        .path-item {
+            color: #409eff;
             cursor: pointer;
-            user-select: none;
-            color: #888;
-            text-align: center;
-        }
-        .cate-top-row a {
-            flex: 1;
-            color: #555;
-            text-decoration: none;
-            padding: 6px 4px;
+            padding: 4px 8px;
             border-radius: 6px;
-            transition: 0.2s;
         }
-        .cate-top-row a:hover {
+        .path-item:hover {
             background: #eef5ff;
-            color: #409eff;
         }
-        /* 无限层级子列表，每层统一缩进14px */
-        .sub-cate-list {
-            list-style: none;
-            margin-left: 14px;
-            margin-top: 4px;
-            display: none;
+        .path-sep {
+            color: #aaa;
         }
-        .sub-cate-list.show {
-            display: block;
+        .path-tip {
+            color: #999;
+            font-size:14px;
         }
-        .sub-cate-list li {
+
+        /* 2. 一级分类横向标签栏（推荐和所有一级分类同行） */
+        .level1-tabs {
             display: flex;
-            align-items: center;
-            margin-bottom: 6px;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
         }
-        .sub-cate-list a {
-            flex:1;
-            display:block;
-            color: #555;
-            text-decoration: none;
-            padding: 4px 4px;
+        .tab-item {
+            padding: 8px 18px;
+            background: #409eff;
+            border-radius: 8px;
+            border: 1px solid #409eff;
+            cursor: pointer;
+            transition:0.2s;
+            color: #fff;
+            text-shadow: 0 0 1px #206fc7, 0 0 2px #206fc7;
+        }
+        .tab-item.active {
+            background: #206fc7;
+        }
+        .tab-item:hover:not(.active) {
+            background: #3098f0;
+        }
+
+        /* 3. 二级/多级子分类横向标签栏 */
+        .sub-level-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            padding-left:12px;
+        }
+        .sub-tab-item {
+            padding: 6px 14px;
+            background: #409eff;
             border-radius: 6px;
-            transition: 0.2s;
+            border:1px solid #409eff;
+            cursor:pointer;
+            color: #fff;
+            text-shadow: 0 0 1px #206fc7, 0 0 2px #206fc7;
         }
-        .sub-cate-list a:hover {
-            background: #eef5ff;
-            color: #409eff;
+        .sub-tab-item.active {
+            background:#206fc7;
         }
-        /* 分类板块 */
-        .category-block {
-            margin-bottom: 42px;
-            scroll-margin-top: 30px;
+        .sub-tab-item:hover:not(.active) {
+            background:#3098f0;
         }
-        .category-title {
-            font-size: 20px;
-            margin-bottom: 18px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        /* 多级子标题缩进，每层+14px */
-        .sub-cate-title {
-            margin:24px 0 12px;
-            font-size:17px;
-            color:#444;
+
+        /* 文章内容主区域 */
+        .article-main {
+            width:100%;
         }
         /* 文章卡片容器 */
         .article-wrap {
@@ -215,14 +187,11 @@
             color: #aaa;
             font-size: 13px;
         }
-        /* 移动端适配：侧边栏换到上方 */
+        /* 移动端适配 */
         @media (max-width: 768px) {
-            .main-wrap {
+            .blog-head {
                 flex-direction: column;
-            }
-            .cate-sidebar {
-                width: 100%;
-                position: static;
+                align-items: flex-start;
             }
             #search-input {
                 width: 100%;
@@ -233,43 +202,50 @@
 <body>
     <header>
         <div class="blog-head">
-            <h1>
-                <strong>To see the world,</strong><br>
-                things dangerous to come to,<br>
-                To see behind walls, to draw closer,<br>
-                To find each other and to feel.<br>
-                That is the purpose of LIFE.
-            </h1>
             <input type="text" id="search-input" placeholder="搜索标题 / 标签...">
         </div>
     </header>
-    <div class="main-wrap">
-        <!-- 左侧文章内容区 -->
-        <section class="article-main" id="blog-container">
-            <div class="loading">正在分批加载文章...</div>
-        </section>
-        <!-- 右侧：分类板块导航栏 -->
-        <aside class="cate-sidebar">
-            <h3>分类</h3>
-            <ul class="cate-nav-list" id="cate-nav-box"></ul>
-        </aside>
+
+    <!-- 资源管理器路径面包屑 -->
+    <div class="path-bar" id="pathBar">
+        <span class="path-tip">当前位置：推荐首页</span>
     </div>
+
+    <!-- 一级分类横向标签（推荐固定在最左侧） -->
+    <div class="level1-tabs" id="level1TabBox"></div>
+
+    <!-- 二级/多级子分类标签容器 -->
+    <div class="sub-level-tabs" id="subTabBox"></div>
+
+    <!-- 文章主内容区 -->
+    <section class="article-main" id="blog-container">
+        <div class="loading">正在分批加载文章...</div>
+    </section>
+
     <footer>
         © 2026 个人静态博客 | GitHub Pages 部署
     </footer>
+
 <script>
-// ========== 配置项 ==========
+// ========== 全局配置 ==========
 const BASE_PATH = "/life_blog";
 const MAX_FOLDER_NUM = 99;
 const BATCH_SIZE = 5;
-let allArticles = [];         // 全局所有文章
-let currentSearchKey = "";    // 当前搜索词
-let isSearching = false;      // 是否处于搜索状态（搜索时禁用增量渲染）
+
+// 全局数据
+let allArticles = [];                // 全部文章原始数据
+let currentPath = [];                // 当前层级路径数组 []=推荐首页，["物理"]=一级物理，["物理","电磁学"]=二级
+let currentSearchKey = "";
+let isSearching = false;
+
+// DOM容器
 const container = document.getElementById("blog-container");
 const searchInput = document.getElementById("search-input");
-const navBox = document.getElementById("cate-nav-box");
+const level1TabBox = document.getElementById("level1TabBox");
+const subTabBox = document.getElementById("subTabBox");
+const pathBar = document.getElementById("pathBar");
 
-// 解析 config.txt
+// 1. 解析config.txt
 function parseConfig(text) {
     const lines = text.trim().split(/\r?\n/);
     const data = { title: "", description: "", time: "", label: [], category: "" };
@@ -284,150 +260,182 @@ function parseConfig(text) {
         if (k === "label") data.label = v.split(",").map(s => s.trim()).filter(Boolean);
         if (k === "category") data.category = v;
     });
+    data.catePath = data.category.split("/").map(p => p.trim()).filter(Boolean);
     return data;
 }
 
-// 读取单篇文章
+// 2. 读取单篇文章
 async function loadArticle(folderName) {
     try {
         const url = `${BASE_PATH}/${folderName}/config.txt`;
         const res = await fetch(url);
-        if (!res.ok) {
-            console.warn(`文件夹${folderName}加载失败，地址：${url}，状态码：${res.status}`);
-            return null;
-        }
+        if (!res.ok) return null;
         const text = await res.text();
         const cfg = parseConfig(text);
         cfg.folder = folderName;
-        // 拆分分类路径数组，方便无限层级处理
-        cfg.catePath = cfg.category.split("/").map(p => p.trim()).filter(Boolean);
         return cfg;
     } catch (err) {
-        console.error(`文件夹${folderName}网络请求异常`, err);
         return null;
     }
 }
 
-// 构建无限层级分类树（递归结构）
-function buildCateTree(articles) {
-    const root = {
-        children: {},
-        articles: []
-    };
-    articles.forEach(art => {
-        let node = root;
-        const paths = art.catePath;
-        // 逐层向下创建节点
-        for(let i=0; i<paths.length; i++){
-            const name = paths[i];
-            if(!node.children[name]){
-                node.children[name] = {
-                    children: {},
-                    articles: []
-                };
+// 3. 流式分批加载所有文章
+async function streamLoadArticles() {
+    let startIdx = 1;
+    while (startIdx <= MAX_FOLDER_NUM) {
+        const endIdx = Math.min(startIdx + BATCH_SIZE - 1, MAX_FOLDER_NUM);
+        const loadingTip = container.querySelector(".loading");
+        if (loadingTip) loadingTip.textContent = `正在加载第 ${startIdx}~${endIdx} 号文章文件夹...`;
+
+        const batchPromises = [];
+        for (let i = startIdx; i <= endIdx; i++) batchPromises.push(loadArticle(i));
+        const batchResult = await Promise.all(batchPromises);
+        const validArts = batchResult.filter(item => item !== null);
+
+        if (validArts.length > 0) {
+            allArticles = allArticles.concat(validArts);
+            refreshAllUI(); // 加载一批刷新一次界面
+        }
+        startIdx = endIdx + 1;
+    }
+    const loadingTip = container.querySelector(".loading");
+    if (loadingTip) loadingTip.remove();
+    if (allArticles.length === 0) container.innerHTML = `<div class="empty-tip">未读取到任何文章</div>`;
+}
+
+// 4. 根据当前路径筛选目标文章
+function filterArticleByPath(artList, pathArr, search = "") {
+    let list = [...artList];
+    // 搜索过滤
+    if (search) {
+        const s = search.toLowerCase();
+        list = list.filter(art => art.title.toLowerCase().includes(s) || art.label.some(tag => tag.toLowerCase().includes(s)));
+    }
+    // 推荐首页：筛选所有带「推荐」标签的文章
+    if (pathArr.length === 0) {
+        return list.filter(art => art.label.includes("推荐"));
+    }
+    // 层级匹配：路径数组完全匹配前缀
+    return list.filter(art => {
+        if (art.catePath.length < pathArr.length) return false;
+        for (let i = 0; i < pathArr.length; i++) {
+            if (art.catePath[i] !== pathArr[i]) return false;
+        }
+        return true;
+    });
+}
+
+// 5. 获取所有唯一一级分类名称
+function getAllLevel1Cate() {
+    const set = new Set();
+    allArticles.forEach(art => {
+        if (art.catePath[0]) set.add(art.catePath[0]);
+    });
+    return Array.from(set);
+}
+
+// 6. 获取当前层级下的子分类（下一层级标签）
+function getSubCateUnderPath(pathArr) {
+    const set = new Set();
+    const targetDepth = pathArr.length;
+    allArticles.forEach(art => {
+        // 文章层级必须比当前路径更深，且前缀匹配
+        if (art.catePath.length > targetDepth) {
+            let match = true;
+            for (let i = 0; i < pathArr.length; i++) {
+                if (art.catePath[i] !== pathArr[i]) match = false;
             }
-            node = node.children[name];
+            if (match) set.add(art.catePath[targetDepth]);
         }
-        node.articles.push(art);
     });
-    return root;
+    return Array.from(set);
 }
 
-// 递归渲染侧边无限层级分类导航
-function renderSideTree(parentUl, treeNode, fullPathArr) {
-    const childNames = Object.keys(treeNode.children);
-    childNames.forEach(name => {
-        const newPath = [...fullPathArr, name];
-        const fullId = newPath.map(n=>encodeURIComponent(n)).join("/");
-        const subNode = treeNode.children[name];
-        const hasChild = Object.keys(subNode.children).length > 0;
-
-        const li = document.createElement("li");
-        if(hasChild){
-            // 存在子分类，带展开按钮
-            li.innerHTML = `
-                <div class="cate-top-row">
-                    <span class="cate-toggle-btn" data-target="sub-${fullId}" onclick="toggleSubCate('sub-${fullId}')">+</span>
-                    <a href="#cate-${fullId}">${name}</a>
-                </div>
-                <ul id="sub-${fullId}" class="sub-cate-list"></ul>
-            `;
-            parentUl.appendChild(li);
-            // 递归渲染下一层子分类
-            const childUl = document.getElementById(`sub-${fullId}`);
-            renderSideTree(childUl, subNode, newPath);
-        }else{
-            // 无下级，纯链接
-            li.innerHTML = `
-                <div class="cate-top-row">
-                    <span class="cate-toggle-btn"></span>
-                    <a href="#cate-${fullId}">${name}</a>
-                </div>
-            `;
-            parentUl.appendChild(li);
-        }
+// 7. 刷新面包屑路径栏（资源管理器地址栏样式）
+function renderPathBar() {
+    if (currentPath.length === 0) {
+        pathBar.innerHTML = `<span class="path-tip">当前位置：推荐首页</span>`;
+        return;
+    }
+    let html = `<span class="path-item" data-path="[]">推荐首页</span>`;
+    let tempPath = [];
+    currentPath.forEach((name, idx) => {
+        tempPath.push(name);
+        html += `<span class="path-sep">/</span>`;
+        html += `<span class="path-item" data-path='${JSON.stringify(tempPath)}'>${name}</span>`;
+    });
+    pathBar.innerHTML = html;
+    // 面包屑点击跳转
+    pathBar.querySelectorAll(".path-item").forEach(el => {
+        el.onclick = () => {
+            currentPath = JSON.parse(el.dataset.path);
+            refreshAllUI();
+        };
     });
 }
 
-// 切换任意层级子分类展开收起
-window.toggleSubCate = function(id) {
-    const subList = document.getElementById(id);
-    subList.classList.toggle("show");
-    const btn = document.querySelector(`[data-target="${id}"]`);
-    btn.innerText = subList.classList.contains("show") ? "−" : "+";
-}
-
-// 递归渲染页面主内容无限层级区块
-function renderContentTree(containerEl, treeNode, fullPathArr) {
-    const childNames = Object.keys(treeNode.children);
-    childNames.forEach(name => {
-        const newPath = [...fullPathArr, name];
-        const fullId = newPath.map(n=>encodeURIComponent(n)).join("/");
-        const subNode = treeNode.children[name];
-        const hasParent = fullPathArr.length > 0;
-
-        if(!hasParent){
-            // 一级分类，大标题区块
-            const block = document.createElement("section");
-            block.className = "category-block";
-            block.id = `cate-${fullId}`;
-            block.innerHTML = `<h2 class="category-title">${name}</h2>`;
-            containerEl.appendChild(block);
-            // 渲染当前层级文章
-            if(subNode.articles.length > 0){
-                const wrap = document.createElement("div");
-                wrap.className = "article-wrap";
-                subNode.articles.forEach(art=>wrap.appendChild(makeCard(art)));
-                block.appendChild(wrap);
-            }
-            // 递归渲染子层级
-            renderContentTree(block, subNode, newPath);
-        }else{
-            // 多级子分类，缩进小标题
-            const parentBlock = document.getElementById(`cate-${fullPathArr.map(n=>encodeURIComponent(n)).join("/")}`);
-            const subTitle = document.createElement("h3");
-            subTitle.className = "sub-cate-title";
-            subTitle.id = `cate-${fullId}`;
-            subTitle.textContent = "└ " + name;
-            parentBlock.appendChild(subTitle);
-
-            // 子分类文章卡片容器
-            const wrap = document.createElement("div");
-            wrap.className = "article-wrap";
-            subNode.articles.forEach(art=>wrap.appendChild(makeCard(art)));
-            parentBlock.appendChild(wrap);
-            // 递归更深层级
-            renderContentTree(parentBlock, subNode, newPath);
-        }
+// 8. 刷新一级横向标签（推荐固定第一个，后面拼接所有一级分类）
+function renderLevel1Tabs() {
+    const level1List = getAllLevel1Cate();
+    let html = `<div class="tab-item ${currentPath.length === 0 ? 'active' : ''}" data-path="[]">推荐</div>`;
+    level1List.forEach(name => {
+        const targetPath = [name];
+        const active = currentPath.length >=1 && currentPath[0] === name && currentPath.length === 1;
+        html += `<div class="tab-item ${active ? 'active' : ''}" data-path='${JSON.stringify(targetPath)}'>${name}</div>`;
+    });
+    level1TabBox.innerHTML = html;
+    // 一级标签点击切换路径
+    level1TabBox.querySelectorAll(".tab-item").forEach(el => {
+        el.onclick = () => {
+            currentPath = JSON.parse(el.dataset.path);
+            refreshAllUI();
+        };
     });
 }
 
-// 生成单张文章卡片DOM
-function makeCard(art){
+// 9. 刷新二级/多级子分类标签
+function renderSubTabs() {
+    subTabBox.innerHTML = "";
+    if (currentPath.length === 0) return; // 推荐页无下级标签
+    const subList = getSubCateUnderPath(currentPath);
+    if (subList.length === 0) return;
+
+    let html = "";
+    const nowDepth = currentPath.length;
+    subList.forEach(name => {
+        const newPath = [...currentPath, name];
+        html += `<div class="sub-tab-item" data-path='${JSON.stringify(newPath)}'>${name}</div>`;
+    });
+    subTabBox.innerHTML = html;
+    // 子标签点击进入下一层级
+    subTabBox.querySelectorAll(".sub-tab-item").forEach(el => {
+        el.onclick = () => {
+            currentPath = JSON.parse(el.dataset.path);
+            refreshAllUI();
+        };
+    });
+}
+
+// 10. 渲染文章卡片列表
+function renderArticleCards() {
+    container.innerHTML = "";
+    const filterArts = filterArticleByPath(allArticles, currentPath, currentSearchKey);
+    if (filterArts.length === 0) {
+        container.innerHTML = `<div class="empty-tip">暂无匹配文章</div>`;
+        return;
+    }
+    const wrap = document.createElement("div");
+    wrap.className = "article-wrap";
+    filterArts.forEach(art => wrap.appendChild(makeCard(art)));
+    container.appendChild(wrap);
+}
+
+// 生成单卡片DOM
+function makeCard(art) {
     const tagHtml = art.label.map(t => `<span>${t}</span>`).join("");
     const div = document.createElement("div");
     div.className = "article-card";
-    div.setAttribute("onclick", `openArticle('${art.folder}')`);
+    div.onclick = () => window.location.href = `${BASE_PATH}/${art.folder}/index.html`;
     div.innerHTML = `
         <h3>${art.title}</h3>
         <p class="article-desc">${art.description}</p>
@@ -439,104 +447,26 @@ function makeCard(art){
     return div;
 }
 
-// 渲染完整页面（搜索时使用，全量重绘）
-function renderFullPage(searchKey = "") {
-    currentSearchKey = searchKey.trim();
-    isSearching = !!currentSearchKey;
-    container.innerHTML = "";
-    navBox.innerHTML = "";
-
-    const filterArts = allArticles.filter(art => {
-        const k = currentSearchKey.toLowerCase();
-        const matchTitle = art.title.toLowerCase().includes(k);
-        const matchLabel = art.label.some(tag => tag.toLowerCase().includes(k));
-        return matchTitle || matchLabel;
-    });
-    if (filterArts.length === 0) {
-        container.innerHTML = `<div class="empty-tip">没有找到匹配的文章</div>`;
-        return;
-    }
-
-    const cateTree = buildCateTree(filterArts);
-    // 渲染侧边无限层级导航
-    renderSideTree(navBox, cateTree, []);
-    // 渲染主内容无限层级区块
-    renderContentTree(container, cateTree, []);
+// 统一刷新全部界面（路径、标签、文章）
+function refreshAllUI() {
+    renderPathBar();
+    renderLevel1Tabs();
+    renderSubTabs();
+    renderArticleCards();
 }
 
-// 增量追加新一批文章（无搜索时，5个一批慢慢追加渲染）
-function appendBatchArticles(newBatchArts) {
-    // 搜索状态下不增量，直接走全量重绘
-    if (isSearching) {
-        renderFullPage(currentSearchKey);
-        return;
-    }
-    // 移除初始加载提示
-    const loadingTip = container.querySelector(".loading");
-    if (loadingTip) loadingTip.remove();
-
-    // 全量重建分类树，刷新侧边导航
-    const cateTree = buildCateTree(allArticles);
-    navBox.innerHTML = "";
-    renderSideTree(navBox, cateTree, []);
-
-    // 逐条插入新文章到对应层级区块
-    newBatchArts.forEach(art => {
-        const pathEncode = art.catePath.map(n=>encodeURIComponent(n)).join("/");
-        const targetBlock = document.getElementById(`cate-${pathEncode}`);
-        if(!targetBlock) {
-            // 分类区块不存在，全局重绘一次保证结构完整
-            renderFullPage(currentSearchKey);
-            return;
-        }
-        const wrap = targetBlock.querySelector(".article-wrap");
-        if(wrap) wrap.appendChild(makeCard(art));
-    });
-}
-
-// 分批流式加载，每批5个加载完增量渲染
-async function streamLoadArticles() {
-    let startIdx = 1;
-    while (startIdx <= MAX_FOLDER_NUM) {
-        const endIdx = Math.min(startIdx + BATCH_SIZE - 1, MAX_FOLDER_NUM);
-        // 更新加载提示
-        const loadingTip = container.querySelector(".loading");
-        if (loadingTip) loadingTip.textContent = `正在加载第 ${startIdx}~${endIdx} 号文章文件夹...`;
-
-        const batchPromises = [];
-        for (let i = startIdx; i <= endIdx; i++) {
-            batchPromises.push(loadArticle(i));
-        }
-        const batchResult = await Promise.all(batchPromises);
-        const validArts = batchResult.filter(item => item !== null);
-        if (validArts.length > 0) {
-            allArticles = allArticles.concat(validArts);
-            // 增量追加本批5篇到页面，标题简介实时出现
-            appendBatchArticles(validArts);
-        }
-        startIdx = endIdx + 1;
-    }
-    // 全部加载完成移除加载文字
-    const loadingTip = container.querySelector(".loading");
-    if (loadingTip) loadingTip.remove();
-    console.log(`流式加载完成，共读取到 ${allArticles.length} 篇有效文章`);
-    if(allArticles.length === 0){
-        container.innerHTML = `<div class="empty-tip">未读取到任何文章，请检查BASE_PATH路径或文件夹是否上传完整</div>`;
-    }
-}
-
-// 跳转文章详情页
-function openArticle(folder) {
-    window.location.href = `${BASE_PATH}/${folder}/index.html`;
-}
-
-// 搜索输入监听：走全量重绘
+// 搜索输入监听
 searchInput.addEventListener("input", e => {
-    renderFullPage(e.target.value.trim());
+    currentSearchKey = e.target.value.trim();
+    isSearching = !!currentSearchKey;
+    renderArticleCards();
 });
 
-// 启动流式加载
-streamLoadArticles();
+// 页面初始化
+window.onload = async () => {
+    await streamLoadArticles();
+    refreshAllUI();
+};
 </script>
 </body>
 </html>
