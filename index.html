@@ -80,36 +80,61 @@
         .cate-nav-list {
             list-style: none;
         }
-        .cate-nav-list li {
+        .cate-nav-list > li {
             margin-bottom: 10px;
         }
-        .cate-nav-list a {
-            display: block;
+        /* 一级分类行：按钮+文字同行，文字统一左对齐 */
+        .cate-top-row {
+            display: flex;
+            align-items: center;
+        }
+        .cate-toggle-btn {
+            width: 18px;
+            margin-right: 4px;
+            cursor: pointer;
+            user-select: none;
+            color: #888;
+            text-align: center;
+        }
+        .cate-top-row a {
+            flex: 1;
             color: #555;
             text-decoration: none;
-            padding: 6px 10px;
+            padding: 6px 4px;
             border-radius: 6px;
             transition: 0.2s;
         }
-        .cate-nav-list a:hover {
+        .cate-top-row a:hover {
             background: #eef5ff;
             color: #409eff;
         }
-        /* 多级分类子列表缩进 */
+        /* 无限层级子列表，每层统一缩进14px */
         .sub-cate-list {
             list-style: none;
-            margin-left: 12px;
-            margin-top: 6px;
+            margin-left: 14px;
+            margin-top: 4px;
             display: none;
         }
         .sub-cate-list.show {
             display: block;
         }
-        .cate-toggle-btn {
-            margin-right: 6px;
-            cursor: pointer;
-            user-select: none;
-            color: #888;
+        .sub-cate-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .sub-cate-list a {
+            flex:1;
+            display:block;
+            color: #555;
+            text-decoration: none;
+            padding: 4px 4px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+        .sub-cate-list a:hover {
+            background: #eef5ff;
+            color: #409eff;
         }
         /* 分类板块 */
         .category-block {
@@ -121,6 +146,12 @@
             margin-bottom: 18px;
             padding-bottom: 8px;
             border-bottom: 1px solid #e5e7eb;
+        }
+        /* 多级子标题缩进，每层+14px */
+        .sub-cate-title {
+            margin:24px 0 12px;
+            font-size:17px;
+            color:#444;
         }
         /* 文章卡片容器 */
         .article-wrap {
@@ -268,6 +299,8 @@ async function loadArticle(folderName) {
         const text = await res.text();
         const cfg = parseConfig(text);
         cfg.folder = folderName;
+        // 拆分分类路径数组，方便无限层级处理
+        cfg.catePath = cfg.category.split("/").map(p => p.trim()).filter(Boolean);
         return cfg;
     } catch (err) {
         console.error(`文件夹${folderName}网络请求异常`, err);
@@ -275,33 +308,135 @@ async function loadArticle(folderName) {
     }
 }
 
-// 构建多级分类树
-function buildCategoryTree(articles) {
-    const tree = {};
+// 构建无限层级分类树（递归结构）
+function buildCateTree(articles) {
+    const root = {
+        children: {},
+        articles: []
+    };
     articles.forEach(art => {
-        const paths = art.category.split("/").map(p => p.trim()).filter(Boolean);
-        if (paths.length === 0) return;
-        const topCate = paths[0];
-        const subCate = paths.length > 1 ? paths.slice(1).join("/") : null;
-
-        if (!tree[topCate]) tree[topCate] = {};
-        if (!subCate) {
-            if (!tree[topCate]["_root"]) tree[topCate]["_root"] = [];
-            tree[topCate]["_root"].push(art);
-        } else {
-            if (!tree[topCate][subCate]) tree[topCate][subCate] = [];
-            tree[topCate][subCate].push(art);
+        let node = root;
+        const paths = art.catePath;
+        // 逐层向下创建节点
+        for(let i=0; i<paths.length; i++){
+            const name = paths[i];
+            if(!node.children[name]){
+                node.children[name] = {
+                    children: {},
+                    articles: []
+                };
+            }
+            node = node.children[name];
         }
+        node.articles.push(art);
     });
-    return tree;
+    return root;
 }
 
-// 切换子分类展开收起
+// 递归渲染侧边无限层级分类导航
+function renderSideTree(parentUl, treeNode, fullPathArr) {
+    const childNames = Object.keys(treeNode.children);
+    childNames.forEach(name => {
+        const newPath = [...fullPathArr, name];
+        const fullId = newPath.map(n=>encodeURIComponent(n)).join("/");
+        const subNode = treeNode.children[name];
+        const hasChild = Object.keys(subNode.children).length > 0;
+
+        const li = document.createElement("li");
+        if(hasChild){
+            // 存在子分类，带展开按钮
+            li.innerHTML = `
+                <div class="cate-top-row">
+                    <span class="cate-toggle-btn" data-target="sub-${fullId}" onclick="toggleSubCate('sub-${fullId}')">+</span>
+                    <a href="#cate-${fullId}">${name}</a>
+                </div>
+                <ul id="sub-${fullId}" class="sub-cate-list"></ul>
+            `;
+            parentUl.appendChild(li);
+            // 递归渲染下一层子分类
+            const childUl = document.getElementById(`sub-${fullId}`);
+            renderSideTree(childUl, subNode, newPath);
+        }else{
+            // 无下级，纯链接
+            li.innerHTML = `
+                <div class="cate-top-row">
+                    <span class="cate-toggle-btn"></span>
+                    <a href="#cate-${fullId}">${name}</a>
+                </div>
+            `;
+            parentUl.appendChild(li);
+        }
+    });
+}
+
+// 切换任意层级子分类展开收起
 window.toggleSubCate = function(id) {
     const subList = document.getElementById(id);
     subList.classList.toggle("show");
     const btn = document.querySelector(`[data-target="${id}"]`);
     btn.innerText = subList.classList.contains("show") ? "−" : "+";
+}
+
+// 递归渲染页面主内容无限层级区块
+function renderContentTree(containerEl, treeNode, fullPathArr) {
+    const childNames = Object.keys(treeNode.children);
+    childNames.forEach(name => {
+        const newPath = [...fullPathArr, name];
+        const fullId = newPath.map(n=>encodeURIComponent(n)).join("/");
+        const subNode = treeNode.children[name];
+        const hasParent = fullPathArr.length > 0;
+
+        if(!hasParent){
+            // 一级分类，大标题区块
+            const block = document.createElement("section");
+            block.className = "category-block";
+            block.id = `cate-${fullId}`;
+            block.innerHTML = `<h2 class="category-title">${name}</h2>`;
+            containerEl.appendChild(block);
+            // 渲染当前层级文章
+            if(subNode.articles.length > 0){
+                const wrap = document.createElement("div");
+                wrap.className = "article-wrap";
+                subNode.articles.forEach(art=>wrap.appendChild(makeCard(art)));
+                block.appendChild(wrap);
+            }
+            // 递归渲染子层级
+            renderContentTree(block, subNode, newPath);
+        }else{
+            // 多级子分类，缩进小标题
+            const parentBlock = document.getElementById(`cate-${fullPathArr.map(n=>encodeURIComponent(n)).join("/")}`);
+            const subTitle = document.createElement("h3");
+            subTitle.className = "sub-cate-title";
+            subTitle.id = `cate-${fullId}`;
+            subTitle.textContent = "└ " + name;
+            parentBlock.appendChild(subTitle);
+
+            // 子分类文章卡片容器
+            const wrap = document.createElement("div");
+            wrap.className = "article-wrap";
+            subNode.articles.forEach(art=>wrap.appendChild(makeCard(art)));
+            parentBlock.appendChild(wrap);
+            // 递归更深层级
+            renderContentTree(parentBlock, subNode, newPath);
+        }
+    });
+}
+
+// 生成单张文章卡片DOM
+function makeCard(art){
+    const tagHtml = art.label.map(t => `<span>${t}</span>`).join("");
+    const div = document.createElement("div");
+    div.className = "article-card";
+    div.setAttribute("onclick", `openArticle('${art.folder}')`);
+    div.innerHTML = `
+        <h3>${art.title}</h3>
+        <p class="article-desc">${art.description}</p>
+        <div class="article-meta">
+            <span>${art.time}</span>
+            <div class="tag-list">${tagHtml}</div>
+        </div>
+    `;
+    return div;
 }
 
 // 渲染完整页面（搜索时使用，全量重绘）
@@ -322,80 +457,11 @@ function renderFullPage(searchKey = "") {
         return;
     }
 
-    const cateTree = buildCategoryTree(filterArts);
-    const topCateList = Object.keys(cateTree);
-
-    // 侧边导航
-    topCateList.forEach(topName => {
-        const cateData = cateTree[topName];
-        const subKeys = Object.keys(cateData).filter(k => k !== "_root");
-        const hasSub = subKeys.length > 0;
-        const li = document.createElement("li");
-        let navHtml = "";
-        const subListId = `subcate-${encodeURIComponent(topName)}`;
-
-        if (hasSub) {
-            navHtml += `
-                <span class="cate-toggle-btn" data-target="${subListId}" onclick="toggleSubCate('${subListId}')">+</span>
-                <a href="#cate-${encodeURIComponent(topName)}" style="display:inline-block;width:calc(100% - 24px)">${topName}</a>
-                <ul id="${subListId}" class="sub-cate-list">
-            `;
-            subKeys.forEach(subName => {
-                navHtml += `<li><a href="#cate-${encodeURIComponent(topName)}/${encodeURIComponent(subName)}">${subName}</a></li>`;
-            });
-            navHtml += `</ul>`;
-        } else {
-            navHtml += `<a href="#cate-${encodeURIComponent(topName)}">${topName}</a>`;
-        }
-        li.innerHTML = navHtml;
-        navBox.appendChild(li);
-    });
-
-    // 主内容区块
-    topCateList.forEach(topName => {
-        const cateData = cateTree[topName];
-        const blockId = `cate-${encodeURIComponent(topName)}`;
-        let blockHtml = `<section class="category-block" id="${blockId}">
-            <h2 class="category-title">${topName}</h2>`;
-        
-        if (cateData["_root"] && cateData["_root"].length > 0) {
-            blockHtml += `<div class="article-wrap">`;
-            cateData["_root"].forEach(art => {
-                const tagHtml = art.label.map(t => `<span>${t}</span>`).join("");
-                blockHtml += `<div class="article-card" onclick="openArticle('${art.folder}')">
-                    <h3>${art.title}</h3>
-                    <p class="article-desc">${art.description}</p>
-                    <div class="article-meta">
-                        <span>${art.time}</span>
-                        <div class="tag-list">${tagHtml}</div>
-                    </div>
-                </div>`;
-            });
-            blockHtml += `</div>`;
-        }
-
-        const subKeys = Object.keys(cateData).filter(k => k !== "_root");
-        subKeys.forEach(subName => {
-            const subArts = cateData[subName];
-            const subBlockId = `${blockId}/${encodeURIComponent(subName)}`;
-            blockHtml += `<h3 style="margin:24px 0 12px;font-size:17px;color:#444;" id="${subBlockId}">└ ${subName}</h3>
-            <div class="article-wrap">`;
-            subArts.forEach(art => {
-                const tagHtml = art.label.map(t => `<span>${t}</span>`).join("");
-                blockHtml += `<div class="article-card" onclick="openArticle('${art.folder}')">
-                    <h3>${art.title}</h3>
-                    <p class="article-desc">${art.description}</p>
-                    <div class="article-meta">
-                        <span>${art.time}</span>
-                        <div class="tag-list">${tagHtml}</div>
-                    </div>
-                </div>`;
-            });
-            blockHtml += `</div>`;
-        });
-        blockHtml += `</section>`;
-        container.innerHTML += blockHtml;
-    });
+    const cateTree = buildCateTree(filterArts);
+    // 渲染侧边无限层级导航
+    renderSideTree(navBox, cateTree, []);
+    // 渲染主内容无限层级区块
+    renderContentTree(container, cateTree, []);
 }
 
 // 增量追加新一批文章（无搜索时，5个一批慢慢追加渲染）
@@ -409,91 +475,22 @@ function appendBatchArticles(newBatchArts) {
     const loadingTip = container.querySelector(".loading");
     if (loadingTip) loadingTip.remove();
 
-    // 用当前全部文章重建分类树（包含新批次）
-    const cateTree = buildCategoryTree(allArticles);
-    const topCateList = Object.keys(cateTree);
-
-    // 更新侧边栏（全量刷新侧边分类，保证新增分类出现）
+    // 全量重建分类树，刷新侧边导航
+    const cateTree = buildCateTree(allArticles);
     navBox.innerHTML = "";
-    topCateList.forEach(topName => {
-        const cateData = cateTree[topName];
-        const subKeys = Object.keys(cateData).filter(k => k !== "_root");
-        const hasSub = subKeys.length > 0;
-        const li = document.createElement("li");
-        let navHtml = "";
-        const subListId = `subcate-${encodeURIComponent(topName)}`;
-        if (hasSub) {
-            navHtml += `
-                <span class="cate-toggle-btn" data-target="${subListId}" onclick="toggleSubCate('${subListId}')">+</span>
-                <a href="#cate-${encodeURIComponent(topName)}" style="display:inline-block;width:calc(100% - 24px)">${topName}</a>
-                <ul id="${subListId}" class="sub-cate-list">
-            `;
-            subKeys.forEach(subName => {
-                navHtml += `<li><a href="#cate-${encodeURIComponent(topName)}/${encodeURIComponent(subName)}">${subName}</a></li>`;
-            });
-            navHtml += `</ul>`;
-        } else {
-            navHtml += `<a href="#cate-${encodeURIComponent(topName)}">${topName}</a>`;
-        }
-        li.innerHTML = navHtml;
-        navBox.appendChild(li);
-    });
+    renderSideTree(navBox, cateTree, []);
 
-    // 只把新批次文章追加到对应分类区块
+    // 逐条插入新文章到对应层级区块
     newBatchArts.forEach(art => {
-        const paths = art.category.split("/").map(p => p.trim()).filter(Boolean);
-        const topName = paths[0];
-        const subName = paths.length > 1 ? paths.slice(1).join("/") : null;
-        const blockId = `cate-${encodeURIComponent(topName)}`;
-        let blockEl = document.getElementById(blockId);
-
-        // 如果一级分类区块不存在，新建区块
-        if (!blockEl) {
-            blockEl = document.createElement("section");
-            blockEl.className = "category-block";
-            blockEl.id = blockId;
-            blockEl.innerHTML = `<h2 class="category-title">${topName}</h2>`;
-            container.appendChild(blockEl);
+        const pathEncode = art.catePath.map(n=>encodeURIComponent(n)).join("/");
+        const targetBlock = document.getElementById(`cate-${pathEncode}`);
+        if(!targetBlock) {
+            // 分类区块不存在，全局重绘一次保证结构完整
+            renderFullPage(currentSearchKey);
+            return;
         }
-
-        let targetWrap;
-        if (!subName) {
-            // 无细分，找一级下第一个 article-wrap
-            targetWrap = blockEl.querySelector(".article-wrap");
-            if (!targetWrap) {
-                targetWrap = document.createElement("div");
-                targetWrap.className = "article-wrap";
-                blockEl.appendChild(targetWrap);
-            }
-        } else {
-            // 有细分，找对应子标题下方的 article-wrap
-            const subId = `${blockId}/${encodeURIComponent(subName)}`;
-            let subTitle = document.getElementById(subId);
-            if (!subTitle) {
-                subTitle = document.createElement("h3");
-                subTitle.style = "margin:24px 0 12px;font-size:17px;color:#444;";
-                subTitle.id = subId;
-                subTitle.textContent = `└ ${subName}`;
-                blockEl.appendChild(subTitle);
-            }
-            targetWrap = subTitle.nextElementSibling;
-            if (!targetWrap || !targetWrap.classList.contains("article-wrap")) {
-                targetWrap = document.createElement("div");
-                targetWrap.className = "article-wrap";
-                subTitle.after(targetWrap);
-            }
-        }
-        // 插入单篇卡片
-        const tagHtml = art.label.map(t => `<span>${t}</span>`).join("");
-        const cardHtml = `<div class="article-card" onclick="openArticle('${art.folder}')">
-            <h3>${art.title}</h3>
-            <p class="article-desc">${art.description}</p>
-            <div class="article-meta">
-                <span>${art.time}</span>
-                <div class="tag-list">${tagHtml}</div>
-            </div>
-        </div>`;
-        targetWrap.insertAdjacentHTML("beforeend", cardHtml);
+        const wrap = targetBlock.querySelector(".article-wrap");
+        if(wrap) wrap.appendChild(makeCard(art));
     });
 }
 
