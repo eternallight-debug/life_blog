@@ -198,7 +198,7 @@
     </header>
     <!-- 资源管理器路径面包屑 -->
     <div class="path-bar" id="pathBar">
-        <span class="path-tip">当前位置：推荐首页</span>
+        <span class="path-tip">当前位置：推荐</span>
     </div>
     <!-- 首页一级标签容器 -->
     <div class="level1-tabs" id="level1TabBox"></div>
@@ -218,7 +218,7 @@ const MAX_FOLDER_NUM = 99;
 const BATCH_SIZE = 5;
 // 全局数据
 let allArticles = [];
-let currentPath = []; // []推荐首页，["物理"]一级，["物理","电磁"]二级
+let currentPath = []; // 
 let currentSearchKey = "";
 // DOM容器
 const container = document.getElementById("blog-container");
@@ -315,10 +315,10 @@ function getSubCateUnderPath(pathArr) {
 // 7. 面包屑路径
 function renderPathBar() {
     if (currentPath.length === 0) {
-        pathBar.innerHTML = `<span class="path-tip">当前位置：推荐首页</span>`;
+        pathBar.innerHTML = `<span class="path-tip">当前位置：推荐</span>`;
         return;
     }
-    let html = `<span class="path-item" data-path="[]">推荐首页</span>`;
+    let html = `<span class="path-item" data-path="[]">推荐</span>`;
     let tempPath = [];
     currentPath.forEach(name => {
         tempPath.push(name);
@@ -349,7 +349,7 @@ function renderNav() {
     }
     // 进入任意层级：隐藏一级，显示返回按钮 + 下一层子分类
     const prevPath = currentPath.slice(0, -1); // 上一级路径
-    let navHtml = `<div class="back-btn" data-path='${JSON.stringify(prevPath)}'>← 返回上一级</div>`;
+    let navHtml = `<div class="back-btn" data-path='${JSON.stringify(prevPath)}'>←</div>`;
     const subList = getSubCateUnderPath(currentPath);
     subList.forEach(name => {
         const newPath = [...currentPath, name];
