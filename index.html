@@ -33,7 +33,7 @@
         .blog-head h1 {
             font-size: 26px;
             font-weight: 600;
-            line-height: 1.4;
+            line-height: 1.8;
         }
         #search-input {
             width: 320px;
@@ -69,11 +69,13 @@
             border-radius: 10px;
             box-shadow: 0 1px 6px rgba(0,0,0,0.06);
         }
+        /* 分类标题居中 */
         .cate-sidebar h3 {
             font-size: 17px;
             margin-bottom: 16px;
             padding-bottom: 8px;
             border-bottom: 1px solid #eee;
+            text-align: center;
         }
         .cate-nav-list {
             list-style: none;
@@ -92,6 +94,22 @@
         .cate-nav-list a:hover {
             background: #eef5ff;
             color: #409eff;
+        }
+        /* 多级分类子列表缩进 */
+        .sub-cate-list {
+            list-style: none;
+            margin-left: 12px;
+            margin-top: 6px;
+            display: none;
+        }
+        .sub-cate-list.show {
+            display: block;
+        }
+        .cate-toggle-btn {
+            margin-right: 6px;
+            cursor: pointer;
+            user-select: none;
+            color: #888;
         }
         /* 分类板块 */
         .category-block {
@@ -185,10 +203,11 @@
     <header>
         <div class="blog-head">
             <h1>
-To see the world, things dangerous to come to,
-To see behind walls, to draw closer,
-To find each other and to feel.
-That is the purpose of LIFE.
+                <strong>To see the world,</strong><br>
+                things dangerous to come to,<br>
+                To see behind walls, to draw closer,<br>
+                To find each other and to feel.<br>
+                That is the purpose of LIFE.
             </h1>
             <input type="text" id="search-input" placeholder="搜索标题 / 标签...">
         </div>
@@ -279,7 +298,38 @@ async function streamLoadArticles() {
     console.log(`流式加载完成，共读取到 ${allArticles.length} 篇有效文章`);
 }
 
-// 渲染页面（搜索过滤）
+// 构建多级分类树 {一级分类:{二级分类:[文章]}}
+function buildCategoryTree(articles) {
+    const tree = {};
+    articles.forEach(art => {
+        const paths = art.category.split("/").map(p => p.trim()).filter(Boolean);
+        if (paths.length === 0) return;
+        const topCate = paths[0];
+        const subCate = paths.length > 1 ? paths.slice(1).join("/") : null;
+
+        if (!tree[topCate]) tree[topCate] = {};
+        if (!subCate) {
+            // 无下级分类，存入根级
+            if (!tree[topCate]["_root"]) tree[topCate]["_root"] = [];
+            tree[topCate]["_root"].push(art);
+        } else {
+            // 存在子分类
+            if (!tree[topCate][subCate]) tree[topCate][subCate] = [];
+            tree[topCate][subCate].push(art);
+        }
+    });
+    return tree;
+}
+
+// 切换子分类展开收起
+window.toggleSubCate = function(id) {
+    const subList = document.getElementById(id);
+    subList.classList.toggle("show");
+    const btn = document.querySelector(`[data-target="${id}"]`);
+    btn.innerText = subList.classList.contains("show") ? "−" : "+";
+}
+
+// 渲染页面（搜索过滤 + 多级分类侧边栏）
 function renderBlog(searchKey = "") {
     currentSearchKey = searchKey.trim();
     container.innerHTML = "";
@@ -291,42 +341,89 @@ function renderBlog(searchKey = "") {
         const matchLabel = art.label.some(tag => tag.toLowerCase().includes(k));
         return matchTitle || matchLabel;
     });
-    // 按分类分组
-    const categoryMap = {};
-    filterArts.forEach(art => {
-        if (!categoryMap[art.category]) categoryMap[art.category] = [];
-        categoryMap[art.category].push(art);
-    });
-    const cateNames = Object.keys(categoryMap);
-    if (cateNames.length === 0) {
+    if (filterArts.length === 0) {
         container.innerHTML = `<div class="empty-tip">没有找到匹配的文章</div>`;
         return;
     }
-    // 生成右侧导航
-    cateNames.forEach(cate => {
+
+    const cateTree = buildCategoryTree(filterArts);
+    const topCateList = Object.keys(cateTree);
+
+    // 生成侧边多级分类导航
+    topCateList.forEach(topName => {
+        const cateData = cateTree[topName];
+        const subKeys = Object.keys(cateData).filter(k => k !== "_root");
+        const hasSub = subKeys.length > 0;
         const li = document.createElement("li");
-        li.innerHTML = `<a href="#cate-${encodeURIComponent(cate)}">${cate}</a>`;
+        let navHtml = "";
+        const subListId = `subcate-${encodeURIComponent(topName)}`;
+
+        if (hasSub) {
+            // 存在子分类：带展开按钮
+            navHtml += `
+                <span class="cate-toggle-btn" data-target="${subListId}" onclick="toggleSubCate('${subListId}')">+</span>
+                <a href="#cate-${encodeURIComponent(topName)}" style="display:inline-block;width:calc(100% - 24px)">${topName}</a>
+                <ul id="${subListId}" class="sub-cate-list">
+            `;
+            // 渲染子分类
+            subKeys.forEach(subName => {
+                navHtml += `<li><a href="#cate-${encodeURIComponent(topName)}/${encodeURIComponent(subName)}">${subName}</a></li>`;
+            });
+            navHtml += `</ul>`;
+        } else {
+            // 无下级分类，仅普通链接
+            navHtml += `<a href="#cate-${encodeURIComponent(topName)}">${topName}</a>`;
+        }
+        li.innerHTML = navHtml;
         navBox.appendChild(li);
     });
-    // 渲染每个分类板块
-    cateNames.forEach(cateName => {
-        const arts = categoryMap[cateName];
-        let html = `<section class="category-block" id="cate-${encodeURIComponent(cateName)}">
-            <h2 class="category-title">${cateName}</h2>
+
+    // 渲染主内容区，按一级分类分块，子分类内嵌
+    topCateList.forEach(topName => {
+        const cateData = cateTree[topName];
+        const blockId = `cate-${encodeURIComponent(topName)}`;
+        let blockHtml = `<section class="category-block" id="${blockId}">
+            <h2 class="category-title">${topName}</h2>`;
+        
+        // 本级无细分的文章
+        if (cateData["_root"] && cateData["_root"].length > 0) {
+            blockHtml += `<div class="article-wrap">`;
+            cateData["_root"].forEach(art => {
+                const tagHtml = art.label.map(t => `<span>${t}</span>`).join("");
+                blockHtml += `<div class="article-card" onclick="openArticle('${art.folder}')">
+                    <h3>${art.title}</h3>
+                    <p class="article-desc">${art.description}</p>
+                    <div class="article-meta">
+                        <span>${art.time}</span>
+                        <div class="tag-list">${tagHtml}</div>
+                    </div>
+                </div>`;
+            });
+            blockHtml += `</div>`;
+        }
+
+        // 渲染子分类区块
+        const subKeys = Object.keys(cateData).filter(k => k !== "_root");
+        subKeys.forEach(subName => {
+            const subArts = cateData[subName];
+            const subBlockId = `${blockId}/${encodeURIComponent(subName)}`;
+            blockHtml += `<h3 style="margin:24px 0 12px;font-size:17px;color:#444;" id="${subBlockId}">└ ${subName}</h3>
             <div class="article-wrap">`;
-        arts.forEach(art => {
-            const tagHtml = art.label.map(t => `<span>${t}</span>`).join("");
-            html += `<div class="article-card" onclick="openArticle('${art.folder}')">
-                <h3>${art.title}</h3>
-                <p class="article-desc">${art.description}</p>
-                <div class="article-meta">
-                    <span>${art.time}</span>
-                    <div class="tag-list">${tagHtml}</div>
-                </div>
-            </div>`;
+            subArts.forEach(art => {
+                const tagHtml = art.label.map(t => `<span>${t}</span>`).join("");
+                blockHtml += `<div class="article-card" onclick="openArticle('${art.folder}')">
+                    <h3>${art.title}</h3>
+                    <p class="article-desc">${art.description}</p>
+                    <div class="article-meta">
+                        <span>${art.time}</span>
+                        <div class="tag-list">${tagHtml}</div>
+                    </div>
+                </div>`;
+            });
+            blockHtml += `</div>`;
         });
-        html += `</div></section>`;
-        container.innerHTML += html;
+        blockHtml += `</section>`;
+        container.innerHTML += blockHtml;
     });
 }
 
