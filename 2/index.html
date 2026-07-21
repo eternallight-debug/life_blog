@@ -1,1 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测量数据计算器</title>
+    <style>
+        /* 全局样式重置与基础配置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+        }
 
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* 计算器主体容器 */
+        .calculator-container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .calculator-container:hover {
+            transform: translateY(-3px);
+        }
+
+        /* 标题栏 */
+        .calc-header {
+            background: #2196F3;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .calc-header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .calc-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* 输入区域 */
+        .input-section {
+            padding: 25px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-size: 15px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #2196F3;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        .input-group .hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        /* 计算按钮 */
+        .calc-btn {
+            width: 100%;
+            padding: 14px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+
+        .calc-btn:hover {
+            background: #1976D2;
+        }
+
+        .calc-btn:active {
+            background: #1565C0;
+        }
+
+        /* 结果区域 */
+        .result-section {
+            padding: 0 25px 25px;
+        }
+
+        .result-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #2196F3;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .result-card h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-card h3::before {
+            content: "📊";
+            font-size: 18px;
+        }
+
+        .result-content {
+            font-size: 15px;
+            color: #444;
+            line-height: 1.6;
+            white-space: pre-wrap; /* 保留换行 */
+        }
+
+        .result-error {
+            color: #D32F2F;
+            font-weight: 500;
+        }
+
+        /* 响应式适配（移动端） */
+        @media (max-width: 480px) {
+            .calc-header h1 {
+                font-size: 20px;
+            }
+            .input-section, .result-section {
+                padding: 20px;
+            }
+            .result-card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <!-- 标题栏 -->
+        <div class="calc-header">
+            <h1>测量数据计算器</h1>
+            <p>输入平距、仪器高、棱镜高及读数，计算指标差、竖直角、高差</p>
+        </div>
+
+        <!-- 输入区域 -->
+        <div class="input-section">
+            <div class="input-group">
+                <label for="distance">平距 D（m）</label>
+                <input type="number" id="distance" step="0.001" placeholder="例如：50.23" required>
+                <div class="hint">支持小数，精确到毫米（如 125.682）</div>
+            </div>
+
+            <div class="input-group">
+                <label for="instrumentHeight">仪器高 i（m）</label>
+                <input type="number" id="instrumentHeight" step="0.001" placeholder="例如：1.52" required>
+                <div class="hint">通常为 1.2~1.8m，精确到毫米</div>
+            </div>
+
+            <div class="input-group">
+                <label for="prismHeight">棱镜高 v（m）</label>
+                <input type="number" id="prismHeight" step="0.001" placeholder="例如：1.50" required>
+                <div class="hint">与棱镜类型匹配（如 2.0m 对中杆）</div>
+            </div>
+
+            <div class="input-group">
+                <label for="leftReading">盘左读数 L（度.分.秒）</label>
+                <input type="text" id="leftReading" placeholder="例如：93.26.55" required>
+                <div class="hint">格式：度.分.秒（如 180.00.00，分/秒需≤59）</div>
+            </div>
+
+            <div class="input-group">
+                <label for="rightReading">盘右读数 R（度.分.秒）</label>
+                <input type="text" id="rightReading" placeholder="例如：266.33.05" required>
+                <div class="hint">格式：度.分.秒（如 0.00.00，分/秒需≤59）</div>
+            </div>
+
+            <button class="calc-btn" id="calculateBtn">开始计算</button>
+        </div>
+
+        <!-- 结果区域 -->
+        <div class="result-section">
+            <div class="result-card">
+                <h3>计算结果</h3>
+                <div class="result-content" id="resultContent">
+                    请输入完整数据并点击「开始计算」按钮
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. 度分秒转十进制度数（复刻Python逻辑）
+        function dmsToDecimal(dmsStr) {
+            const pattern = /^(\d+)\.(\d+)\.(\d+)$/;
+            const match = dmsStr.trim().match(pattern);
+            
+            if (!match) {
+                throw new Error("格式错误，需符合「度.分.秒」（如 93.26.55）");
+            }
+
+            const degrees = parseInt(match[1]);
+            const minutes = parseInt(match[2]);
+            const seconds = parseInt(match[3]);
+
+            if (minutes < 0 || minutes >= 60 || seconds < 0 || seconds >= 60) {
+                throw new Error("分、秒值需在 0~59 之间");
+            }
+
+            return degrees + minutes / 60 + seconds / 3600;
+        }
+
+        // 2. 核心计算逻辑（复刻Python逻辑）
+        function calculateSurveyParams() {
+            const resultContent = document.getElementById("resultContent");
+            try {
+                // 获取输入值
+                const distance = parseFloat(document.getElementById("distance").value);
+                const instrumentHeight = parseFloat(document.getElementById("instrumentHeight").value);
+                const prismHeight = parseFloat(document.getElementById("prismHeight").value);
+                const leftReadingStr = document.getElementById("leftReading").value;
+                const rightReadingStr = document.getElementById("rightReading").value;
+
+                // 基础验证（非空、正数）
+                if ([distance, instrumentHeight, prismHeight].some(val => isNaN(val) || val <= 0)) {
+                    throw new Error("平距、仪器高、棱镜高需为正数");
+                }
+
+                // 度分秒转换
+                const leftReading = dmsToDecimal(leftReadingStr);
+                const rightReading = dmsToDecimal(rightReadingStr);
+
+                // 计算指标差 X
+                const indexError = (leftReading + rightReading - 360) / 2;
+
+                // 计算竖直角（两种公式验证）
+                const alpha1 = 90 - leftReading + indexError;
+                const alpha2 = rightReading - 270 - indexError;
+
+                // 结果格式化（保留6位小数）
+                const formatNum = (num) => num.toFixed(6);
+
+                let resultText;
+                if (Math.abs(alpha1 - alpha2) < 1e-6) {
+                    const verticalAngle = alpha1;
+                    // 计算高差（tan需转弧度）
+                    const heightDifference = distance * Math.tan(Math.radians(verticalAngle)) + instrumentHeight - prismHeight;
+                    
+                    resultText = `=== 计算结果 ===
+指标差 X：${formatNum(indexError)} 度
+竖直角 α：${formatNum(verticalAngle)} 度（两种公式结果一致）
+高差 h：${formatNum(heightDifference)} 米`;
+                } else {
+                    resultText = `警告：两种公式计算竖直角存在差异！
+公式1结果：${formatNum(alpha1)} 度
+公式2结果：${formatNum(alpha2)} 度
+请检查输入数据是否正确`;
+                }
+
+                // 显示结果（正常样式）
+                resultContent.textContent = resultText;
+                resultContent.classList.remove("result-error");
+
+            } catch (error) {
+                // 显示错误（红色样式）
+                resultContent.textContent = `❌ 输入错误：${error.message}`;
+                resultContent.classList.add("result-error");
+            }
+        }
+
+        // 3. 绑定按钮点击事件
+        document.getElementById("calculateBtn").addEventListener("click", calculateSurveyParams);
+
+        // 4. 新增：回车键触发计算（优化体验）
+        const inputElements = document.querySelectorAll("input");
+        inputElements.forEach(input => {
+            input.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    calculateSurveyParams();
+                }
+            });
+        });
+
+        // 5. 扩展：Math.radians 方法（角度转弧度，适配计算）
+        if (!Math.radians) {
+            Math.radians = function(degrees) {
+                return degrees * Math.PI / 180;
+            };
+        }
+    </script>
+</body>
+</html>
