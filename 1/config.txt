@@ -1,5 +1,5 @@
-title:1
-description:2
-time:2026-07-20
-label:3
-category:3
+title:图片马赛克拼接
+description:用五颜六色的一堆图片当成画笔去拼一张色彩丰富的图片
+time:2026-07-21
+label:图片,马赛克,拼
+category:工具/音视图/图片编辑
