@@ -176,7 +176,7 @@
         .loading {
             color: #666;
             text-align: center;
-            padding: 60px 0;
+            padding: 20px 0;
         }
         footer {
             margin-top: 60px;
@@ -227,17 +227,18 @@
         © 2026 个人静态博客 | GitHub Pages 部署
     </footer>
 <script>
-// ========== 配置项（根据你的仓库修改）==========
-const BASE_PATH = "/life_blog"; // 仓库根目录部署填空；如果是username.github.io/blog 则填 "/blog"
-const MAX_FOLDER_NUM = 99; // 最多扫描99个数字文件夹(1~99)
-const BATCH_SIZE = 5; // 每批加载5个文件夹，可自行修改
-let allArticles = []; // 全局存储所有文章数据
-let currentSearchKey = ""; // 缓存当前搜索关键词
+// ========== 配置项 ==========
+const BASE_PATH = "/life_blog";
+const MAX_FOLDER_NUM = 99;
+const BATCH_SIZE = 5;
+let allArticles = [];         // 全局所有文章
+let currentSearchKey = "";    // 当前搜索词
+let isSearching = false;      // 是否处于搜索状态（搜索时禁用增量渲染）
 const container = document.getElementById("blog-container");
 const searchInput = document.getElementById("search-input");
 const navBox = document.getElementById("cate-nav-box");
 
-// 解析 config.txt 文本为对象
+// 解析 config.txt
 function parseConfig(text) {
     const lines = text.trim().split(/\r?\n/);
     const data = { title: "", description: "", time: "", label: [], category: "" };
@@ -255,50 +256,26 @@ function parseConfig(text) {
     return data;
 }
 
-// 读取单个文件夹的config
+// 读取单篇文章
 async function loadArticle(folderName) {
     try {
-        const res = await fetch(`${BASE_PATH}/${folderName}/config.txt`);
-        if (!res.ok) return null;
+        const url = `${BASE_PATH}/${folderName}/config.txt`;
+        const res = await fetch(url);
+        if (!res.ok) {
+            console.warn(`文件夹${folderName}加载失败，地址：${url}，状态码：${res.status}`);
+            return null;
+        }
         const text = await res.text();
         const cfg = parseConfig(text);
         cfg.folder = folderName;
         return cfg;
     } catch (err) {
+        console.error(`文件夹${folderName}网络请求异常`, err);
         return null;
     }
 }
 
-// 分批流式加载：每批BATCH_SIZE个，加载一批立刻渲染页面
-async function streamLoadArticles() {
-    let startIdx = 1;
-    // 循环分批加载，直到超过最大文件夹数量
-    while (startIdx <= MAX_FOLDER_NUM) {
-        const endIdx = Math.min(startIdx + BATCH_SIZE - 1, MAX_FOLDER_NUM);
-        // 更新加载提示
-        container.innerHTML = `<div class="loading">正在加载第 ${startIdx}~${endIdx} 号文章文件夹...</div>`;
-        
-        // 串行加载当前批次5个文件夹（避免并发大量请求）
-        const batchPromises = [];
-        for (let i = startIdx; i <= endIdx; i++) {
-            batchPromises.push(loadArticle(i));
-        }
-        const batchResult = await Promise.all(batchPromises);
-        // 过滤有效文章，存入全局数组
-        const validArts = batchResult.filter(item => item !== null);
-        allArticles = allArticles.concat(validArts);
-        
-        // 加载完一批，立即渲染页面（携带当前搜索词）
-        renderBlog(currentSearchKey);
-        
-        // 下一批起始位置
-        startIdx = endIdx + 1;
-    }
-    // 全部加载完成后清空加载提示
-    console.log(`流式加载完成，共读取到 ${allArticles.length} 篇有效文章`);
-}
-
-// 构建多级分类树 {一级分类:{二级分类:[文章]}}
+// 构建多级分类树
 function buildCategoryTree(articles) {
     const tree = {};
     articles.forEach(art => {
@@ -309,11 +286,9 @@ function buildCategoryTree(articles) {
 
         if (!tree[topCate]) tree[topCate] = {};
         if (!subCate) {
-            // 无下级分类，存入根级
             if (!tree[topCate]["_root"]) tree[topCate]["_root"] = [];
             tree[topCate]["_root"].push(art);
         } else {
-            // 存在子分类
             if (!tree[topCate][subCate]) tree[topCate][subCate] = [];
             tree[topCate][subCate].push(art);
         }
@@ -329,12 +304,13 @@ window.toggleSubCate = function(id) {
     btn.innerText = subList.classList.contains("show") ? "−" : "+";
 }
 
-// 渲染页面（搜索过滤 + 多级分类侧边栏）
-function renderBlog(searchKey = "") {
+// 渲染完整页面（搜索时使用，全量重绘）
+function renderFullPage(searchKey = "") {
     currentSearchKey = searchKey.trim();
+    isSearching = !!currentSearchKey;
     container.innerHTML = "";
     navBox.innerHTML = "";
-    // 过滤匹配搜索
+
     const filterArts = allArticles.filter(art => {
         const k = currentSearchKey.toLowerCase();
         const matchTitle = art.title.toLowerCase().includes(k);
@@ -349,7 +325,7 @@ function renderBlog(searchKey = "") {
     const cateTree = buildCategoryTree(filterArts);
     const topCateList = Object.keys(cateTree);
 
-    // 生成侧边多级分类导航
+    // 侧边导航
     topCateList.forEach(topName => {
         const cateData = cateTree[topName];
         const subKeys = Object.keys(cateData).filter(k => k !== "_root");
@@ -359,33 +335,29 @@ function renderBlog(searchKey = "") {
         const subListId = `subcate-${encodeURIComponent(topName)}`;
 
         if (hasSub) {
-            // 存在子分类：带展开按钮
             navHtml += `
                 <span class="cate-toggle-btn" data-target="${subListId}" onclick="toggleSubCate('${subListId}')">+</span>
                 <a href="#cate-${encodeURIComponent(topName)}" style="display:inline-block;width:calc(100% - 24px)">${topName}</a>
                 <ul id="${subListId}" class="sub-cate-list">
             `;
-            // 渲染子分类
             subKeys.forEach(subName => {
                 navHtml += `<li><a href="#cate-${encodeURIComponent(topName)}/${encodeURIComponent(subName)}">${subName}</a></li>`;
             });
             navHtml += `</ul>`;
         } else {
-            // 无下级分类，仅普通链接
             navHtml += `<a href="#cate-${encodeURIComponent(topName)}">${topName}</a>`;
         }
         li.innerHTML = navHtml;
         navBox.appendChild(li);
     });
 
-    // 渲染主内容区，按一级分类分块，子分类内嵌
+    // 主内容区块
     topCateList.forEach(topName => {
         const cateData = cateTree[topName];
         const blockId = `cate-${encodeURIComponent(topName)}`;
         let blockHtml = `<section class="category-block" id="${blockId}">
             <h2 class="category-title">${topName}</h2>`;
         
-        // 本级无细分的文章
         if (cateData["_root"] && cateData["_root"].length > 0) {
             blockHtml += `<div class="article-wrap">`;
             cateData["_root"].forEach(art => {
@@ -402,7 +374,6 @@ function renderBlog(searchKey = "") {
             blockHtml += `</div>`;
         }
 
-        // 渲染子分类区块
         const subKeys = Object.keys(cateData).filter(k => k !== "_root");
         subKeys.forEach(subName => {
             const subArts = cateData[subName];
@@ -427,15 +398,147 @@ function renderBlog(searchKey = "") {
     });
 }
 
-// 跳转文章详情页（仅点击卡片才加载详情，无预加载）
+// 增量追加新一批文章（无搜索时，5个一批慢慢追加渲染）
+function appendBatchArticles(newBatchArts) {
+    // 搜索状态下不增量，直接走全量重绘
+    if (isSearching) {
+        renderFullPage(currentSearchKey);
+        return;
+    }
+    // 移除初始加载提示
+    const loadingTip = container.querySelector(".loading");
+    if (loadingTip) loadingTip.remove();
+
+    // 用当前全部文章重建分类树（包含新批次）
+    const cateTree = buildCategoryTree(allArticles);
+    const topCateList = Object.keys(cateTree);
+
+    // 更新侧边栏（全量刷新侧边分类，保证新增分类出现）
+    navBox.innerHTML = "";
+    topCateList.forEach(topName => {
+        const cateData = cateTree[topName];
+        const subKeys = Object.keys(cateData).filter(k => k !== "_root");
+        const hasSub = subKeys.length > 0;
+        const li = document.createElement("li");
+        let navHtml = "";
+        const subListId = `subcate-${encodeURIComponent(topName)}`;
+        if (hasSub) {
+            navHtml += `
+                <span class="cate-toggle-btn" data-target="${subListId}" onclick="toggleSubCate('${subListId}')">+</span>
+                <a href="#cate-${encodeURIComponent(topName)}" style="display:inline-block;width:calc(100% - 24px)">${topName}</a>
+                <ul id="${subListId}" class="sub-cate-list">
+            `;
+            subKeys.forEach(subName => {
+                navHtml += `<li><a href="#cate-${encodeURIComponent(topName)}/${encodeURIComponent(subName)}">${subName}</a></li>`;
+            });
+            navHtml += `</ul>`;
+        } else {
+            navHtml += `<a href="#cate-${encodeURIComponent(topName)}">${topName}</a>`;
+        }
+        li.innerHTML = navHtml;
+        navBox.appendChild(li);
+    });
+
+    // 只把新批次文章追加到对应分类区块
+    newBatchArts.forEach(art => {
+        const paths = art.category.split("/").map(p => p.trim()).filter(Boolean);
+        const topName = paths[0];
+        const subName = paths.length > 1 ? paths.slice(1).join("/") : null;
+        const blockId = `cate-${encodeURIComponent(topName)}`;
+        let blockEl = document.getElementById(blockId);
+
+        // 如果一级分类区块不存在，新建区块
+        if (!blockEl) {
+            blockEl = document.createElement("section");
+            blockEl.className = "category-block";
+            blockEl.id = blockId;
+            blockEl.innerHTML = `<h2 class="category-title">${topName}</h2>`;
+            container.appendChild(blockEl);
+        }
+
+        let targetWrap;
+        if (!subName) {
+            // 无细分，找一级下第一个 article-wrap
+            targetWrap = blockEl.querySelector(".article-wrap");
+            if (!targetWrap) {
+                targetWrap = document.createElement("div");
+                targetWrap.className = "article-wrap";
+                blockEl.appendChild(targetWrap);
+            }
+        } else {
+            // 有细分，找对应子标题下方的 article-wrap
+            const subId = `${blockId}/${encodeURIComponent(subName)}`;
+            let subTitle = document.getElementById(subId);
+            if (!subTitle) {
+                subTitle = document.createElement("h3");
+                subTitle.style = "margin:24px 0 12px;font-size:17px;color:#444;";
+                subTitle.id = subId;
+                subTitle.textContent = `└ ${subName}`;
+                blockEl.appendChild(subTitle);
+            }
+            targetWrap = subTitle.nextElementSibling;
+            if (!targetWrap || !targetWrap.classList.contains("article-wrap")) {
+                targetWrap = document.createElement("div");
+                targetWrap.className = "article-wrap";
+                subTitle.after(targetWrap);
+            }
+        }
+        // 插入单篇卡片
+        const tagHtml = art.label.map(t => `<span>${t}</span>`).join("");
+        const cardHtml = `<div class="article-card" onclick="openArticle('${art.folder}')">
+            <h3>${art.title}</h3>
+            <p class="article-desc">${art.description}</p>
+            <div class="article-meta">
+                <span>${art.time}</span>
+                <div class="tag-list">${tagHtml}</div>
+            </div>
+        </div>`;
+        targetWrap.insertAdjacentHTML("beforeend", cardHtml);
+    });
+}
+
+// 分批流式加载，每批5个加载完增量渲染
+async function streamLoadArticles() {
+    let startIdx = 1;
+    while (startIdx <= MAX_FOLDER_NUM) {
+        const endIdx = Math.min(startIdx + BATCH_SIZE - 1, MAX_FOLDER_NUM);
+        // 更新加载提示
+        const loadingTip = container.querySelector(".loading");
+        if (loadingTip) loadingTip.textContent = `正在加载第 ${startIdx}~${endIdx} 号文章文件夹...`;
+
+        const batchPromises = [];
+        for (let i = startIdx; i <= endIdx; i++) {
+            batchPromises.push(loadArticle(i));
+        }
+        const batchResult = await Promise.all(batchPromises);
+        const validArts = batchResult.filter(item => item !== null);
+        if (validArts.length > 0) {
+            allArticles = allArticles.concat(validArts);
+            // 增量追加本批5篇到页面，标题简介实时出现
+            appendBatchArticles(validArts);
+        }
+        startIdx = endIdx + 1;
+    }
+    // 全部加载完成移除加载文字
+    const loadingTip = container.querySelector(".loading");
+    if (loadingTip) loadingTip.remove();
+    console.log(`流式加载完成，共读取到 ${allArticles.length} 篇有效文章`);
+    if(allArticles.length === 0){
+        container.innerHTML = `<div class="empty-tip">未读取到任何文章，请检查BASE_PATH路径或文件夹是否上传完整</div>`;
+    }
+}
+
+// 跳转文章详情页
 function openArticle(folder) {
     window.location.href = `${BASE_PATH}/${folder}/index.html`;
 }
 
-// 搜索监听
-searchInput.addEventListener("input", e => renderBlog(e.target.value));
+// 搜索输入监听：走全量重绘
+searchInput.addEventListener("input", e => {
+    renderFullPage(e.target.value.trim());
+});
 
-// 启动流式分批加载
+// 启动流式加载
 streamLoadArticles();
 </script>
 </body>
