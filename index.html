@@ -33,6 +33,7 @@
         .blog-head h1 {
             font-size: 26px;
             font-weight: 600;
+            line-height: 1.4;
         }
         #search-input {
             width: 320px;
@@ -183,37 +184,36 @@
 <body>
     <header>
         <div class="blog-head">
-            <h1>To see the world, </h1>
-             </h1>things dangerous to come to,</h1>
-             </h1> To see behind walls, to draw closer,</h1>
-              </h1>To find each other and to feel.</h1>
-              </h1> That is the purpose of LIFE.</h1>
+            <h1>
+To see the world, things dangerous to come to,
+To see behind walls, to draw closer,
+To find each other and to feel.
+That is the purpose of LIFE.
+            </h1>
             <input type="text" id="search-input" placeholder="搜索标题 / 标签...">
         </div>
     </header>
-
     <div class="main-wrap">
         <!-- 左侧文章内容区 -->
         <section class="article-main" id="blog-container">
-            <div class="loading">正在加载文章...</div>
+            <div class="loading">正在分批加载文章...</div>
         </section>
-
         <!-- 右侧：分类板块导航栏 -->
         <aside class="cate-sidebar">
-            <h3>       分类</h3>
+            <h3>分类</h3>
             <ul class="cate-nav-list" id="cate-nav-box"></ul>
         </aside>
     </div>
-
     <footer>
         © 2026 个人静态博客 | GitHub Pages 部署
     </footer>
-
 <script>
 // ========== 配置项（根据你的仓库修改）==========
-const BASE_PATH = "/life_blog"; // 仓库根目录部署填空；如果是username.github.io/blog 则填 "/blog"
+const BASE_PATH = ""; // 仓库根目录部署填空；如果是username.github.io/blog 则填 "/blog"
 const MAX_FOLDER_NUM = 99; // 最多扫描99个数字文件夹(1~99)
+const BATCH_SIZE = 5; // 每批加载5个文件夹，可自行修改
 let allArticles = []; // 全局存储所有文章数据
+let currentSearchKey = ""; // 缓存当前搜索关键词
 const container = document.getElementById("blog-container");
 const searchInput = document.getElementById("search-input");
 const navBox = document.getElementById("cate-nav-box");
@@ -250,24 +250,43 @@ async function loadArticle(folderName) {
     }
 }
 
-// 批量扫描所有数字文件夹
-async function scanAllArticles() {
-    const list = [];
-    for (let i = 1; i <= MAX_FOLDER_NUM; i++) {
-        const art = await loadArticle(i);
-        if (art) list.push(art);
+// 分批流式加载：每批BATCH_SIZE个，加载一批立刻渲染页面
+async function streamLoadArticles() {
+    let startIdx = 1;
+    // 循环分批加载，直到超过最大文件夹数量
+    while (startIdx <= MAX_FOLDER_NUM) {
+        const endIdx = Math.min(startIdx + BATCH_SIZE - 1, MAX_FOLDER_NUM);
+        // 更新加载提示
+        container.innerHTML = `<div class="loading">正在加载第 ${startIdx}~${endIdx} 号文章文件夹...</div>`;
+        
+        // 串行加载当前批次5个文件夹（避免并发大量请求）
+        const batchPromises = [];
+        for (let i = startIdx; i <= endIdx; i++) {
+            batchPromises.push(loadArticle(i));
+        }
+        const batchResult = await Promise.all(batchPromises);
+        // 过滤有效文章，存入全局数组
+        const validArts = batchResult.filter(item => item !== null);
+        allArticles = allArticles.concat(validArts);
+        
+        // 加载完一批，立即渲染页面（携带当前搜索词）
+        renderBlog(currentSearchKey);
+        
+        // 下一批起始位置
+        startIdx = endIdx + 1;
     }
-    allArticles = list;
-    renderBlog();
+    // 全部加载完成后清空加载提示
+    console.log(`流式加载完成，共读取到 ${allArticles.length} 篇有效文章`);
 }
 
 // 渲染页面（搜索过滤）
 function renderBlog(searchKey = "") {
+    currentSearchKey = searchKey.trim();
     container.innerHTML = "";
     navBox.innerHTML = "";
     // 过滤匹配搜索
     const filterArts = allArticles.filter(art => {
-        const k = searchKey.toLowerCase();
+        const k = currentSearchKey.toLowerCase();
         const matchTitle = art.title.toLowerCase().includes(k);
         const matchLabel = art.label.some(tag => tag.toLowerCase().includes(k));
         return matchTitle || matchLabel;
@@ -311,16 +330,16 @@ function renderBlog(searchKey = "") {
     });
 }
 
-// 跳转文章详情页
+// 跳转文章详情页（仅点击卡片才加载详情，无预加载）
 function openArticle(folder) {
     window.location.href = `${BASE_PATH}/${folder}/index.html`;
 }
 
 // 搜索监听
-searchInput.addEventListener("input", e => renderBlog(e.target.value.trim()));
+searchInput.addEventListener("input", e => renderBlog(e.target.value));
 
-// 启动扫描加载文章
-scanAllArticles();
+// 启动流式分批加载
+streamLoadArticles();
 </script>
 </body>
 </html>
