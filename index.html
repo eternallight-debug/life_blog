@@ -387,7 +387,7 @@ function renderNav() {
         return;
     }
     const prevPath = currentPath.slice(0, -1);
-    let navHtml = `<div class="back-btn" data-path='${JSON.stringify(prevPath)}'>← 返回上一级</div>`;
+    let navHtml = `<div class="back-btn" data-path='${JSON.stringify(prevPath)}'>←</div>`;
     const subList = getSubCateUnderPath(currentPath);
     subList.forEach(name => {
         const newPath = [...currentPath, name];
