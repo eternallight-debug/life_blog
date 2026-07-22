@@ -78,7 +78,7 @@
             flex-wrap: wrap;
             margin-bottom: 24px;
         }
-        /* 3. 层级导航容器（进入层级后显示返回+子标签） */
+        /* 3. 层级导航容器（进入层级后显示返回+子分类） */
         .layer-nav-wrap {
             display: flex;
             gap: 10px;
@@ -122,7 +122,7 @@
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 20px;
         }
-        /* 单篇文章卡片 */
+        /* 单篇文章 */
         .article-card {
             background: #fff;
             padding: 20px;
@@ -154,6 +154,7 @@
             font-size: 12px;
             color: #888;
         }
+        /* 标签样式全部保留但卡片不再渲染 */
         .tag-list span {
             background: #eef5ff;
             color: #409eff;
@@ -193,7 +194,7 @@
 <body>
     <header>
         <div class="blog-head">
-            <input type="text" id="search-input" placeholder="搜索标题 / 标签...">
+            <input type="text" id="search-input" placeholder="搜索标题 / 简介 / 标签 / 分类">
         </div>
     </header>
     <!-- 资源管理器路径面包屑 -->
@@ -203,7 +204,7 @@
     <!-- 首页一级标签容器 -->
     <div class="level1-tabs" id="level1TabBox"></div>
     <!-- 进入层级后：返回按钮+子分类容器 -->
-    <div class="layer-nav-wrap" id="layerNavBox"></div>
+    <div class="layerNavBox" id="layerNavBox"></div>
     <!-- 文章主内容区 -->
     <section class="article-main" id="blog-container">
         <div class="loading">正在分批加载文章...</div>
@@ -218,7 +219,7 @@ const MAX_FOLDER_NUM = 99;
 const BATCH_SIZE = 5;
 // 全局数据
 let allArticles = [];
-let currentPath = []; // 
+let currentPath = []; // []=推荐首页，["物理"]=一级，["物理","电磁"]=二级
 let currentSearchKey = "";
 // DOM容器
 const container = document.getElementById("blog-container");
@@ -226,10 +227,17 @@ const searchInput = document.getElementById("search-input");
 const level1TabBox = document.getElementById("level1TabBox");
 const layerNavBox = document.getElementById("layerNavBox");
 const pathBar = document.getElementById("pathBar");
-// 1. 解析config.txt
+
+// 1. 解析config.txt【修改：支持多行category，一行一个分类】
 function parseConfig(text) {
     const lines = text.trim().split(/\r?\n/);
-    const data = { title: "", description: "", time: "", label: [], category: "" };
+    const data = {
+        title: "",
+        description: "",
+        time: "",
+        label: [],
+        catePaths: [] // 存储多条分类路径数组
+    };
     lines.forEach(line => {
         if (!line.includes(":")) return;
         const [key, val] = line.split(":", 2);
@@ -239,11 +247,17 @@ function parseConfig(text) {
         if (k === "description") data.description = v;
         if (k === "time") data.time = v;
         if (k === "label") data.label = v.split(",").map(s => s.trim()).filter(Boolean);
-        if (k === "category") data.category = v;
+        // 支持换行多条 category
+        if (k === "category" && v) {
+            const singlePath = v.split("/").map(p => p.trim()).filter(Boolean);
+            data.catePaths.push(singlePath);
+        }
     });
-    data.catePath = data.category.split("/").map(p => p.trim()).filter(Boolean);
+    // 兼容旧版单category配置
+    if (data.catePaths.length === 0) data.catePaths = [[]];
     return data;
 }
+
 // 2. 读取单篇文章
 async function loadArticle(folderName) {
     try {
@@ -258,6 +272,7 @@ async function loadArticle(folderName) {
         return null;
     }
 }
+
 // 3. 流式分批加载所有文章
 async function streamLoadArticles() {
     let startIdx = 1;
@@ -279,46 +294,78 @@ async function streamLoadArticles() {
     if (loadingTip) loadingTip.remove();
     if (allArticles.length === 0) container.innerHTML = `<div class="empty-tip">未读取到任何文章</div>`;
 }
-// 4. 根据路径+搜索筛选文章
+
+// 判断一条分类路径是否属于当前路径及下级
+function isPathMatchTarget(catePathArr, targetPathArr) {
+    // 推荐首页：所有带推荐标签都匹配
+    if (targetPathArr.length === 0) return true;
+    // 分类路径长度必须 >= 当前层级，且前缀完全一致
+    if (catePathArr.length < targetPathArr.length) return false;
+    for (let i = 0; i < targetPathArr.length; i++) {
+        if (catePathArr[i] !== targetPathArr[i]) return false;
+    }
+    return true;
+}
+
+// 4. 根据路径+搜索筛选文章【修改：搜索包含分类名称，仅保留当前路径下文章】
 function filterArticleByPath(artList, pathArr, search = "") {
     let list = [...artList];
-    if (search) {
-        const s = search.toLowerCase();
-        list = list.filter(art => art.title.toLowerCase().includes(s) || art.label.some(tag => tag.toLowerCase().includes(s)));
-    }
-    if (pathArr.length === 0) return list.filter(art => art.label.includes("推荐"));
+    // 第一步：过滤仅保留当前层级及下级的文章（多条分类任一匹配即保留）
+    list = list.filter(art => {
+        return art.catePaths.some(catePath => isPathMatchTarget(catePath, pathArr));
+    });
+    // 第二步：搜索过滤
+    if (!search.trim()) return list;
+    const s = search.toLowerCase();
     return list.filter(art => {
-        if (art.catePath.length < pathArr.length) return false;
-        for (let i = 0; i < pathArr.length; i++) if (art.catePath[i] !== pathArr[i]) return false;
-        return true;
+        // 匹配标题、简介、标签
+        const matchTitle = art.title.toLowerCase().includes(s);
+        const matchDesc = art.description.toLowerCase().includes(s);
+        const matchLabel = art.label.some(tag => tag.toLowerCase().includes(s));
+        // 匹配所有分类层级文字
+        let matchCate = false;
+        for (const p of art.catePaths) {
+            if (p.some(name => name.toLowerCase().includes(s))) {
+                matchCate = true;
+                break;
+            }
+        }
+        return matchTitle || matchDesc || matchLabel || matchCate;
     });
 }
-// 5. 获取全部一级分类
+
+// 5. 获取全部一级分类（去重）
 function getAllLevel1Cate() {
     const set = new Set();
-    allArticles.forEach(art => { if (art.catePath[0]) set.add(art.catePath[0]); });
-    return Array.from(set);
-}
-// 6. 获取当前层级下一层子分类
-function getSubCateUnderPath(pathArr) {
-    const set = new Set();
-    const targetDepth = pathArr.length;
     allArticles.forEach(art => {
-        if (art.catePath.length > targetDepth) {
-            let match = true;
-            for (let i = 0; i < pathArr.length; i++) if (art.catePath[i] !== pathArr[i]) match = false;
-            if (match) set.add(art.catePath[targetDepth]);
-        }
+        art.catePaths.forEach(path => {
+            if (path[0]) set.add(path[0]);
+        });
     });
     return Array.from(set);
 }
-// 7. 面包屑路径
+
+// 6. 获取当前层级下一层所有子分类（去重）
+function getSubCateUnderPath(pathArr) {
+    const set = new Set();
+    const targetDepth = path.length;
+    allArticles.forEach(art => {
+        art.catePaths.forEach(catePath => {
+            if (catePath.length > targetDepth && isPathMatchTarget(catePath, pathArr)) {
+                set.add(catePath[targetDepth]);
+            }
+        });
+    });
+    return Array.from(set);
+}
+
+// 7. 面包屑路径渲染
 function renderPathBar() {
     if (currentPath.length === 0) {
-        pathBar.innerHTML = `<span class="path-tip">当前位置：推荐</span>`;
+        path.innerHTML = `<span class="path-tip">当前位置：推荐首页</span>`;
         return;
     }
-    let html = `<span class="path-item" data-path="[]">推荐</span>`;
+    let html = `<span class="path-item" data-path="[]">推荐首页</span>`;
     let tempPath = [];
     currentPath.forEach(name => {
         tempPath.push(name);
@@ -329,6 +376,7 @@ function renderPathBar() {
         el.onclick = () => { currentPath = JSON.parse(el.dataset.path); refreshAllUI(); };
     });
 }
+
 // 8. 渲染导航（区分首页/进入层级两种模式）
 function renderNav() {
     level1TabBox.innerHTML = "";
@@ -347,9 +395,9 @@ function renderNav() {
         });
         return;
     }
-    // 进入任意层级：隐藏一级，显示返回按钮 + 下一层子分类
-    const prevPath = currentPath.slice(0, -1); // 上一级路径
-    let navHtml = `<div class="back-btn" data-path='${JSON.stringify(prevPath)}'>←</div>`;
+    // 进入任意层级：显示返回按钮 + 下一层子分类
+    const prevPath = currentPath.slice(0, -1);
+    let navHtml = `<div class="back-btn" data-path='${JSON.stringify(prevPath)}'>← 返回上一级</div>`;
     const subList = getSubCateUnderPath(currentPath);
     subList.forEach(name => {
         const newPath = [...currentPath, name];
@@ -360,7 +408,8 @@ function renderNav() {
         el.onclick = () => { currentPath = JSON.parse(el.dataset.path); refreshAllUI(); };
     });
 }
-// 9. 渲染文章卡片
+
+// 9. 渲染文章卡片【修改：移除标签渲染】
 function renderArticleCards() {
     container.innerHTML = "";
     const filterArts = filterArticleByPath(allArticles, currentPath, currentSearchKey);
@@ -373,9 +422,9 @@ function renderArticleCards() {
     filterArts.forEach(art => wrap.appendChild(makeCard(art)));
     container.appendChild(wrap);
 }
-// 生成单卡片
+
+// 生成单卡片【改动：删除tag-list标签区域】
 function makeCard(art) {
-    const tagHtml = art.label.map(t => `<span>${t}</span>`).join("");
     const div = document.createElement("div");
     div.className = "article-card";
     div.onclick = () => window.location.href = `${BASE_PATH}/${art.folder}/index.html`;
@@ -384,23 +433,25 @@ function makeCard(art) {
         <p class="article-desc">${art.description}</p>
         <div class="article-meta">
             <span>${art.time}</span>
-            <div class="tag-list">${tagHtml}</div>
         </div>
     `;
     return div;
 }
+
 // 统一刷新全部界面
 function refreshAllUI() {
     renderPathBar();
     renderNav();
     renderArticleCards();
 }
+
 // 搜索监听
 searchInput.addEventListener("input", e => {
     currentSearchKey = e.target.value.trim();
     renderArticleCards();
 });
-// 初始化
+
+// 页面初始化
 window.onload = async () => {
     await streamLoadArticles();
     refreshAllUI();
