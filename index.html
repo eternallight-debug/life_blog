@@ -218,7 +218,7 @@ const MAX_FOLDER_NUM = 99;
 const BATCH_SIZE = 5;
 // 全局数据
 let allArticles = [];
-let currentPath = []; // []推荐首页，["物理"]一级，["物理","电磁"]二级
+let currentPath = []; // []=推荐首页，["物理"]=一级，["物理","电磁"]=二级
 let currentSearchKey = "";
 // DOM容器
 const container = document.getElementById("blog-container");
@@ -227,7 +227,7 @@ const level1TabBox = document.getElementById("level1TabBox");
 const layerNavBox = document.getElementById("layerNavBox");
 const pathBar = document.getElementById("pathBar");
 
-// 【改动2】解析config：支持多行category，存储多分类数组
+// 【改动2】解析config：支持多行category
 function parseConfig(text) {
     const lines = text.trim().split(/\r?\n/);
     const data = { title: "", description: "", time: "", label: [], catePaths: [] };
@@ -240,14 +240,12 @@ function parseConfig(text) {
         if (k === "description") data.description = v;
         if (k === "time") data.time = v;
         if (k === "label") data.label = v.split(",").map(s => s.trim()).filter(Boolean);
-        // 支持多行多个category
         if (k === "category" && v) {
-            const pathArr = v.split("/").map(p => p.trim()).filter(Boolean);
-            data.catePaths.push(pathArr);
+            const singlePath = v.split("/").map(p => p.trim()).filter(Boolean);
+            data.catePaths.push(singlePath);
         }
     });
-    // 兼容旧单分类格式
-    if(data.catePaths.length === 0) data.catePaths = [[]];
+    if (data.catePaths.length === 0) data.catePaths = [[]];
     return data;
 }
 
@@ -266,7 +264,7 @@ async function loadArticle(folderName) {
     }
 }
 
-// 流式分批加载（完全原始逻辑无修改）
+// 流式分批加载
 async function streamLoadArticles() {
     let startIdx = 1;
     while (startIdx <= MAX_FOLDER_NUM) {
@@ -288,33 +286,38 @@ async function streamLoadArticles() {
     if (allArticles.length === 0) container.innerHTML = `<div class="empty-tip">未读取到任何文章</div>`;
 }
 
-// 判断分类路径是否属于当前层级下级
-function isPathChild(artCatePath, targetPath) {
-    if(targetPath.length === 0) return true;
-    if(artCatePath.length < targetPath.length) return false;
-    for(let i=0;i<targetPath.length;i++){
-        if(artCatePath[i] !== targetPath[i]) return false;
+// 判断一条分类路径是否属于当前路径下级
+function isPathMatchTarget(catePathArr, targetPathArr) {
+    if (targetPathArr.length === 0) return true;
+    if (catePathArr.length < targetPathArr.length) return false;
+    for (let i = 0; i < targetPathArr.length; i++) {
+        if (catePathArr[i] !== targetPathArr[i]) return false;
     }
     return true;
 }
 
-// 【改动3】筛选逻辑：搜索支持分类，仅保留当前路径下级
+// 【改动3】筛选逻辑 + 新增：推荐页只保留带“推荐”标签文章
 function filterArticleByPath(artList, pathArr, search = "") {
     let list = [...artList];
-    // 层级过滤：只保留当前路径及下级文章（多分类任意一条匹配即可）
-    list = list.filter(art => {
-        return art.catePaths.some(p => isPathChild(p, pathArr));
-    });
-    if (!search) return list;
+    // 推荐首页专属过滤：只保留label包含“推荐”的文章
+    if (pathArr.length === 0) {
+        list = list.filter(art => art.label.includes("推荐"));
+    } else {
+        // 非推荐页：只保留当前层级及下级文章
+        list = list.filter(art => {
+            return art.catePaths.some(catePath => isPathMatchTarget(catePath, pathArr));
+        });
+    }
+    // 搜索过滤
+    if (!search.trim()) return list;
     const s = search.toLowerCase();
     return list.filter(art => {
         const matchTitle = art.title.toLowerCase().includes(s);
         const matchDesc = art.description.toLowerCase().includes(s);
         const matchLabel = art.label.some(tag => tag.toLowerCase().includes(s));
-        // 匹配所有分类文字
         let matchCate = false;
-        for(const p of art.catePaths){
-            if(p.some(name => name.toLowerCase().includes(s))){
+        for (const p of art.catePaths) {
+            if (p.some(name => name.toLowerCase().includes(s))) {
                 matchCate = true;
                 break;
             }
@@ -323,24 +326,24 @@ function filterArticleByPath(artList, pathArr, search = "") {
     });
 }
 
-// 获取全部一级分类（多分类去重）
+// 获取全部一级分类（去重）
 function getAllLevel1Cate() {
     const set = new Set();
     allArticles.forEach(art => {
         art.catePaths.forEach(path => {
-            if(path[0]) set.add(path[0]);
+            if (path[0]) set.add(path[0]);
         });
     });
     return Array.from(set);
 }
 
-// 获取当前层级下一层子分类
+// 获取当前层级下一层所有子分类
 function getSubCateUnderPath(pathArr) {
     const set = new Set();
     const targetDepth = pathArr.length;
     allArticles.forEach(art => {
         art.catePaths.forEach(catePath => {
-            if(catePath.length > targetDepth && isPathChild(catePath, pathArr)){
+            if (catePath.length > targetDepth && isPathMatchTarget(catePath, pathArr)) {
                 set.add(catePath[targetDepth]);
             }
         });
@@ -348,7 +351,7 @@ function getSubCateUnderPath(pathArr) {
     return Array.from(set);
 }
 
-// 面包屑渲染（原始代码不变）
+// 面包屑路径渲染
 function renderPathBar() {
     if (currentPath.length === 0) {
         pathBar.innerHTML = `<span class="path-tip">当前位置：推荐首页</span>`;
@@ -366,11 +369,10 @@ function renderPathBar() {
     });
 }
 
-// 导航渲染（原始逻辑不变）
+// 渲染导航（首页/层级两种模式）
 function renderNav() {
     level1TabBox.innerHTML = "";
     layerNavBox.innerHTML = "";
-    // 首页显示全部一级
     if (currentPath.length === 0) {
         const level1List = getAllLevel1Cate();
         let html = `<div class="tab-item active" data-path="[]">推荐</div>`;
@@ -384,7 +386,6 @@ function renderNav() {
         });
         return;
     }
-    // 进入层级：返回按钮+子分类
     const prevPath = currentPath.slice(0, -1);
     let navHtml = `<div class="back-btn" data-path='${JSON.stringify(prevPath)}'>← 返回上一级</div>`;
     const subList = getSubCateUnderPath(currentPath);
@@ -412,7 +413,7 @@ function renderArticleCards() {
     container.appendChild(wrap);
 }
 
-// 【改动1】卡片移除标签渲染，只保留标题简介时间
+// 【改动1】卡片不渲染标签
 function makeCard(art) {
     const div = document.createElement("div");
     div.className = "article-card";
@@ -427,20 +428,20 @@ function makeCard(art) {
     return div;
 }
 
-// 统一刷新界面（原始逻辑不变）
+// 统一刷新
 function refreshAllUI() {
     renderPathBar();
     renderNav();
     renderArticleCards();
 }
 
-// 搜索监听（原始不变）
+// 搜索监听
 searchInput.addEventListener("input", e => {
     currentSearchKey = e.target.value.trim();
     renderArticleCards();
 });
 
-// 初始化加载
+// 初始化
 window.onload = async () => {
     await streamLoadArticles();
     refreshAllUI();
