@@ -1,795 +1,410 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
-    <title>笔记</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>life</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: system-ui, -apple-system, "Microsoft Yahei", sans-serif;
         }
         body {
-            font-family: -apple-system, "Helvetica Neue", "PingFang SC", sans-serif;
-            background: #f5f0eb;
-            color: #2d2d2d;
-            padding: 14px 14px 30px;
+            background: #f8f9fa;
+            color: #222;
             line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }
-        .container {
-            max-width: 880px;
+            max-width: 1240px;
             margin: 0 auto;
+            padding: 24px;
         }
-
-        .tabs {
+        header {
+            margin-bottom: 24px;
+        }
+        .blog-head {
             display: flex;
-            gap: 0;
+            justify-content: flex-end;
+            align-items: center;
             margin-bottom: 20px;
-            border-bottom: 2px solid #e0d6ce;
-            background: transparent;
+            flex-wrap: wrap;
+            gap: 16px;
         }
-        .tabs button {
-            padding: 12px 20px;
-            font-size: 1rem;
-            font-weight: 600;
-            background: transparent;
-            border: none;
-            border-bottom: 3px solid transparent;
-            cursor: pointer;
-            color: #8a7a6a;
-            transition: all 0.2s;
-            flex: 0 0 auto;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .tabs button:hover {
-            color: #4a3520;
-        }
-        .tabs button.active {
-            color: #4a3520;
-            border-bottom-color: #d48c5c;
-        }
-
-        .search-box {
-            margin-bottom: 18px;
-            display: none;
-        }
-        .search-box.visible {
-            display: block;
-        }
-        .search-box input {
-            width: 100%;
-            padding: 12px 18px;
-            font-size: 1rem;
-            border: 2px solid #e0d6ce;
-            border-radius: 40px;
-            background: white;
+        #search-input {
+            width: 320px;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
             outline: none;
-            transition: border 0.2s, box-shadow 0.2s;
-            appearance: none;
+            transition: 0.2s;
         }
-        .search-box input:focus {
-            border-color: #d48c5c;
-            box-shadow: 0 0 0 3px rgba(212, 140, 92, 0.15);
+        #search-input:focus {
+            border-color: #409eff;
+            box-shadow: 0 0 0 3px rgba(64, 158, 0.15);
         }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 18px;
-        }
-        @media (min-width: 640px) {
-            .grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* ===== 菜谱卡片 ===== */
-        .card {
-            background: #ffffff;
-            border-radius: 18px;
-            padding: 20px 22px 22px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
-            transition: transform 0.2s ease, box-shadow 0.25s ease;
-            border: 1px solid rgba(224, 214, 206, 0.4);
-            cursor: pointer;
+        /* 1. 资源管理器面包屑路径栏 */
+        .path-bar {
+            background: #fff;
+            padding: 12px 16px;
+            border-radius: 10px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+            margin-bottom: 16px;
             display: flex;
-            flex-direction: column;
-            position: relative;
-            -webkit-tap-highlight-color: transparent;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
         }
-        .card:active {
-            transform: scale(0.98);
+        .path-item {
+            color: #409eff;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
         }
-        @media (hover: hover) {
-            .card:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-                border-color: #d48c5c;
-            }
+        .path-item:hover {
+            background: #eef5ff;
         }
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 5px;
-            height: 100%;
-            background: #d48c5c;
-            border-radius: 18px 0 0 18px;
-            opacity: 0.7;
+        .path-sep {
+            color: #aaa;
         }
-
-        .card .type-badge {
-            display: inline-block;
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 4px 14px;
-            border-radius: 30px;
-            background: #f0ebe4;
-            color: #6a5a4a;
-            align-self: flex-start;
-            margin-bottom: 10px;
-            letter-spacing: 0.4px;
-            text-transform: uppercase;
-            border: 1px solid rgba(0,0,0,0.04);
+        .path-tip {
+            color: #999;
+            font-size:14px;
         }
-        .card .title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #2d2d2d;
-            margin-bottom: 4px;
-            line-height: 1.3;
+        /* 2. 一级分类横向标签栏（仅首页显示全部一级） */
+        .level1-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
         }
-        .card .date {
-            font-size: 0.8rem;
-            color: #b0a090;
+        /* 3. 层级导航容器（进入层级后显示返回+子标签） */
+        .layer-nav-wrap {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            align-items: center;
+        }
+        /* 统一标签基础样式：无蓝色、纯白底色 */
+        .tab-item, .back-btn, .sub-tab-item {
+            padding: 8px 18px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s ease;
+            color: #222;
+            text-shadow: none;
+        }
+        .sub-tab-item {
+            padding: 6px 14px;
+        }
+        .back-btn {
+            color: #409eff;
+            font-weight: 500;
+        }
+        /* hover 仅阴影，不变背景 */
+        .tab-item:hover, .back-btn:hover, .sub-tab-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .tab-item.active, .sub-tab-item.active {
+            border-color: #409eff;
+            color: #409eff;
+        }
+        /* 文章内容主区域 */
+        .article-main {
+            width:100%;
+        }
+        /* 文章卡片容器 */
+        .article-wrap {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+        /* 单篇文章卡片 */
+        .article-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+            transition: 0.2s ease;
+            cursor: pointer;
+        }
+        .article-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .article-card h3 {
+            font-size: 17px;
             margin-bottom: 8px;
-            letter-spacing: 0.2px;
         }
-        .card .summary {
-            font-size: 0.95rem;
-            color: #5a4a3a;
+        .article-desc {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 12px;
             display: -webkit-box;
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            line-height: 1.5;
-            margin-top: 2px;
         }
-
-        /* ===== 随笔列表项 ===== */
-        .entry {
-            padding: 14px 4px;
-            border-bottom: 1px solid #e8e0d8;
-            cursor: pointer;
-            transition: background 0.15s;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .entry:active {
-            background: rgba(0,0,0,0.02);
-        }
-        @media (hover: hover) {
-            .entry:hover {
-                background: rgba(0,0,0,0.01);
-            }
-        }
-        .entry .entry-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #2d2d2d;
-            line-height: 1.3;
-        }
-        .entry .entry-date {
-            font-size: 0.85rem;
-            color: #b0a090;
-            margin-top: 2px;
-            letter-spacing: 0.2px;
-        }
-        @media (max-width: 460px) {
-            .entry {
-                padding: 12px 2px;
-            }
-            .entry .entry-title {
-                font-size: 1.1rem;
-            }
-        }
-
-        .loading, .empty {
-            text-align: center;
-            padding: 40px 10px;
-            color: #b0a090;
-            font-size: 0.95rem;
-        }
-        .empty .error-detail {
-            font-size: 0.85rem;
-            color: #c0392b;
-            margin-top: 6px;
-            word-break: break-word;
-        }
-        .loading .spinner {
-            display: inline-block;
-            width: 28px;
-            height: 28px;
-            border: 3px solid #e0d6ce;
-            border-top-color: #d48c5c;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-bottom: 12px;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* 模态框 */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.45);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            z-index: 999;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            animation: fadeOverlay 0.25s;
-        }
-        @keyframes fadeOverlay {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-        .modal-overlay.active {
+        .article-meta {
             display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #888;
         }
-        .modal {
-            background: white;
-            border-radius: 24px;
-            max-width: 680px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 28px 26px 32px;
-            position: relative;
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
-            animation: slideUp 0.3s ease;
+        .tag-list span {
+            background: #eef5ff;
+            color: #409eff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 4px;
         }
-        @keyframes slideUp {
-            0% { opacity: 0; transform: translateY(30px); }
-            100% { opacity: 1; transform: translateY(0); }
+        .empty-tip {
+            color: #999;
+            text-align: center;
+            padding: 60px 0;
+            font-size: 15px;
         }
-        .modal .close-btn {
-            position: sticky;
-            top: 0;
-            float: right;
-            background: none;
-            border: none;
-            font-size: 2rem;
-            cursor: pointer;
-            color: #b0a090;
-            padding: 0 4px;
-            line-height: 1;
-            transition: color 0.2s;
+        .loading {
+            color: #666;
+            text-align: center;
+            padding: 20px 0;
         }
-        .modal .close-btn:hover,
-        .modal .close-btn:active {
-            color: #c0392b;
+        footer {
+            margin-top: 60px;
+            text-align: center;
+            color: #aaa;
+            font-size: 13px;
         }
-        .modal .modal-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #2d2d2d;
-            margin-bottom: 2px;
-            line-height: 1.2;
-        }
-        .modal .modal-date {
-            color: #b0a090;
-            margin-bottom: 18px;
-            font-size: 0.9rem;
-        }
-        .modal .modal-body {
-            font-size: 1rem;
-            color: #3d3d3d;
-            line-height: 1.8;
-        }
-        .modal .modal-body p {
-            text-indent: 2em;
-            margin-bottom: 12px;
-        }
-        .modal .modal-body h1,
-        .modal .modal-body h2,
-        .modal .modal-body h3,
-        .modal .modal-body ul,
-        .modal .modal-body ol,
-        .modal .modal-body blockquote,
-        .modal .modal-body pre {
-            text-indent: 0;
-        }
-        .modal .modal-body h2 {
-            margin-top: 24px;
-            margin-bottom: 10px;
-            font-size: 1.3rem;
-            color: #4a3520;
-            border-bottom: 1px solid #f0ebe4;
-            padding-bottom: 4px;
-        }
-        .modal .modal-body h3 {
-            margin-top: 18px;
-            margin-bottom: 6px;
-            font-size: 1.1rem;
-            color: #4a3520;
-        }
-        .modal .modal-body ul, .modal .modal-body ol {
-            padding-left: 28px;
-            margin: 8px 0 16px;
-        }
-        .modal .modal-body li {
-            margin-bottom: 6px;
-        }
-        .modal .modal-body blockquote {
-            border-left: 4px solid #d48c5c;
-            padding: 10px 18px;
-            margin: 14px 0;
-            background: #f8f4ef;
-            border-radius: 0 10px 10px 0;
-            color: #5a4a3a;
-        }
-        .modal .modal-body pre {
-            background: #f4f0eb;
-            padding: 14px 18px;
-            border-radius: 12px;
-            overflow-x: auto;
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-        .modal .modal-body code {
-            background: #f0ebe4;
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 0.9em;
-        }
-        .modal::-webkit-scrollbar {
-            width: 6px;
-        }
-        .modal::-webkit-scrollbar-thumb {
-            background: #d48c5c;
-            border-radius: 12px;
-        }
-        .modal::-webkit-scrollbar-track {
-            background: #f5f0eb;
-            border-radius: 12px;
-        }
-
-        @media (max-width: 460px) {
-            body {
-                padding: 10px 10px 20px;
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .blog-head {
+                flex-direction: column;
+                align-items: flex-start;
             }
-            .card {
-                padding: 16px 16px 18px;
-                border-radius: 14px;
-            }
-            .card .title {
-                font-size: 1.1rem;
-            }
-            .card .summary {
-                font-size: 0.9rem;
-                -webkit-line-clamp: 2;
-            }
-            .tabs button {
-                padding: 10px 14px;
-                font-size: 0.95rem;
-            }
-            .search-box input {
-                padding: 10px 14px;
-                font-size: 0.95rem;
-            }
-            .modal {
-                padding: 20px 18px 24px;
-                border-radius: 18px;
-            }
-            .modal .modal-title {
-                font-size: 1.5rem;
-            }
-            .entry .entry-title {
-                font-size: 1.1rem;
+            #search-input {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="tabs">
-            <button class="active" data-view="recipe">菜谱</button>
-            <button data-view="note">随笔</button>
+    <header>
+        <div class="blog-head">
+            <input type="text" id="search-input" placeholder="搜索标题 / 标签...">
         </div>
-
-        <div class="search-box visible" id="searchBox">
-            <input type="text" id="recipeSearch" placeholder="搜索食材..." />
-        </div>
-
-        <div id="recipeGrid" class="grid"></div>
-        <div id="noteGrid" style="display: none;"></div>
+    </header>
+    <!-- 资源管理器路径面包屑 -->
+    <div class="path-bar" id="pathBar">
+        <span class="path-tip">当前位置：推荐</span>
     </div>
-
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal" id="modal">
-            <button class="close-btn" id="modalClose">&times;</button>
-            <div class="modal-title" id="modalTitle"></div>
-            <div class="modal-date" id="modalDate"></div>
-            <div class="modal-body" id="modalBody"></div>
+    <!-- 首页一级标签容器 -->
+    <div class="level1-tabs" id="level1TabBox"></div>
+    <!-- 进入层级后：返回按钮+子分类容器 -->
+    <div class="layer-nav-wrap" id="layerNavBox"></div>
+    <!-- 文章主内容区 -->
+    <section class="article-main" id="blog-container">
+        <div class="loading">正在分批加载文章...</div>
+    </section>
+    <footer>
+        © 2026 个人静态博客 | GitHub Pages 部署
+    </footer>
+<script>
+// ========== 全局配置 ==========
+const BASE_PATH = "/life_blog";
+const MAX_FOLDER_NUM = 99;
+const BATCH_SIZE = 5;
+// 全局数据
+let allArticles = [];
+let currentPath = []; // 
+let currentSearchKey = "";
+// DOM容器
+const container = document.getElementById("blog-container");
+const searchInput = document.getElementById("search-input");
+const level1TabBox = document.getElementById("level1TabBox");
+const layerNavBox = document.getElementById("layerNavBox");
+const pathBar = document.getElementById("pathBar");
+// 1. 解析config.txt
+function parseConfig(text) {
+    const lines = text.trim().split(/\r?\n/);
+    const data = { title: "", description: "", time: "", label: [], category: "" };
+    lines.forEach(line => {
+        if (!line.includes(":")) return;
+        const [key, val] = line.split(":", 2);
+        const k = key.trim();
+        const v = val.trim();
+        if (k === "title") data.title = v;
+        if (k === "description") data.description = v;
+        if (k === "time") data.time = v;
+        if (k === "label") data.label = v.split(",").map(s => s.trim()).filter(Boolean);
+        if (k === "category") data.category = v;
+    });
+    data.catePath = data.category.split("/").map(p => p.trim()).filter(Boolean);
+    return data;
+}
+// 2. 读取单篇文章
+async function loadArticle(folderName) {
+    try {
+        const url = `${BASE_PATH}/${folderName}/config.txt`;
+        const res = await fetch(url);
+        if (!res.ok) return null;
+        const text = await res.text();
+        const cfg = parseConfig(text);
+        cfg.folder = folderName;
+        return cfg;
+    } catch (err) {
+        return null;
+    }
+}
+// 3. 流式分批加载所有文章
+async function streamLoadArticles() {
+    let startIdx = 1;
+    while (startIdx <= MAX_FOLDER_NUM) {
+        const endIdx = Math.min(startIdx + BATCH_SIZE - 1, MAX_FOLDER_NUM);
+        const loadingTip = container.querySelector(".loading");
+        if (loadingTip) loadingTip.textContent = `正在加载第 ${startIdx}~${endIdx} 号文章...`;
+        const batchPromises = [];
+        for (let i = startIdx; i <= endIdx; i++) batchPromises.push(loadArticle(i));
+        const batchResult = await Promise.all(batchPromises);
+        const validArts = batchResult.filter(item => item !== null);
+        if (validArts.length > 0) {
+            allArticles = allArticles.concat(validArts);
+            refreshAllUI();
+        }
+        startIdx = endIdx + 1;
+    }
+    const loadingTip = container.querySelector(".loading");
+    if (loadingTip) loadingTip.remove();
+    if (allArticles.length === 0) container.innerHTML = `<div class="empty-tip">未读取到任何文章</div>`;
+}
+// 4. 根据路径+搜索筛选文章
+function filterArticleByPath(artList, pathArr, search = "") {
+    let list = [...artList];
+    if (search) {
+        const s = search.toLowerCase();
+        list = list.filter(art => art.title.toLowerCase().includes(s) || art.label.some(tag => tag.toLowerCase().includes(s)));
+    }
+    if (pathArr.length === 0) return list.filter(art => art.label.includes("推荐"));
+    return list.filter(art => {
+        if (art.catePath.length < pathArr.length) return false;
+        for (let i = 0; i < pathArr.length; i++) if (art.catePath[i] !== pathArr[i]) return false;
+        return true;
+    });
+}
+// 5. 获取全部一级分类
+function getAllLevel1Cate() {
+    const set = new Set();
+    allArticles.forEach(art => { if (art.catePath[0]) set.add(art.catePath[0]); });
+    return Array.from(set);
+}
+// 6. 获取当前层级下一层子分类
+function getSubCateUnderPath(pathArr) {
+    const set = new Set();
+    const targetDepth = pathArr.length;
+    allArticles.forEach(art => {
+        if (art.catePath.length > targetDepth) {
+            let match = true;
+            for (let i = 0; i < pathArr.length; i++) if (art.catePath[i] !== pathArr[i]) match = false;
+            if (match) set.add(art.catePath[targetDepth]);
+        }
+    });
+    return Array.from(set);
+}
+// 7. 面包屑路径
+function renderPathBar() {
+    if (currentPath.length === 0) {
+        pathBar.innerHTML = `<span class="path-tip">当前位置：推荐</span>`;
+        return;
+    }
+    let html = `<span class="path-item" data-path="[]">推荐</span>`;
+    let tempPath = [];
+    currentPath.forEach(name => {
+        tempPath.push(name);
+        html += `<span class="path-sep">/</span><span class="path-item" data-path='${JSON.stringify(tempPath)}'>${name}</span>`;
+    });
+    pathBar.innerHTML = html;
+    pathBar.querySelectorAll(".path-item").forEach(el => {
+        el.onclick = () => { currentPath = JSON.parse(el.dataset.path); refreshAllUI(); };
+    });
+}
+// 8. 渲染导航（区分首页/进入层级两种模式）
+function renderNav() {
+    level1TabBox.innerHTML = "";
+    layerNavBox.innerHTML = "";
+    // 首页：显示全部一级标签
+    if (currentPath.length === 0) {
+        const level1List = getAllLevel1Cate();
+        let html = `<div class="tab-item active" data-path="[]">推荐</div>`;
+        level1List.forEach(name => {
+            const targetPath = [name];
+            html += `<div class="tab-item" data-path='${JSON.stringify(targetPath)}'>${name}</div>`;
+        });
+        level1TabBox.innerHTML = html;
+        level1TabBox.querySelectorAll(".tab-item").forEach(el => {
+            el.onclick = () => { currentPath = JSON.parse(el.dataset.path); refreshAllUI(); };
+        });
+        return;
+    }
+    // 进入任意层级：隐藏一级，显示返回按钮 + 下一层子分类
+    const prevPath = currentPath.slice(0, -1); // 上一级路径
+    let navHtml = `<div class="back-btn" data-path='${JSON.stringify(prevPath)}'>←</div>`;
+    const subList = getSubCateUnderPath(currentPath);
+    subList.forEach(name => {
+        const newPath = [...currentPath, name];
+        navHtml += `<div class="sub-tab-item" data-path='${JSON.stringify(newPath)}'>${name}</div>`;
+    });
+    layerNavBox.innerHTML = navHtml;
+    layerNavBox.querySelectorAll("div").forEach(el => {
+        el.onclick = () => { currentPath = JSON.parse(el.dataset.path); refreshAllUI(); };
+    });
+}
+// 9. 渲染文章卡片
+function renderArticleCards() {
+    container.innerHTML = "";
+    const filterArts = filterArticleByPath(allArticles, currentPath, currentSearchKey);
+    if (filterArts.length === 0) {
+        container.innerHTML = `<div class="empty-tip">暂无匹配文章</div>`;
+        return;
+    }
+    const wrap = document.createElement("div");
+    wrap.className = "article-wrap";
+    filterArts.forEach(art => wrap.appendChild(makeCard(art)));
+    container.appendChild(wrap);
+}
+// 生成单卡片
+function makeCard(art) {
+    const tagHtml = art.label.map(t => `<span>${t}</span>`).join("");
+    const div = document.createElement("div");
+    div.className = "article-card";
+    div.onclick = () => window.location.href = `${BASE_PATH}/${art.folder}/index.html`;
+    div.innerHTML = `
+        <h3>${art.title}</h3>
+        <p class="article-desc">${art.description}</p>
+        <div class="article-meta">
+            <span>${art.time}</span>
+            <div class="tag-list">${tagHtml}</div>
         </div>
-    </div>
-
-    <script>
-        // ===== 配置 =====
-        const GITHUB_CONFIG = {
-            owner: 'eternallight-debug',
-            repo: 'life_blog',
-            branch: 'main',
-            path: '5',
-        };
-        const BASE_URL = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`;
-
-        // ===== 状态 =====
-        let allRecipes = [];
-        let allNotes = [];
-        let currentView = 'recipe';
-        let searchKeyword = '';
-
-        // ===== DOM 引用 =====
-        const recipeGrid = document.getElementById('recipeGrid');
-        const noteGrid = document.getElementById('noteGrid');
-        const searchBox = document.getElementById('searchBox');
-        const searchInput = document.getElementById('recipeSearch');
-        const tabs = document.querySelectorAll('.tabs button');
-        const modalOverlay = document.getElementById('modalOverlay');
-        const modalClose = document.getElementById('modalClose');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalDate = document.getElementById('modalDate');
-        const modalBody = document.getElementById('modalBody');
-
-        // ===== 工具函数 =====
-        function escapeHtml(str) {
-            if (!str) return '';
-            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-            return String(str).replace(/[&<>"']/g, m => map[m] || m);
-        }
-
-        function safeDate(str) {
-            if (!str) return '';
-            const d = new Date(str);
-            if (isNaN(d)) return str;
-            return d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
-        }
-
-        function parseFrontMatter(content) {
-            const trimmed = content.trimStart();
-            if (!trimmed.startsWith('---')) {
-                return { meta: {}, body: trimmed };
-            }
-            const lines = trimmed.split('\n');
-            let end = -1;
-            for (let i = 1; i < lines.length; i++) {
-                if (lines[i].trim() === '---') { end = i; break; }
-            }
-            if (end === -1) return { meta: {}, body: trimmed };
-            const metaLines = lines.slice(1, end);
-            const body = lines.slice(end + 1).join('\n').trim();
-            const meta = {};
-            for (const line of metaLines) {
-                const sep = line.indexOf(':');
-                if (sep === -1) continue;
-                let key = line.slice(0, sep).trim();
-                let val = line.slice(sep + 1).trim();
-                if (key === 'tags' && val.includes(',')) {
-                    val = val.split(',').map(s => s.trim()).filter(Boolean);
-                }
-                meta[key] = val;
-            }
-            return { meta, body };
-        }
-
-        function parseRecipeIngredients(body) {
-            const lines = body.split('\n');
-            let inIngredients = false;
-            const ingredients = [];
-            for (const line of lines) {
-                const trimmed = line.trim();
-                if (trimmed.startsWith('## ')) {
-                    if (trimmed === '## 食材') {
-                        inIngredients = true;
-                        continue;
-                    } else {
-                        inIngredients = false;
-                    }
-                }
-                if (inIngredients && trimmed) {
-                    ingredients.push(trimmed);
-                }
-            }
-            return ingredients;
-        }
-
-        // ===== 数据加载 =====
-        async function fetchDir(folder) {
-            const url = `${BASE_URL}/${folder}`;
-            const resp = await fetch(url);
-            if (!resp.ok) {
-                if (resp.status === 404) {
-                    throw new Error(`文件夹 "/${GITHUB_CONFIG.path}/${folder}/" 不存在，请创建并放入 .txt 文件。`);
-                }
-                throw new Error(`请求失败 (HTTP ${resp.status})`);
-            }
-            const data = await resp.json();
-            if (!Array.isArray(data)) return [];
-            return data.filter(item => item.type === 'file' && item.name.endsWith('.txt'));
-        }
-
-        async function fetchFileContent(fileUrl) {
-            const resp = await fetch(fileUrl);
-            if (!resp.ok) throw new Error(`文件读取失败 (${resp.status})`);
-            return await resp.text();
-        }
-
-        // ----- 加载菜谱 -----
-        async function loadRecipes() {
-            try {
-                recipeGrid.innerHTML = `<div class="loading"><div class="spinner"></div>加载菜谱...</div>`;
-                const files = await fetchDir('recipes');
-                if (files.length === 0) {
-                    recipeGrid.innerHTML = `<div class="empty">暂无菜谱</div>`;
-                    allRecipes = [];
-                    renderRecipes();
-                    return;
-                }
-
-                const promises = files.map(async file => {
-                    try {
-                        const content = await fetchFileContent(file.download_url);
-                        const { meta, body } = parseFrontMatter(content);
-                        const ingredients = parseRecipeIngredients(body);
-                        return {
-                            id: file.name.replace(/\.txt$/, ''),
-                            title: meta.title || file.name.replace(/\.txt$/, ''),
-                            summary: meta.summary || meta.description || '',
-                            date: meta.date || '',
-                            tags: meta.tags || [],
-                            content: body,
-                            ingredients: ingredients,
-                        };
-                    } catch (e) {
-                        console.warn('跳过菜谱:', file.name, e);
-                        return null;
-                    }
-                });
-                const results = await Promise.all(promises);
-                allRecipes = results.filter(r => r !== null);
-                renderRecipes();
-            } catch (err) {
-                console.error(err);
-                recipeGrid.innerHTML = `<div class="empty">加载失败<br/><span class="error-detail">${escapeHtml(err.message)}</span></div>`;
-            }
-        }
-
-        // ----- 加载随笔 -----
-        async function loadNotes() {
-            try {
-                noteGrid.innerHTML = `<div class="loading"><div class="spinner"></div>加载随笔...</div>`;
-                const files = await fetchDir('notes');
-                if (files.length === 0) {
-                    noteGrid.innerHTML = `<div class="empty">暂无随笔</div>`;
-                    allNotes = [];
-                    renderNotes();
-                    return;
-                }
-
-                const promises = files.map(async file => {
-                    try {
-                        const content = await fetchFileContent(file.download_url);
-                        const { meta, body } = parseFrontMatter(content);
-                        return {
-                            id: file.name.replace(/\.txt$/, ''),
-                            title: meta.title || file.name.replace(/\.txt$/, ''),
-                            summary: meta.summary || meta.description || '',
-                            date: meta.date || '',
-                            tags: meta.tags || [],
-                            content: body,
-                        };
-                    } catch (e) {
-                        console.warn('跳过随笔:', file.name, e);
-                        return null;
-                    }
-                });
-                const results = await Promise.all(promises);
-                allNotes = results.filter(r => r !== null);
-                renderNotes();
-            } catch (err) {
-                console.error(err);
-                noteGrid.innerHTML = `<div class="empty">加载失败<br/><span class="error-detail">${escapeHtml(err.message)}</span></div>`;
-            }
-        }
-
-        // ===== 渲染函数 =====
-        function renderRecipes() {
-            const items = allRecipes;
-            let filtered = items;
-            if (searchKeyword.trim()) {
-                const kw = searchKeyword.trim().toLowerCase();
-                filtered = items.filter(item => {
-                    return item.ingredients && item.ingredients.some(ing => ing.toLowerCase().includes(kw));
-                });
-            }
-
-            if (!filtered || filtered.length === 0) {
-                recipeGrid.innerHTML = `<div class="empty">暂无菜谱</div>`;
-                return;
-            }
-
-            const sorted = [...filtered].sort((a, b) => {
-                if (!a.date && !b.date) return 0;
-                if (!a.date) return 1;
-                if (!b.date) return -1;
-                return new Date(b.date) - new Date(a.date);
-            });
-
-            let html = '';
-            for (const item of sorted) {
-                const dateStr = item.date ? safeDate(item.date) : '';
-                const summary = item.summary || '';
-                html += `
-                    <div class="card" data-id="${item.id}" data-type="recipe">
-                        <span class="type-badge">菜谱</span>
-                        <div class="title">${escapeHtml(item.title)}</div>
-                        ${dateStr ? `<div class="date">${dateStr}</div>` : ''}
-                        ${summary ? `<div class="summary">${escapeHtml(summary)}</div>` : ''}
-                    </div>
-                `;
-            }
-            recipeGrid.innerHTML = html;
-
-            recipeGrid.querySelectorAll('.card').forEach(el => {
-                el.addEventListener('click', () => {
-                    const id = el.dataset.id;
-                    const item = allRecipes.find(i => i.id === id);
-                    if (item) openModal(item);
-                });
-            });
-        }
-
-        function renderNotes() {
-            const items = allNotes;
-            if (!items || items.length === 0) {
-                noteGrid.innerHTML = `<div class="empty">暂无随笔</div>`;
-                return;
-            }
-
-            const sorted = [...items].sort((a, b) => {
-                if (!a.date && !b.date) return 0;
-                if (!a.date) return 1;
-                if (!b.date) return -1;
-                return new Date(b.date) - new Date(a.date);
-            });
-
-            let html = '';
-            for (const item of sorted) {
-                const dateStr = item.date ? safeDate(item.date) : '';
-                // 注意：这里不引用任何未定义的变量，所有变量都已声明
-                html += `
-                    <div class="entry" data-id="${item.id}" data-type="note">
-                        <div class="entry-title">${escapeHtml(item.title)}</div>
-                        ${dateStr ? `<div class="entry-date">${dateStr}</div>` : ''}
-                    </div>
-                `;
-            }
-            noteGrid.innerHTML = html;
-
-            noteGrid.querySelectorAll('.entry').forEach(el => {
-                el.addEventListener('click', () => {
-                    const id = el.dataset.id;
-                    const item = allNotes.find(i => i.id === id);
-                    if (item) openModal(item);
-                });
-            });
-        }
-
-        // ===== 切换视图 =====
-        function switchView(view) {
-            currentView = view;
-            tabs.forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.view === view);
-            });
-            recipeGrid.style.display = (view === 'recipe') ? 'grid' : 'none';
-            noteGrid.style.display = (view === 'note') ? 'block' : 'none';
-            searchBox.classList.toggle('visible', view === 'recipe');
-            if (view === 'recipe') {
-                renderRecipes();
-            }
-        }
-
-        // ===== 搜索 =====
-        searchInput.addEventListener('input', (e) => {
-            searchKeyword = e.target.value;
-            if (currentView === 'recipe') {
-                renderRecipes();
-            }
-        });
-
-        // ===== 模态框 =====
-        function openModal(item) {
-            modalTitle.textContent = item.title;
-            modalDate.textContent = item.date ? safeDate(item.date) : '';
-            modalBody.innerHTML = renderMarkdown(item.content);
-            modalOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function renderMarkdown(text) {
-            if (!text) return '';
-            let html = text;
-            html = html.replace(/<script[\s\S]*?<\/script>/gi, '');
-            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-            html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
-            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
-            html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%;border-radius:8px;" />');
-            html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
-            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-            html = html.replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
-            html = html.replace(/^[\*\-] (.*$)/gim, '<li>$1</li>');
-            html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
-            html = html.replace(/\n\n/g, '</p><p>');
-            html = html.replace(/\n/g, '<br />');
-            html = '<p>' + html + '</p>';
-            html = html.replace(/<p><\/p>/g, '');
-            html = html.replace(/<li>([\s\S]*?)<\/li>/g, '<ul><li>$1</li></ul>');
-            html = html.replace(/<\/ul>\s*<ul>/g, '');
-            return html;
-        }
-
-        // ===== 模态框事件 =====
-        modalClose.addEventListener('click', () => {
-            modalOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        });
-        modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) {
-                modalOverlay.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        });
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                modalOverlay.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        });
-
-        // ===== 标签切换 =====
-        tabs.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const view = btn.dataset.view;
-                if (view !== currentView) {
-                    switchView(view);
-                }
-            });
-        });
-
-        // ===== 启动 =====
-        recipeGrid.style.display = 'grid';
-        noteGrid.style.display = 'none';
-        searchBox.classList.add('visible');
-
-        loadRecipes();
-        loadNotes();
-
-        console.log('✅ 已启动，菜谱卡片 + 随笔列表。');
-    </script>
+    `;
+    return div;
+}
+// 统一刷新全部界面
+function refreshAllUI() {
+    renderPathBar();
+    renderNav();
+    renderArticleCards();
+}
+// 搜索监听
+searchInput.addEventListener("input", e => {
+    currentSearchKey = e.target.value.trim();
+    renderArticleCards();
+});
+// 初始化
+window.onload = async () => {
+    await streamLoadArticles();
+    refreshAllUI();
+};
+</script>
 </body>
 </html>
