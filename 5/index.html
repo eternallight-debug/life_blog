@@ -86,7 +86,7 @@
             }
         }
 
-        /* ===== 菜谱卡片 ===== */
+        /* 菜谱卡片 */
         .card {
             background: #ffffff;
             border-radius: 18px;
@@ -160,7 +160,7 @@
             margin-top: 2px;
         }
 
-        /* ===== 随笔列表项 ===== */
+        /* 随笔列表项 */
         .entry {
             padding: 14px 4px;
             border-bottom: 1px solid #e8e0d8;
@@ -426,22 +426,29 @@
     </div>
 
     <script>
-        // ===== 配置 =====
+        // ============================================================
+        //  配置（请务必确认以下信息正确）
+        // ============================================================
         const GITHUB_CONFIG = {
-            owner: 'eternallight-debug',
-            repo: 'life_blog',
-            branch: 'main',
-            path: '5',
+            owner: 'eternallight-debug',   // 你的 GitHub 用户名
+            repo: 'life_blog',             // 仓库名
+            branch: 'main',                // 分支名（通常为 main 或 master）
+            path: '5',                     // index.html 所在目录
         };
+        // 构造 API 基础 URL
         const BASE_URL = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`;
 
-        // ===== 状态 =====
+        // ============================================================
+        //  状态
+        // ============================================================
         let allRecipes = [];
         let allNotes = [];
         let currentView = 'recipe';
         let searchKeyword = '';
 
-        // ===== DOM 引用 =====
+        // ============================================================
+        //  DOM 引用
+        // ============================================================
         const recipeGrid = document.getElementById('recipeGrid');
         const noteGrid = document.getElementById('noteGrid');
         const searchBox = document.getElementById('searchBox');
@@ -453,7 +460,9 @@
         const modalDate = document.getElementById('modalDate');
         const modalBody = document.getElementById('modalBody');
 
-        // ===== 工具函数 =====
+        // ============================================================
+        //  工具函数
+        // ============================================================
         function escapeHtml(str) {
             if (!str) return '';
             const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
@@ -515,15 +524,26 @@
             return ingredients;
         }
 
-        // ===== 数据加载 =====
+        // ============================================================
+        //  数据加载（增强错误处理）
+        // ============================================================
         async function fetchDir(folder) {
             const url = `${BASE_URL}/${folder}`;
-            const resp = await fetch(url);
+            // 添加必要的请求头，避免缓存，并明确要求 JSON
+            const resp = await fetch(url, {
+                headers: {
+                    'Accept': 'application/vnd.github.v3+json',
+                },
+                cache: 'no-store',
+            });
             if (!resp.ok) {
                 if (resp.status === 404) {
                     throw new Error(`文件夹 "/${GITHUB_CONFIG.path}/${folder}/" 不存在，请创建并放入 .txt 文件。`);
                 }
-                throw new Error(`请求失败 (HTTP ${resp.status})`);
+                if (resp.status === 403) {
+                    throw new Error(`API 访问受限（可能达到速率限制），请稍后重试，或检查仓库是否为公开。`);
+                }
+                throw new Error(`请求失败 (HTTP ${resp.status}): ${resp.statusText}`);
             }
             const data = await resp.json();
             if (!Array.isArray(data)) return [];
@@ -531,7 +551,7 @@
         }
 
         async function fetchFileContent(fileUrl) {
-            const resp = await fetch(fileUrl);
+            const resp = await fetch(fileUrl, { cache: 'no-store' });
             if (!resp.ok) throw new Error(`文件读取失败 (${resp.status})`);
             return await resp.text();
         }
@@ -571,8 +591,16 @@
                 allRecipes = results.filter(r => r !== null);
                 renderRecipes();
             } catch (err) {
-                console.error(err);
-                recipeGrid.innerHTML = `<div class="empty">加载失败<br/><span class="error-detail">${escapeHtml(err.message)}</span></div>`;
+                console.error('加载菜谱失败:', err);
+                recipeGrid.innerHTML = `
+                    <div class="empty">
+                        加载失败
+                        <div class="error-detail">${escapeHtml(err.message)}</div>
+                        <div class="error-detail" style="font-size:0.8rem;color:#7a6a5a;">
+                            建议：检查网络连接、仓库是否为公开，或稍后重试（可能达到 API 限制）。
+                        </div>
+                    </div>
+                `;
             }
         }
 
@@ -609,12 +637,22 @@
                 allNotes = results.filter(r => r !== null);
                 renderNotes();
             } catch (err) {
-                console.error(err);
-                noteGrid.innerHTML = `<div class="empty">加载失败<br/><span class="error-detail">${escapeHtml(err.message)}</span></div>`;
+                console.error('加载随笔失败:', err);
+                noteGrid.innerHTML = `
+                    <div class="empty">
+                        加载失败
+                        <div class="error-detail">${escapeHtml(err.message)}</div>
+                        <div class="error-detail" style="font-size:0.8rem;color:#7a6a5a;">
+                            建议：检查网络连接、仓库是否为公开，或稍后重试（可能达到 API 限制）。
+                        </div>
+                    </div>
+                `;
             }
         }
 
-        // ===== 渲染函数 =====
+        // ============================================================
+        //  渲染函数
+        // ============================================================
         function renderRecipes() {
             const items = allRecipes;
             let filtered = items;
@@ -678,7 +716,6 @@
             let html = '';
             for (const item of sorted) {
                 const dateStr = item.date ? safeDate(item.date) : '';
-                // 注意：这里不引用任何未定义的变量，所有变量都已声明
                 html += `
                     <div class="entry" data-id="${item.id}" data-type="note">
                         <div class="entry-title">${escapeHtml(item.title)}</div>
@@ -697,7 +734,9 @@
             });
         }
 
-        // ===== 切换视图 =====
+        // ============================================================
+        //  切换视图
+        // ============================================================
         function switchView(view) {
             currentView = view;
             tabs.forEach(btn => {
@@ -711,7 +750,9 @@
             }
         }
 
-        // ===== 搜索 =====
+        // ============================================================
+        //  搜索
+        // ============================================================
         searchInput.addEventListener('input', (e) => {
             searchKeyword = e.target.value;
             if (currentView === 'recipe') {
@@ -719,7 +760,9 @@
             }
         });
 
-        // ===== 模态框 =====
+        // ============================================================
+        //  模态框
+        // ============================================================
         function openModal(item) {
             modalTitle.textContent = item.title;
             modalDate.textContent = item.date ? safeDate(item.date) : '';
@@ -753,7 +796,9 @@
             return html;
         }
 
-        // ===== 模态框事件 =====
+        // ============================================================
+        //  模态框事件
+        // ============================================================
         modalClose.addEventListener('click', () => {
             modalOverlay.classList.remove('active');
             document.body.style.overflow = '';
@@ -771,7 +816,9 @@
             }
         });
 
-        // ===== 标签切换 =====
+        // ============================================================
+        //  标签切换
+        // ============================================================
         tabs.forEach(btn => {
             btn.addEventListener('click', () => {
                 const view = btn.dataset.view;
@@ -781,7 +828,9 @@
             });
         });
 
-        // ===== 启动 =====
+        // ============================================================
+        //  启动
+        // ============================================================
         recipeGrid.style.display = 'grid';
         noteGrid.style.display = 'none';
         searchBox.classList.add('visible');
@@ -790,6 +839,8 @@
         loadNotes();
 
         console.log('✅ 已启动，菜谱卡片 + 随笔列表。');
+        console.log(`🔗 请求地址前缀: ${BASE_URL}`);
+        console.log('⚠️ 如果出现 "Failed to fetch"，请检查网络或 API 限制。');
     </script>
 </body>
 </html>
