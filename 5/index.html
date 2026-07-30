@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
     <title>笔记</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             font-family: -apple-system, "Helvetica Neue", "PingFang SC", sans-serif;
             background: #f5f0eb;
@@ -14,14 +18,18 @@
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
-        .container { max-width: 880px; margin: 0 auto; }
+        .container {
+            max-width: 880px;
+            margin: 0 auto;
+        }
 
+        /* ===== 顶部切换 ===== */
         .tabs {
             display: flex;
             gap: 0;
             margin-bottom: 20px;
             border-bottom: 2px solid #e0d6ce;
-            background: transparent;
+            flex-wrap: wrap;
         }
         .tabs button {
             padding: 12px 20px;
@@ -35,16 +43,36 @@
             transition: all 0.2s;
             flex: 0 0 auto;
             touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
         }
-        .tabs button:hover { color: #4a3520; }
-        .tabs button.active { color: #4a3520; border-bottom-color: #d48c5c; }
+        .tabs button:hover {
+            color: #4a3520;
+        }
+        .tabs button.active {
+            color: #4a3520;
+            border-bottom-color: #d48c5c;
+        }
 
+        /* ===== 面板 ===== */
+        .panel {
+            display: none;
+            animation: fadePanel 0.2s ease;
+        }
+        .panel.active {
+            display: block;
+        }
+        @keyframes fadePanel {
+            0% { opacity: 0; transform: translateY(6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== 搜索框（仅菜谱） ===== */
         .search-box {
             margin-bottom: 18px;
             display: none;
         }
-        .search-box.visible { display: block; }
+        .search-box.visible {
+            display: block;
+        }
         .search-box input {
             width: 100%;
             padding: 12px 18px;
@@ -54,150 +82,208 @@
             background: white;
             outline: none;
             transition: border 0.2s, box-shadow 0.2s;
-            appearance: none;
         }
         .search-box input:focus {
             border-color: #d48c5c;
             box-shadow: 0 0 0 3px rgba(212, 140, 92, 0.15);
         }
 
+        /* ===== 菜谱卡片 ===== */
         .grid {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 18px;
         }
-        @media (min-width: 640px) {
-            .grid { grid-template-columns: repeat(2, 1fr); }
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
         }
-
-        /* 菜谱卡片 */
         .card {
-            background: #ffffff;
+            background: white;
             border-radius: 18px;
-            padding: 20px 22px 22px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
-            transition: transform 0.2s ease, box-shadow 0.25s ease;
+            padding: 20px 22px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
             border: 1px solid rgba(224, 214, 206, 0.4);
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
             position: relative;
-            -webkit-tap-highlight-color: transparent;
+            border-left: 5px solid #d48c5c;
+            transition: 0.2s;
         }
-        .card:active { transform: scale(0.98); }
+        .card:active {
+            transform: scale(0.98);
+        }
         @media (hover: hover) {
             .card:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
                 border-color: #d48c5c;
             }
         }
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 5px;
-            height: 100%;
-            background: #d48c5c;
-            border-radius: 18px 0 0 18px;
-            opacity: 0.7;
-        }
-
-        .card .type-badge {
-            display: inline-block;
+        .card .badge {
             font-size: 0.7rem;
             font-weight: 700;
             padding: 4px 14px;
             border-radius: 30px;
             background: #f0ebe4;
             color: #6a5a4a;
-            align-self: flex-start;
-            margin-bottom: 10px;
-            letter-spacing: 0.4px;
-            text-transform: uppercase;
-            border: 1px solid rgba(0,0,0,0.04);
+            display: inline-block;
+            margin-bottom: 8px;
         }
         .card .title {
             font-size: 1.2rem;
             font-weight: 700;
-            color: #2d2d2d;
-            margin-bottom: 4px;
-            line-height: 1.3;
         }
         .card .date {
             font-size: 0.8rem;
             color: #b0a090;
-            margin-bottom: 8px;
-            letter-spacing: 0.2px;
+            margin: 4px 0 8px;
         }
         .card .summary {
-            font-size: 0.95rem;
             color: #5a4a3a;
             display: -webkit-box;
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            line-height: 1.5;
-            margin-top: 2px;
         }
 
-        /* 随笔列表项 */
+        /* ===== 随笔列表 ===== */
+        .entry-list {
+            margin-top: 4px;
+        }
         .entry {
             padding: 14px 4px;
             border-bottom: 1px solid #e8e0d8;
             cursor: pointer;
             transition: background 0.15s;
-            -webkit-tap-highlight-color: transparent;
         }
-        .entry:active { background: rgba(0,0,0,0.02); }
+        .entry:active {
+            background: rgba(0, 0, 0, 0.02);
+        }
         @media (hover: hover) {
-            .entry:hover { background: rgba(0,0,0,0.01); }
+            .entry:hover {
+                background: rgba(0, 0, 0, 0.01);
+            }
         }
         .entry .entry-title {
             font-size: 1.2rem;
             font-weight: 600;
-            color: #2d2d2d;
-            line-height: 1.3;
         }
         .entry .entry-date {
             font-size: 0.85rem;
             color: #b0a090;
-            margin-top: 2px;
-            letter-spacing: 0.2px;
-        }
-        @media (max-width: 460px) {
-            .entry { padding: 12px 2px; }
-            .entry .entry-title { font-size: 1.1rem; }
         }
 
-        .loading, .empty {
+        /* ===== 价格参考 ===== */
+        .price-search {
+            margin-bottom: 18px;
+        }
+        .price-search input {
+            width: 100%;
+            padding: 12px 18px;
+            font-size: 1rem;
+            border: 2px solid #e0d6ce;
+            border-radius: 40px;
+            background: white;
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        .price-search input:focus {
+            border-color: #d48c5c;
+            box-shadow: 0 0 0 3px rgba(212, 140, 92, 0.15);
+        }
+        .price-table-wrap {
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(224, 214, 206, 0.4);
+        }
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+        .price-table th {
+            text-align: left;
+            padding: 14px 16px;
+            background: #f8f4ef;
+            color: #4a3520;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 2px solid #e0d6ce;
+        }
+        .price-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0ebe4;
+            color: #3d3d3d;
+        }
+        .price-table tr:last-child td {
+            border-bottom: none;
+        }
+        .price-table .price {
+            font-weight: 600;
+            color: #d48c5c;
+        }
+        .price-table .range {
+            font-size: 0.9rem;
+            color: #5a4a3a;
+        }
+        .price-table .empty-row td {
             text-align: center;
-            padding: 40px 10px;
+            color: #b0a090;
+            padding: 30px 16px;
+        }
+        .price-table .category-tag {
+            font-size: 0.8rem;
+            background: #f0ebe4;
+            padding: 2px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            color: #5a4a3a;
+        }
+        @media (max-width: 600px) {
+            .price-table th,
+            .price-table td {
+                padding: 10px 12px;
+                font-size: 0.85rem;
+            }
+            .price-table .category-tag {
+                font-size: 0.7rem;
+                padding: 1px 10px;
+            }
+        }
+
+        /* ===== 加载/空状态 ===== */
+        .loading {
+            text-align: center;
+            padding: 30px 10px;
             color: #b0a090;
             font-size: 0.95rem;
         }
-        .empty .error-detail {
-            font-size: 0.85rem;
-            color: #c0392b;
-            margin-top: 6px;
-            word-break: break-word;
-        }
         .loading .spinner {
             display: inline-block;
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             border: 3px solid #e0d6ce;
             border-top-color: #d48c5c;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        .empty {
+            text-align: center;
+            padding: 30px 10px;
+            color: #b0a090;
+            font-size: 0.95rem;
+        }
 
-        /* 模态框 */
+        /* ===== 模态框 ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -205,34 +291,31 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.45);
+            background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
             z-index: 999;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            animation: fadeOverlay 0.25s;
         }
-        @keyframes fadeOverlay {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
+        .modal-overlay.active {
+            display: flex;
         }
-        .modal-overlay.active { display: flex; }
         .modal {
             background: white;
             border-radius: 24px;
-            max-width: 680px;
+            max-width: 700px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            padding: 28px 26px 32px;
+            padding: 32px 36px;
             position: relative;
             box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
-            animation: slideUp 0.3s ease;
+            animation: fadeIn 0.25s;
         }
-        @keyframes slideUp {
-            0% { opacity: 0; transform: translateY(30px); }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
             100% { opacity: 1; transform: translateY(0); }
         }
         .modal .close-btn {
@@ -248,139 +331,216 @@
             line-height: 1;
             transition: color 0.2s;
         }
-        .modal .close-btn:hover,
-        .modal .close-btn:active { color: #c0392b; }
-        .modal .modal-title {
-            font-size: 1.8rem;
+        .modal .close-btn:hover {
+            color: #c0392b;
+        }
+
+        /* ===== 菜谱详情 ===== */
+        .recipe-detail .detail-title {
+            font-size: 2rem;
             font-weight: 700;
             color: #2d2d2d;
             margin-bottom: 2px;
             line-height: 1.2;
+            text-align: center;
         }
-        .modal .modal-date {
+        .recipe-detail .detail-date {
             color: #b0a090;
-            margin-bottom: 18px;
+            margin-bottom: 20px;
             font-size: 0.9rem;
+            text-align: center;
         }
-        .modal .modal-body {
+        .recipe-detail .ingredients-block {
+            background: #f8f4ef;
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            border-left: 4px solid #d48c5c;
+        }
+        .recipe-detail .ingredients-block h3 {
             font-size: 1rem;
-            color: #3d3d3d;
-            line-height: 1.8;
-        }
-        .modal .modal-body p {
-            text-indent: 2em;
-            margin-bottom: 12px;
-        }
-        .modal .modal-body h1,
-        .modal .modal-body h2,
-        .modal .modal-body h3,
-        .modal .modal-body ul,
-        .modal .modal-body ol,
-        .modal .modal-body blockquote,
-        .modal .modal-body pre { text-indent: 0; }
-        .modal .modal-body h2 {
-            margin-top: 24px;
-            margin-bottom: 10px;
-            font-size: 1.3rem;
+            font-weight: 700;
             color: #4a3520;
-            border-bottom: 1px solid #f0ebe4;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .recipe-detail .ingredient-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .recipe-detail .ingredient-list li {
+            padding: 4px 0;
+            font-size: 0.95rem;
+            color: #3d3d3d;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.04);
+        }
+        .recipe-detail .ingredient-list li:last-child {
+            border-bottom: none;
+        }
+        .recipe-detail .ingredient-list .ing-name {
+            color: #3d3d3d;
+        }
+        .recipe-detail .ingredient-list .ing-amount {
+            color: #d48c5c;
+            font-weight: 600;
+        }
+        .recipe-detail .ingredient-list .ing-sep {
+            color: #b0a090;
+            margin: 0 4px;
+        }
+        .recipe-detail .method-block h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #4a3520;
+            margin: 20px 0 10px;
+            border-bottom: 2px solid #f0ebe4;
             padding-bottom: 4px;
         }
-        .modal .modal-body h3 {
-            margin-top: 18px;
-            margin-bottom: 6px;
-            font-size: 1.1rem;
+        .recipe-detail .method-block ol {
+            padding-left: 24px;
+            margin: 6px 0 16px;
+        }
+        .recipe-detail .method-block li {
+            margin-bottom: 8px;
+            line-height: 1.7;
+        }
+        .recipe-detail .method-block .tips {
+            background: #f0ebe4;
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin: 16px 0 0;
+            border-left: 4px solid #b0a090;
+        }
+        .recipe-detail .method-block .tips strong {
             color: #4a3520;
         }
-        .modal .modal-body ul, .modal .modal-body ol {
-            padding-left: 28px;
-            margin: 8px 0 16px;
+
+        /* ===== 随笔详情 ===== */
+        .note-detail .detail-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #2d2d2d;
+            margin-bottom: 4px;
+            line-height: 1.2;
+            text-align: center;
         }
-        .modal .modal-body li { margin-bottom: 6px; }
-        .modal .modal-body blockquote {
+        .note-detail .detail-date {
+            color: #b0a090;
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+            border-bottom: 1px solid #f0ebe4;
+            padding-bottom: 12px;
+            text-align: center;
+        }
+        .note-detail .detail-body {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: #2d2d2d;
+        }
+        .note-detail .detail-body p {
+            text-indent: 2em;
+            margin-bottom: 16px;
+        }
+        .note-detail .detail-body blockquote {
             border-left: 4px solid #d48c5c;
-            padding: 10px 18px;
-            margin: 14px 0;
+            padding: 8px 18px;
+            margin: 16px 0;
             background: #f8f4ef;
             border-radius: 0 10px 10px 0;
-            color: #5a4a3a;
+            color: #4a3a2a;
         }
-        .modal .modal-body pre {
-            background: #f4f0eb;
-            padding: 14px 18px;
-            border-radius: 12px;
-            overflow-x: auto;
-            font-size: 0.9rem;
-            line-height: 1.6;
+        .note-detail .detail-body ul,
+        .note-detail .detail-body ol {
+            padding-left: 28px;
+            margin: 10px 0 16px;
         }
-        .modal .modal-body code {
-            background: #f0ebe4;
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 0.9em;
+        .note-detail .detail-body li {
+            margin-bottom: 6px;
         }
-        .modal::-webkit-scrollbar { width: 6px; }
-        .modal::-webkit-scrollbar-thumb { background: #d48c5c; border-radius: 12px; }
-        .modal::-webkit-scrollbar-track { background: #f5f0eb; border-radius: 12px; }
 
         @media (max-width: 460px) {
-            body { padding: 10px 10px 20px; }
-            .card { padding: 16px 16px 18px; border-radius: 14px; }
-            .card .title { font-size: 1.1rem; }
-            .card .summary { font-size: 0.9rem; -webkit-line-clamp: 2; }
-            .tabs button { padding: 10px 14px; font-size: 0.95rem; }
-            .search-box input { padding: 10px 14px; font-size: 0.95rem; }
-            .modal { padding: 20px 18px 24px; border-radius: 18px; }
-            .modal .modal-title { font-size: 1.5rem; }
-            .entry .entry-title { font-size: 1.1rem; }
+            .modal {
+                padding: 20px 16px;
+            }
+            .recipe-detail .detail-title,
+            .note-detail .detail-title {
+                font-size: 1.6rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="tabs">
-            <button class="active" data-view="recipe">菜谱</button>
-            <button data-view="note">随笔</button>
+        <!-- 顶部切换 -->
+        <div class="tabs" id="tabs">
+            <button class="active" data-panel="recipe">菜谱</button>
+            <button data-panel="note">随笔</button>
+            <button data-panel="price">价格参考</button>
         </div>
 
-        <div class="search-box visible" id="searchBox">
-            <input type="text" id="recipeSearch" placeholder="搜索食材..." />
+        <!-- ===== 面板：菜谱 ===== -->
+        <div class="panel active" id="panel-recipe">
+            <div class="search-box visible" id="searchBox">
+                <input type="text" id="recipeSearch" placeholder="搜索食材..." />
+            </div>
+            <div class="grid" id="recipeGrid"></div>
         </div>
 
-        <div id="recipeGrid" class="grid"></div>
-        <div id="noteGrid" style="display: none;"></div>
-    </div>
+        <!-- ===== 面板：随笔 ===== -->
+        <div class="panel" id="panel-note">
+            <div class="entry-list" id="noteList"></div>
+        </div>
 
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal" id="modal">
-            <button class="close-btn" id="modalClose">&times;</button>
-            <div class="modal-title" id="modalTitle"></div>
-            <div class="modal-date" id="modalDate"></div>
-            <div class="modal-body" id="modalBody"></div>
+        <!-- ===== 面板：价格参考 ===== -->
+        <div class="panel" id="panel-price">
+            <div class="price-search">
+                <input type="text" id="priceSearch" placeholder="搜索食材或类别..." />
+            </div>
+            <div class="price-table-wrap">
+                <table class="price-table">
+                    <thead>
+                        <tr>
+                            <th>食材</th>
+                            <th>类别</th>
+                            <th>均价 (元/公斤)</th>
+                            <th>价格区间 (元/公斤)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="priceBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== 模态框 ===== -->
+        <div class="modal-overlay" id="modalOverlay">
+            <div class="modal" id="modalContent">
+                <button class="close-btn" id="closeBtn">&times;</button>
+                <div id="detailContainer"></div>
+            </div>
         </div>
     </div>
 
     <script>
         // ================================================================
-        //  配置（请务必确认信息正确）
+        //  配置
         // ================================================================
         const GITHUB_CONFIG = {
-            owner: 'eternallight-debug',   // 你的 GitHub 用户名
-            repo: 'life_blog',             // 仓库名
-            branch: 'main',                // 分支名（通常为 main 或 master）
-            path: '5',                     // index.html 所在目录
+            owner: 'eternallight-debug',
+            repo: 'life_blog',
+            branch: 'main',
+            path: '5',
         };
-
-        // ================================================================
-        //  构造 API URL（明确指定分支，避免默认分支问题）
-        // ================================================================
-        const BASE_URL = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}?ref=${GITHUB_CONFIG.branch}`;
+        const BASE_URL =
+            `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`;
 
         // ================================================================
         //  状态
         // ================================================================
         let allRecipes = [];
         let allNotes = [];
+        let priceData = [];
         let currentView = 'recipe';
         let searchKeyword = '';
 
@@ -388,15 +548,15 @@
         //  DOM 引用
         // ================================================================
         const recipeGrid = document.getElementById('recipeGrid');
-        const noteGrid = document.getElementById('noteGrid');
+        const noteList = document.getElementById('noteList');
+        const priceBody = document.getElementById('priceBody');
         const searchBox = document.getElementById('searchBox');
         const searchInput = document.getElementById('recipeSearch');
-        const tabs = document.querySelectorAll('.tabs button');
+        const priceSearch = document.getElementById('priceSearch');
+        const tabs = document.querySelectorAll('#tabs button');
         const modalOverlay = document.getElementById('modalOverlay');
-        const modalClose = document.getElementById('modalClose');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalDate = document.getElementById('modalDate');
-        const modalBody = document.getElementById('modalBody');
+        const closeBtn = document.getElementById('closeBtn');
+        const detailContainer = document.getElementById('detailContainer');
 
         // ================================================================
         //  工具函数
@@ -441,51 +601,92 @@
             return { meta, body };
         }
 
-        function parseRecipeIngredients(body) {
+        // ----- 解析菜谱内容（提取食材、做法、要点） -----
+        function parseRecipeContent(body) {
             const lines = body.split('\n');
-            let inIngredients = false;
-            const ingredients = [];
+            let section = null;
+            let ingredients = [];
+            let steps = [];
+            let tips = '';
+            let currentText = '';
+
             for (const line of lines) {
                 const trimmed = line.trim();
                 if (trimmed.startsWith('## ')) {
-                    if (trimmed === '## 食材') {
-                        inIngredients = true;
-                        continue;
-                    } else {
-                        inIngredients = false;
+                    // 保存上一段
+                    if (section === 'ingredients' && currentText.trim()) {
+                        const items = currentText.split('\n').map(s => s.trim()).filter(s => s);
+                        for (const item of items) {
+                            // 尝试用 / 分隔，如果没有则整个作为名称
+                            if (item.includes('/')) {
+                                const parts = item.split('/').map(s => s.trim());
+                                ingredients.push({ name: parts[0], amount: parts.slice(1).join('/') });
+                            } else {
+                                ingredients.push({ name: item, amount: '' });
+                            }
+                        }
+                    } else if (section === 'steps' && currentText.trim()) {
+                        steps = currentText.split('\n').map(s => s.trim()).filter(s => s);
+                    } else if (section === 'tips' && currentText.trim()) {
+                        tips = currentText.trim();
                     }
-                }
-                if (inIngredients && trimmed) {
-                    ingredients.push(trimmed);
+                    // 新段落
+                    const title = trimmed.replace(/^## /, '').trim();
+                    if (title === '食材') {
+                        section = 'ingredients';
+                        currentText = '';
+                    } else if (title === '做法') {
+                        section = 'steps';
+                        currentText = '';
+                    } else if (title === '要点') {
+                        section = 'tips';
+                        currentText = '';
+                    } else {
+                        section = null;
+                        currentText = '';
+                    }
+                } else {
+                    if (section) currentText += line + '\n';
                 }
             }
-            return ingredients;
+            // 处理最后一段
+            if (section === 'ingredients' && currentText.trim()) {
+                const items = currentText.split('\n').map(s => s.trim()).filter(s => s);
+                for (const item of items) {
+                    if (item.includes('/')) {
+                        const parts = item.split('/').map(s => s.trim());
+                        ingredients.push({ name: parts[0], amount: parts.slice(1).join('/') });
+                    } else {
+                        ingredients.push({ name: item, amount: '' });
+                    }
+                }
+            } else if (section === 'steps' && currentText.trim()) {
+                steps = currentText.split('\n').map(s => s.trim()).filter(s => s);
+            } else if (section === 'tips' && currentText.trim()) {
+                tips = currentText.trim();
+            }
+
+            // 如果没有食材、做法、要点，尝试从 body 提取
+            if (ingredients.length === 0 && steps.length === 0 && !tips) {
+                // 把整个 body 当作内容，但这里不做复杂处理，返回空
+            }
+            return { ingredients, steps, tips };
         }
 
         // ================================================================
-        //  数据加载（增强错误输出）
+        //  流式加载：逐个加载文件，加载一个渲染一个
         // ================================================================
-        async function fetchDir(folder) {
-            // 注意：BASE_URL 已经包含 ?ref=分支，但我们要附加文件夹名，所以需要处理
-            // 因为 BASE_URL 是类似 .../contents/5?ref=main，我们追加 /recipes 会导致 ?ref 位置错误
-            // 所以重新构造：不带 ?ref 的主路径，再带参数
-            const baseWithoutRef = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`;
-            const url = `${baseWithoutRef}/${folder}?ref=${GITHUB_CONFIG.branch}`;
-            console.log('请求 URL:', url); // 输出到控制台，方便检查
 
+        // ----- 获取目录文件列表 -----
+        async function fetchDir(folder) {
+            const url = `${BASE_URL}/${folder}?ref=${GITHUB_CONFIG.branch}`;
             const resp = await fetch(url, {
                 headers: { 'Accept': 'application/vnd.github.v3+json' },
                 cache: 'no-store',
             });
-
             if (!resp.ok) {
-                if (resp.status === 404) {
-                    throw new Error(`文件夹 "/${GITHUB_CONFIG.path}/${folder}/" 不存在，请创建并放入 .txt 文件。`);
-                }
-                if (resp.status === 403) {
-                    throw new Error(`API 访问受限（可能达到速率限制），请稍后重试，或检查仓库是否为公开。`);
-                }
-                throw new Error(`请求失败 (HTTP ${resp.status}): ${resp.statusText}`);
+                if (resp.status === 404) return [];
+                throw new Error(`请求失败 (${resp.status})`);
             }
             const data = await resp.json();
             if (!Array.isArray(data)) return [];
@@ -498,122 +699,120 @@
             return await resp.text();
         }
 
-        // ----- 加载菜谱 -----
-        async function loadRecipes() {
+        // ----- 流式加载菜谱 -----
+        async function loadRecipesStream() {
             try {
                 recipeGrid.innerHTML = `<div class="loading"><div class="spinner"></div>加载菜谱...</div>`;
                 const files = await fetchDir('recipes');
                 if (files.length === 0) {
                     recipeGrid.innerHTML = `<div class="empty">暂无菜谱</div>`;
-                    allRecipes = [];
-                    renderRecipes();
                     return;
                 }
 
-                const promises = files.map(async file => {
+                // 清空，逐个追加
+                recipeGrid.innerHTML = '';
+                const loadedItems = [];
+
+                for (const file of files) {
                     try {
                         const content = await fetchFileContent(file.download_url);
                         const { meta, body } = parseFrontMatter(content);
-                        const ingredients = parseRecipeIngredients(body);
-                        return {
+                        const parsed = parseRecipeContent(body);
+
+                        const item = {
                             id: file.name.replace(/\.txt$/, ''),
                             title: meta.title || file.name.replace(/\.txt$/, ''),
                             summary: meta.summary || meta.description || '',
                             date: meta.date || '',
-                            tags: meta.tags || [],
+                            ingredients: parsed.ingredients || [],
+                            steps: parsed.steps || [],
+                            tips: parsed.tips || '',
                             content: body,
-                            ingredients: ingredients,
                         };
+                        loadedItems.push(item);
+                        allRecipes = loadedItems;
+                        // 每加载一个，重新渲染（增量渲染）
+                        renderRecipes();
                     } catch (e) {
                         console.warn('跳过菜谱:', file.name, e);
-                        return null;
                     }
-                });
-                const results = await Promise.all(promises);
-                allRecipes = results.filter(r => r !== null);
-                renderRecipes();
-            } catch (err) {
-                console.error('加载菜谱失败:', err);
-                // 判断错误类型
-                let detail = escapeHtml(err.message);
-                if (err.message.includes('Failed to fetch')) {
-                    detail += '<br/><span style="font-size:0.8rem;color:#7a6a5a;">可能原因：网络中断、DNS解析失败，或 API 被拦截。请检查网络连接，或尝试使用 VPN/代理。</span>';
                 }
-                recipeGrid.innerHTML = `
-                    <div class="empty">
-                        加载失败
-                        <div class="error-detail">${detail}</div>
-                    </div>
-                `;
+
+                if (loadedItems.length === 0) {
+                    recipeGrid.innerHTML = `<div class="empty">暂无菜谱</div>`;
+                }
+            } catch (err) {
+                console.error(err);
+                recipeGrid.innerHTML = `<div class="empty">加载失败</div>`;
             }
         }
 
-        // ----- 加载随笔 -----
-        async function loadNotes() {
+        // ----- 流式加载随笔 -----
+        async function loadNotesStream() {
             try {
-                noteGrid.innerHTML = `<div class="loading"><div class="spinner"></div>加载随笔...</div>`;
+                noteList.innerHTML = `<div class="loading"><div class="spinner"></div>加载随笔...</div>`;
                 const files = await fetchDir('notes');
                 if (files.length === 0) {
-                    noteGrid.innerHTML = `<div class="empty">暂无随笔</div>`;
-                    allNotes = [];
-                    renderNotes();
+                    noteList.innerHTML = `<div class="empty">暂无随笔</div>`;
                     return;
                 }
 
-                const promises = files.map(async file => {
+                noteList.innerHTML = '';
+                const loadedItems = [];
+
+                for (const file of files) {
                     try {
                         const content = await fetchFileContent(file.download_url);
                         const { meta, body } = parseFrontMatter(content);
-                        return {
+
+                        const item = {
                             id: file.name.replace(/\.txt$/, ''),
                             title: meta.title || file.name.replace(/\.txt$/, ''),
                             summary: meta.summary || meta.description || '',
                             date: meta.date || '',
-                            tags: meta.tags || [],
                             content: body,
                         };
+                        loadedItems.push(item);
+                        allNotes = loadedItems;
+                        renderNotes();
                     } catch (e) {
                         console.warn('跳过随笔:', file.name, e);
-                        return null;
                     }
-                });
-                const results = await Promise.all(promises);
-                allNotes = results.filter(r => r !== null);
-                renderNotes();
-            } catch (err) {
-                console.error('加载随笔失败:', err);
-                let detail = escapeHtml(err.message);
-                if (err.message.includes('Failed to fetch')) {
-                    detail += '<br/><span style="font-size:0.8rem;color:#7a6a5a;">可能原因：网络中断、DNS解析失败，或 API 被拦截。请检查网络连接，或尝试使用 VPN/代理。</span>';
                 }
-                noteGrid.innerHTML = `
-                    <div class="empty">
-                        加载失败
-                        <div class="error-detail">${detail}</div>
-                    </div>
-                `;
+
+                if (loadedItems.length === 0) {
+                    noteList.innerHTML = `<div class="empty">暂无随笔</div>`;
+                }
+            } catch (err) {
+                console.error(err);
+                noteList.innerHTML = `<div class="empty">加载失败</div>`;
             }
         }
 
         // ================================================================
-        //  渲染函数（与之前相同）
+        //  渲染函数
         // ================================================================
+
+        // ----- 渲染菜谱 -----
         function renderRecipes() {
-            const items = allRecipes;
-            let filtered = items;
+            let items = allRecipes;
             if (searchKeyword.trim()) {
                 const kw = searchKeyword.trim().toLowerCase();
-                filtered = items.filter(item => {
-                    return item.ingredients && item.ingredients.some(ing => ing.toLowerCase().includes(kw));
-                });
+                items = items.filter(item =>
+                    item.ingredients && item.ingredients.some(ing => ing.name.includes(kw))
+                );
             }
 
-            if (!filtered || filtered.length === 0) {
-                recipeGrid.innerHTML = `<div class="empty">暂无菜谱</div>`;
+            if (!items || items.length === 0) {
+                if (allRecipes.length === 0) {
+                    // 空状态由加载函数处理
+                    return;
+                }
+                recipeGrid.innerHTML = `<div class="empty">没有匹配的菜谱</div>`;
                 return;
             }
 
-            const sorted = [...filtered].sort((a, b) => {
+            const sorted = [...items].sort((a, b) => {
                 if (!a.date && !b.date) return 0;
                 if (!a.date) return 1;
                 if (!b.date) return -1;
@@ -625,13 +824,13 @@
                 const dateStr = item.date ? safeDate(item.date) : '';
                 const summary = item.summary || '';
                 html += `
-                    <div class="card" data-id="${item.id}" data-type="recipe">
-                        <span class="type-badge">菜谱</span>
-                        <div class="title">${escapeHtml(item.title)}</div>
-                        ${dateStr ? `<div class="date">${dateStr}</div>` : ''}
-                        ${summary ? `<div class="summary">${escapeHtml(summary)}</div>` : ''}
-                    </div>
-                `;
+                        <div class="card" data-id="${item.id}">
+                            <span class="badge">菜谱</span>
+                            <div class="title">${escapeHtml(item.title)}</div>
+                            ${dateStr ? `<div class="date">${dateStr}</div>` : ''}
+                            ${summary ? `<div class="summary">${escapeHtml(summary)}</div>` : ''}
+                        </div>
+                    `;
             }
             recipeGrid.innerHTML = html;
 
@@ -639,15 +838,17 @@
                 el.addEventListener('click', () => {
                     const id = el.dataset.id;
                     const item = allRecipes.find(i => i.id === id);
-                    if (item) openModal(item);
+                    if (item) openRecipeModal(item);
                 });
             });
         }
 
+        // ----- 渲染随笔 -----
         function renderNotes() {
             const items = allNotes;
             if (!items || items.length === 0) {
-                noteGrid.innerHTML = `<div class="empty">暂无随笔</div>`;
+                if (allNotes.length === 0) return;
+                noteList.innerHTML = `<div class="empty">暂无随笔</div>`;
                 return;
             }
 
@@ -662,46 +863,70 @@
             for (const item of sorted) {
                 const dateStr = item.date ? safeDate(item.date) : '';
                 html += `
-                    <div class="entry" data-id="${item.id}" data-type="note">
-                        <div class="entry-title">${escapeHtml(item.title)}</div>
-                        ${dateStr ? `<div class="entry-date">${dateStr}</div>` : ''}
-                    </div>
-                `;
+                        <div class="entry" data-id="${item.id}">
+                            <div class="entry-title">${escapeHtml(item.title)}</div>
+                            ${dateStr ? `<div class="entry-date">${dateStr}</div>` : ''}
+                        </div>
+                    `;
             }
-            noteGrid.innerHTML = html;
+            noteList.innerHTML = html;
 
-            noteGrid.querySelectorAll('.entry').forEach(el => {
+            noteList.querySelectorAll('.entry').forEach(el => {
                 el.addEventListener('click', () => {
                     const id = el.dataset.id;
                     const item = allNotes.find(i => i.id === id);
-                    if (item) openModal(item);
+                    if (item) openNoteModal(item);
                 });
             });
         }
 
         // ================================================================
-        //  切换视图、搜索、模态框（与之前相同）
+        //  模态框
         // ================================================================
-        function switchView(view) {
-            currentView = view;
-            tabs.forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
-            recipeGrid.style.display = (view === 'recipe') ? 'grid' : 'none';
-            noteGrid.style.display = (view === 'note') ? 'block' : 'none';
-            searchBox.classList.toggle('visible', view === 'recipe');
-            if (view === 'recipe') renderRecipes();
+
+        function openRecipeModal(item) {
+            const ingredientItems = (item.ingredients || []).map(ing =>
+                `<li>
+                        <span class="ing-name">${escapeHtml(ing.name)}</span>
+                        ${ing.amount ? `<span class="ing-sep">/</span><span class="ing-amount">${escapeHtml(ing.amount)}</span>` : ''}
+                    </li>`
+            ).join('');
+
+            const stepsHtml = (item.steps || []).map(s => `<li>${escapeHtml(s)}</li>`).join('');
+
+            const html = `
+                    <div class="recipe-detail">
+                        <div class="detail-title">${escapeHtml(item.title)}</div>
+                        <div class="detail-date">${item.date ? safeDate(item.date) : ''}</div>
+                        <div class="ingredients-block">
+                            <h3>食材</h3>
+                            <ul class="ingredient-list">
+                                ${ingredientItems || '<li style="color:#b0a090;">无食材信息</li>'}
+                            </ul>
+                        </div>
+                        <div class="method-block">
+                            <h3>做法</h3>
+                            <ol>
+                                ${stepsHtml || '<li style="color:#b0a090;">无做法信息</li>'}
+                            </ol>
+                            ${item.tips ? `<div class="tips"><strong>要点：</strong>${escapeHtml(item.tips)}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            detailContainer.innerHTML = html;
+            modalOverlay.classList.add('active');
         }
 
-        searchInput.addEventListener('input', (e) => {
-            searchKeyword = e.target.value;
-            if (currentView === 'recipe') renderRecipes();
-        });
-
-        function openModal(item) {
-            modalTitle.textContent = item.title;
-            modalDate.textContent = item.date ? safeDate(item.date) : '';
-            modalBody.innerHTML = renderMarkdown(item.content);
+        function openNoteModal(item) {
+            const html = `
+                    <div class="note-detail">
+                        <div class="detail-title">${escapeHtml(item.title)}</div>
+                        <div class="detail-date">${item.date ? safeDate(item.date) : ''}</div>
+                        <div class="detail-body">${renderMarkdown(item.content)}</div>
+                    </div>
+                `;
+            detailContainer.innerHTML = html;
             modalOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
         }
 
         function renderMarkdown(text) {
@@ -729,7 +954,98 @@
             return html;
         }
 
-        modalClose.addEventListener('click', () => {
+        // ================================================================
+        //  价格加载
+        // ================================================================
+        async function loadPrices() {
+            try {
+                const url = `${BASE_URL}/prices.json?ref=${GITHUB_CONFIG.branch}`;
+                const resp = await fetch(url, { cache: 'no-store' });
+                if (!resp.ok) {
+                    priceBody.innerHTML = `<tr class="empty-row"><td colspan="4">价格数据加载失败</td></tr>`;
+                    return;
+                }
+                const data = await resp.json();
+                priceData = data.list || [];
+                renderPriceTable(priceData);
+            } catch (err) {
+                console.error(err);
+                priceBody.innerHTML = `<tr class="empty-row"><td colspan="4">价格数据加载失败</td></tr>`;
+            }
+        }
+
+        function renderPriceTable(data) {
+            if (!data || data.length === 0) {
+                priceBody.innerHTML = `<tr class="empty-row"><td colspan="4">暂无价格数据</td></tr>`;
+                return;
+            }
+            let html = '';
+            for (const item of data) {
+                const range = `${item.low_price} ~ ${item.high_price}`;
+                html += `
+                        <tr>
+                            <td><strong>${escapeHtml(item.name)}</strong></td>
+                            <td><span class="category-tag">${escapeHtml(item.category)}</span></td>
+                            <td class="price">${escapeHtml(item.avg_price)}</td>
+                            <td class="range">${escapeHtml(range)}</td>
+                        </tr>
+                    `;
+            }
+            priceBody.innerHTML = html;
+        }
+
+        function filterPrice(keyword) {
+            const kw = keyword.trim().toLowerCase();
+            if (!kw) {
+                renderPriceTable(priceData);
+                return;
+            }
+            const filtered = priceData.filter(item =>
+                item.name.includes(kw) || item.category.includes(kw)
+            );
+            renderPriceTable(filtered);
+        }
+
+        // ================================================================
+        //  切换面板
+        // ================================================================
+        function switchPanel(name) {
+            currentView = name;
+            tabs.forEach(btn => btn.classList.toggle('active', btn.dataset.panel === name));
+            // 显示对应的面板
+            document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
+            document.getElementById(`panel-${name}`).classList.add('active');
+            // 搜索框仅菜谱可见
+            searchBox.classList.toggle('visible', name === 'recipe');
+            // 如果是价格面板，重新渲染表格
+            if (name === 'price') {
+                renderPriceTable(priceData);
+            }
+        }
+
+        tabs.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const name = btn.dataset.panel;
+                if (name !== currentView) switchPanel(name);
+            });
+        });
+
+        // ================================================================
+        //  搜索事件
+        // ================================================================
+        searchInput.addEventListener('input', (e) => {
+            searchKeyword = e.target.value;
+            renderRecipes();
+        });
+
+        priceSearch.addEventListener('input', (e) => {
+            filterPrice(e.target.value);
+        });
+
+        // ================================================================
+        //  模态框关闭
+        // ================================================================
+        closeBtn.addEventListener('click', () => {
             modalOverlay.classList.remove('active');
             document.body.style.overflow = '';
         });
@@ -746,26 +1062,20 @@
             }
         });
 
-        tabs.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const view = btn.dataset.view;
-                if (view !== currentView) switchView(view);
-            });
-        });
-
         // ================================================================
         //  启动
         // ================================================================
-        recipeGrid.style.display = 'grid';
-        noteGrid.style.display = 'none';
+        // 默认菜谱面板可见
+        document.getElementById('panel-recipe').classList.add('active');
         searchBox.classList.add('visible');
 
-        loadRecipes();
-        loadNotes();
+        // 并行启动流式加载
+        loadRecipesStream();
+        loadNotesStream();
+        loadPrices();
 
-        console.log('✅ 已启动');
-        console.log('🔗 请求基础 URL（含分支）:', BASE_URL);
-        console.log('🔄 如果仍然 Failed to fetch，请检查浏览器控制台网络请求的详细信息。');
+        console.log('✅ 已启动 — 流式加载，扫一篇加载一篇');
+        console.log('📁 recipes/ 和 notes/ 下的 .txt 文件会逐个加载并渲染');
     </script>
 </body>
 </html>
