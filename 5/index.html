@@ -23,7 +23,6 @@
             margin: 0 auto;
         }
 
-        /* ===== 顶部切换 ===== */
         .tabs {
             display: flex;
             gap: 0;
@@ -52,7 +51,6 @@
             border-bottom-color: #d48c5c;
         }
 
-        /* ===== 面板 ===== */
         .panel {
             display: none;
             animation: fadePanel 0.2s ease;
@@ -65,7 +63,6 @@
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* ===== 搜索框（仅菜谱） ===== */
         .search-box {
             margin-bottom: 18px;
             display: none;
@@ -88,7 +85,6 @@
             box-shadow: 0 0 0 3px rgba(212, 140, 92, 0.15);
         }
 
-        /* ===== 菜谱卡片 ===== */
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -99,6 +95,7 @@
                 grid-template-columns: 1fr;
             }
         }
+
         .card {
             background: white;
             border-radius: 18px;
@@ -147,7 +144,6 @@
             overflow: hidden;
         }
 
-        /* ===== 随笔列表 ===== */
         .entry-list {
             margin-top: 4px;
         }
@@ -174,7 +170,6 @@
             color: #b0a090;
         }
 
-        /* ===== 价格参考 ===== */
         .price-search {
             margin-bottom: 18px;
         }
@@ -256,7 +251,6 @@
             }
         }
 
-        /* ===== 加载/空状态 ===== */
         .loading {
             text-align: center;
             padding: 30px 10px;
@@ -283,7 +277,6 @@
             font-size: 0.95rem;
         }
 
-        /* ===== 模态框 ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -335,7 +328,6 @@
             color: #c0392b;
         }
 
-        /* ===== 菜谱详情 ===== */
         .recipe-detail .detail-title {
             font-size: 2rem;
             font-weight: 700;
@@ -417,7 +409,6 @@
             color: #4a3520;
         }
 
-        /* ===== 随笔详情 ===== */
         .note-detail .detail-title {
             font-size: 2.2rem;
             font-weight: 700;
@@ -473,14 +464,12 @@
 </head>
 <body>
     <div class="container">
-        <!-- 顶部切换 -->
         <div class="tabs" id="tabs">
             <button class="active" data-panel="recipe">菜谱</button>
             <button data-panel="note">随笔</button>
             <button data-panel="price">价格参考</button>
         </div>
 
-        <!-- ===== 面板：菜谱 ===== -->
         <div class="panel active" id="panel-recipe">
             <div class="search-box visible" id="searchBox">
                 <input type="text" id="recipeSearch" placeholder="搜索食材..." />
@@ -488,12 +477,10 @@
             <div class="grid" id="recipeGrid"></div>
         </div>
 
-        <!-- ===== 面板：随笔 ===== -->
         <div class="panel" id="panel-note">
             <div class="entry-list" id="noteList"></div>
         </div>
 
-        <!-- ===== 面板：价格参考 ===== -->
         <div class="panel" id="panel-price">
             <div class="price-search">
                 <input type="text" id="priceSearch" placeholder="搜索食材或类别..." />
@@ -513,7 +500,6 @@
             </div>
         </div>
 
-        <!-- ===== 模态框 ===== -->
         <div class="modal-overlay" id="modalOverlay">
             <div class="modal" id="modalContent">
                 <button class="close-btn" id="closeBtn">&times;</button>
@@ -524,7 +510,7 @@
 
     <script>
         // ================================================================
-        //  配置（请确认你的仓库信息）
+        //  配置（请根据你的仓库信息修改）
         // ================================================================
         const GITHUB_CONFIG = {
             owner: 'eternallight-debug',
@@ -533,9 +519,7 @@
             path: '5',
         };
 
-        // ================================================================
-        //  使用 raw.githubusercontent.com 获取文件（更稳定，绕过 API 限制）
-        // ================================================================
+        // raw 基础路径
         const RAW_BASE =
             `https://raw.githubusercontent.com/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${GITHUB_CONFIG.path}`;
 
@@ -605,7 +589,6 @@
             return { meta, body };
         }
 
-        // ----- 解析菜谱内容（提取食材、做法、要点） -----
         function parseRecipeContent(body) {
             const lines = body.split('\n');
             let section = null;
@@ -613,7 +596,6 @@
             let steps = [];
             let tips = '';
             let currentText = '';
-
             for (const line of lines) {
                 const trimmed = line.trim();
                 if (trimmed.startsWith('## ')) {
@@ -665,125 +647,189 @@
             } else if (section === 'tips' && currentText.trim()) {
                 tips = currentText.trim();
             }
-
             return { ingredients, steps, tips };
         }
 
         // ================================================================
-        //  流式加载
+        //  数据加载（完全基于静态文件，无 API）
         // ================================================================
 
-        // ----- 获取目录文件列表（使用 API） -----
-        async function fetchDir(folder) {
-            const url =
-                `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}/${folder}?ref=${GITHUB_CONFIG.branch}`;
-            const resp = await fetch(url, {
-                headers: { 'Accept': 'application/vnd.github.v3+json' },
-                cache: 'no-store',
-            });
+        // ----- 读取清单文件（返回标题数组） -----
+        async function fetchManifest(listFileName) {
+            const url = `${RAW_BASE}/${listFileName}`;
+            const resp = await fetch(url, { cache: 'no-store' });
             if (!resp.ok) {
                 if (resp.status === 404) return [];
-                throw new Error(`请求失败 (${resp.status})`);
+                throw new Error(`清单文件 ${listFileName} 加载失败 (${resp.status})`);
             }
-            const data = await resp.json();
-            if (!Array.isArray(data)) return [];
-            return data.filter(item => item.type === 'file' && item.name.endsWith('.txt'));
+            const text = await resp.text();
+            // 按行分割，过滤空行，去除首尾空白
+            return text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
         }
 
-        // ----- 通过 raw 获取文件内容（绕过 API 限制） -----
-        async function fetchRawFile(filePath) {
-            const url = `${RAW_BASE}/${filePath}`;
-            const resp = await fetch(url, { cache: 'no-store' });
-            if (!resp.ok) throw new Error(`文件读取失败 (${resp.status})`);
-            return await resp.text();
+        // ----- 通过标题和类型加载单个文件 -----
+        async function loadItemByTitle(title, type) {
+            const folder = type === 'recipe' ? 'recipes' : 'notes';
+            const fileUrl = `${RAW_BASE}/${folder}/${encodeURIComponent(title)}.txt`;
+            const resp = await fetch(fileUrl, { cache: 'no-store' });
+            if (!resp.ok) {
+                console.warn(`文件 ${title}.txt 加载失败 (${resp.status})`);
+                return null;
+            }
+            const content = await resp.text();
+            const { meta, body } = parseFrontMatter(content);
+            if (type === 'recipe') {
+                const parsed = parseRecipeContent(body);
+                return {
+                    id: title,
+                    title: meta.title || title,
+                    summary: meta.summary || meta.description || '',
+                    date: meta.date || '',
+                    ingredients: parsed.ingredients || [],
+                    steps: parsed.steps || [],
+                    tips: parsed.tips || '',
+                    content: body,
+                };
+            } else { // note
+                return {
+                    id: title,
+                    title: meta.title || title,
+                    summary: meta.summary || meta.description || '',
+                    date: meta.date || '',
+                    content: body,
+                };
+            }
         }
 
         // ----- 流式加载菜谱 -----
-        async function loadRecipesStream() {
+        async function loadRecipes() {
             try {
                 recipeGrid.innerHTML = `<div class="loading"><div class="spinner"></div>加载菜谱...</div>`;
-                const files = await fetchDir('recipes');
-                if (files.length === 0) {
-                    recipeGrid.innerHTML = `<div class="empty">暂无菜谱</div>`;
+                const titles = await fetchManifest('recipes.txt');
+                if (titles.length === 0) {
+                    recipeGrid.innerHTML = `<div class="empty">暂无菜谱，请在 recipes.txt 中添加标题</div>`;
                     return;
                 }
 
                 recipeGrid.innerHTML = '';
                 const loadedItems = [];
 
-                for (const file of files) {
+                for (const title of titles) {
                     try {
-                        const content = await fetchRawFile(`recipes/${file.name}`);
-                        const { meta, body } = parseFrontMatter(content);
-                        const parsed = parseRecipeContent(body);
-
-                        const item = {
-                            id: file.name.replace(/\.txt$/, ''),
-                            title: meta.title || file.name.replace(/\.txt$/, ''),
-                            summary: meta.summary || meta.description || '',
-                            date: meta.date || '',
-                            ingredients: parsed.ingredients || [],
-                            steps: parsed.steps || [],
-                            tips: parsed.tips || '',
-                            content: body,
-                        };
-                        loadedItems.push(item);
-                        allRecipes = loadedItems;
-                        renderRecipes();
+                        const item = await loadItemByTitle(title, 'recipe');
+                        if (item) {
+                            loadedItems.push(item);
+                            allRecipes = loadedItems;
+                            renderRecipes();
+                        }
                     } catch (e) {
-                        console.warn('跳过菜谱:', file.name, e);
+                        console.warn('跳过菜谱:', title, e);
                     }
                 }
 
                 if (loadedItems.length === 0) {
-                    recipeGrid.innerHTML = `<div class="empty">暂无菜谱</div>`;
+                    recipeGrid.innerHTML = `<div class="empty">没有成功加载任何菜谱，请检查文件是否存在</div>`;
                 }
             } catch (err) {
                 console.error(err);
-                recipeGrid.innerHTML = `<div class="empty">加载失败</div>`;
+                recipeGrid.innerHTML = `<div class="empty">加载菜谱清单失败：${escapeHtml(err.message)}</div>`;
             }
         }
 
         // ----- 流式加载随笔 -----
-        async function loadNotesStream() {
+        async function loadNotes() {
             try {
                 noteList.innerHTML = `<div class="loading"><div class="spinner"></div>加载随笔...</div>`;
-                const files = await fetchDir('notes');
-                if (files.length === 0) {
-                    noteList.innerHTML = `<div class="empty">暂无随笔</div>`;
+                const titles = await fetchManifest('notes.txt');
+                if (titles.length === 0) {
+                    noteList.innerHTML = `<div class="empty">暂无随笔，请在 notes.txt 中添加标题</div>`;
                     return;
                 }
 
                 noteList.innerHTML = '';
                 const loadedItems = [];
 
-                for (const file of files) {
+                for (const title of titles) {
                     try {
-                        const content = await fetchRawFile(`notes/${file.name}`);
-                        const { meta, body } = parseFrontMatter(content);
-
-                        const item = {
-                            id: file.name.replace(/\.txt$/, ''),
-                            title: meta.title || file.name.replace(/\.txt$/, ''),
-                            summary: meta.summary || meta.description || '',
-                            date: meta.date || '',
-                            content: body,
-                        };
-                        loadedItems.push(item);
-                        allNotes = loadedItems;
-                        renderNotes();
+                        const item = await loadItemByTitle(title, 'note');
+                        if (item) {
+                            loadedItems.push(item);
+                            allNotes = loadedItems;
+                            renderNotes();
+                        }
                     } catch (e) {
-                        console.warn('跳过随笔:', file.name, e);
+                        console.warn('跳过随笔:', title, e);
                     }
                 }
 
                 if (loadedItems.length === 0) {
-                    noteList.innerHTML = `<div class="empty">暂无随笔</div>`;
+                    noteList.innerHTML = `<div class="empty">没有成功加载任何随笔，请检查文件是否存在</div>`;
                 }
             } catch (err) {
                 console.error(err);
-                noteList.innerHTML = `<div class="empty">加载失败</div>`;
+                noteList.innerHTML = `<div class="empty">加载随笔清单失败：${escapeHtml(err.message)}</div>`;
             }
+        }
+
+        // ================================================================
+        //  价格加载（依然从 prices.json 读取）
+        // ================================================================
+        async function loadPrices() {
+            try {
+                const url = `${RAW_BASE}/prices.json`;
+                const resp = await fetch(url, { cache: 'no-store' });
+                if (!resp.ok) {
+                    if (resp.status === 404) {
+                        priceBody.innerHTML = `<tr class="empty-row"><td colspan="4">prices.json 不存在</td></tr>`;
+                    } else {
+                        priceBody.innerHTML = `<tr class="empty-row"><td colspan="4">价格加载失败 (${resp.status})</td></tr>`;
+                    }
+                    return;
+                }
+                const data = await resp.json();
+                if (!data.list || !Array.isArray(data.list)) {
+                    priceBody.innerHTML = `<tr class="empty-row"><td colspan="4">数据格式错误</td></tr>`;
+                    return;
+                }
+                priceData = data.list;
+                renderPriceTable(priceData);
+                console.log('✅ 价格加载成功，共', priceData.length, '条');
+            } catch (err) {
+                console.error(err);
+                priceBody.innerHTML = `<tr class="empty-row"><td colspan="4">价格加载错误：${escapeHtml(err.message)}</td></tr>`;
+            }
+        }
+
+        function renderPriceTable(data) {
+            if (!data || data.length === 0) {
+                priceBody.innerHTML = `<tr class="empty-row"><td colspan="4">暂无价格数据</td></tr>`;
+                return;
+            }
+            let html = '';
+            for (const item of data) {
+                const range = `${item.low_price} ~ ${item.high_price}`;
+                html += `
+                        <tr>
+                            <td><strong>${escapeHtml(item.name)}</strong></td>
+                            <td><span class="category-tag">${escapeHtml(item.category)}</span></td>
+                            <td class="price">${escapeHtml(item.avg_price)}</td>
+                            <td class="range">${escapeHtml(range)}</td>
+                        </tr>
+                    `;
+            }
+            priceBody.innerHTML = html;
+        }
+
+        function filterPrice(keyword) {
+            const kw = keyword.trim().toLowerCase();
+            if (!kw) {
+                renderPriceTable(priceData);
+                return;
+            }
+            const filtered = priceData.filter(item =>
+                item.name.includes(kw) || item.category.includes(kw)
+            );
+            renderPriceTable(filtered);
         }
 
         // ================================================================
@@ -798,20 +844,17 @@
                     item.ingredients && item.ingredients.some(ing => ing.name.includes(kw))
                 );
             }
-
             if (!items || items.length === 0) {
                 if (allRecipes.length === 0) return;
                 recipeGrid.innerHTML = `<div class="empty">没有匹配的菜谱</div>`;
                 return;
             }
-
             const sorted = [...items].sort((a, b) => {
                 if (!a.date && !b.date) return 0;
                 if (!a.date) return 1;
                 if (!b.date) return -1;
                 return new Date(b.date) - new Date(a.date);
             });
-
             let html = '';
             for (const item of sorted) {
                 const dateStr = item.date ? safeDate(item.date) : '';
@@ -826,7 +869,6 @@
                     `;
             }
             recipeGrid.innerHTML = html;
-
             recipeGrid.querySelectorAll('.card').forEach(el => {
                 el.addEventListener('click', () => {
                     const id = el.dataset.id;
@@ -843,14 +885,12 @@
                 noteList.innerHTML = `<div class="empty">暂无随笔</div>`;
                 return;
             }
-
             const sorted = [...items].sort((a, b) => {
                 if (!a.date && !b.date) return 0;
                 if (!a.date) return 1;
                 if (!b.date) return -1;
                 return new Date(b.date) - new Date(a.date);
             });
-
             let html = '';
             for (const item of sorted) {
                 const dateStr = item.date ? safeDate(item.date) : '';
@@ -862,7 +902,6 @@
                     `;
             }
             noteList.innerHTML = html;
-
             noteList.querySelectorAll('.entry').forEach(el => {
                 el.addEventListener('click', () => {
                     const id = el.dataset.id;
@@ -883,9 +922,7 @@
                         ${ing.amount ? `<span class="ing-sep">/</span><span class="ing-amount">${escapeHtml(ing.amount)}</span>` : ''}
                     </li>`
             ).join('');
-
             const stepsHtml = (item.steps || []).map(s => `<li>${escapeHtml(s)}</li>`).join('');
-
             const html = `
                     <div class="recipe-detail">
                         <div class="detail-title">${escapeHtml(item.title)}</div>
@@ -947,72 +984,6 @@
         }
 
         // ================================================================
-        //  价格加载（使用 raw 直接读取，稳定可靠）
-        // ================================================================
-        async function loadPrices() {
-            try {
-                const url = `${RAW_BASE}/prices.json`;
-                console.log('价格请求 URL:', url);
-
-                const resp = await fetch(url, { cache: 'no-store' });
-                if (!resp.ok) {
-                    let msg = `HTTP ${resp.status}`;
-                    if (resp.status === 404) {
-                        msg = `prices.json 文件未找到，请确认文件在 /${GITHUB_CONFIG.path}/ 目录下`;
-                    }
-                    priceBody.innerHTML =
-                    `<tr class="empty-row"><td colspan="4">⚠️ 价格加载失败：${escapeHtml(msg)}</td></tr>`;
-                    return;
-                }
-
-                const data = await resp.json();
-                if (!data.list || !Array.isArray(data.list)) {
-                    priceBody.innerHTML = `<tr class="empty-row"><td colspan="4">⚠️ 数据格式错误，缺少 "list" 数组</td></tr>`;
-                    return;
-                }
-                priceData = data.list;
-                renderPriceTable(priceData);
-                console.log('✅ 价格数据加载成功，共', priceData.length, '条');
-            } catch (err) {
-                console.error('价格加载错误:', err);
-                priceBody.innerHTML =
-                    `<tr class="empty-row"><td colspan="4">❌ 网络错误：${escapeHtml(err.message)}</td></tr>`;
-            }
-        }
-
-        function renderPriceTable(data) {
-            if (!data || data.length === 0) {
-                priceBody.innerHTML = `<tr class="empty-row"><td colspan="4">暂无价格数据</td></tr>`;
-                return;
-            }
-            let html = '';
-            for (const item of data) {
-                const range = `${item.low_price} ~ ${item.high_price}`;
-                html += `
-                        <tr>
-                            <td><strong>${escapeHtml(item.name)}</strong></td>
-                            <td><span class="category-tag">${escapeHtml(item.category)}</span></td>
-                            <td class="price">${escapeHtml(item.avg_price)}</td>
-                            <td class="range">${escapeHtml(range)}</td>
-                        </tr>
-                    `;
-            }
-            priceBody.innerHTML = html;
-        }
-
-        function filterPrice(keyword) {
-            const kw = keyword.trim().toLowerCase();
-            if (!kw) {
-                renderPriceTable(priceData);
-                return;
-            }
-            const filtered = priceData.filter(item =>
-                item.name.includes(kw) || item.category.includes(kw)
-            );
-            renderPriceTable(filtered);
-        }
-
-        // ================================================================
         //  切换面板
         // ================================================================
         function switchPanel(name) {
@@ -1071,12 +1042,13 @@
         document.getElementById('panel-recipe').classList.add('active');
         searchBox.classList.add('visible');
 
-        loadRecipesStream();
-        loadNotesStream();
+        // 并行加载
+        loadRecipes();
+        loadNotes();
         loadPrices();
 
-        console.log('✅ 已启动 — 价格使用 raw 直读，绕过 API 限制');
-        console.log('📁 配置文件路径:', RAW_BASE);
+        console.log('✅ 已启动 — 基于静态清单，100% 稳定');
+        console.log('📋 recipes.txt 和 notes.txt 每行一个标题');
     </script>
 </body>
 </html>
