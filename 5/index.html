@@ -524,7 +524,7 @@
 
     <script>
         // ================================================================
-        //  配置
+        //  配置（请确认你的仓库信息）
         // ================================================================
         const GITHUB_CONFIG = {
             owner: 'eternallight-debug',
@@ -532,8 +532,12 @@
             branch: 'main',
             path: '5',
         };
-        const BASE_URL =
-            `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`;
+
+        // ================================================================
+        //  使用 raw.githubusercontent.com 获取文件（更稳定，绕过 API 限制）
+        // ================================================================
+        const RAW_BASE =
+            `https://raw.githubusercontent.com/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${GITHUB_CONFIG.path}`;
 
         // ================================================================
         //  状态
@@ -613,11 +617,9 @@
             for (const line of lines) {
                 const trimmed = line.trim();
                 if (trimmed.startsWith('## ')) {
-                    // 保存上一段
                     if (section === 'ingredients' && currentText.trim()) {
                         const items = currentText.split('\n').map(s => s.trim()).filter(s => s);
                         for (const item of items) {
-                            // 尝试用 / 分隔，如果没有则整个作为名称
                             if (item.includes('/')) {
                                 const parts = item.split('/').map(s => s.trim());
                                 ingredients.push({ name: parts[0], amount: parts.slice(1).join('/') });
@@ -630,7 +632,6 @@
                     } else if (section === 'tips' && currentText.trim()) {
                         tips = currentText.trim();
                     }
-                    // 新段落
                     const title = trimmed.replace(/^## /, '').trim();
                     if (title === '食材') {
                         section = 'ingredients';
@@ -649,7 +650,6 @@
                     if (section) currentText += line + '\n';
                 }
             }
-            // 处理最后一段
             if (section === 'ingredients' && currentText.trim()) {
                 const items = currentText.split('\n').map(s => s.trim()).filter(s => s);
                 for (const item of items) {
@@ -666,20 +666,17 @@
                 tips = currentText.trim();
             }
 
-            // 如果没有食材、做法、要点，尝试从 body 提取
-            if (ingredients.length === 0 && steps.length === 0 && !tips) {
-                // 把整个 body 当作内容，但这里不做复杂处理，返回空
-            }
             return { ingredients, steps, tips };
         }
 
         // ================================================================
-        //  流式加载：逐个加载文件，加载一个渲染一个
+        //  流式加载
         // ================================================================
 
-        // ----- 获取目录文件列表 -----
+        // ----- 获取目录文件列表（使用 API） -----
         async function fetchDir(folder) {
-            const url = `${BASE_URL}/${folder}?ref=${GITHUB_CONFIG.branch}`;
+            const url =
+                `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}/${folder}?ref=${GITHUB_CONFIG.branch}`;
             const resp = await fetch(url, {
                 headers: { 'Accept': 'application/vnd.github.v3+json' },
                 cache: 'no-store',
@@ -693,8 +690,10 @@
             return data.filter(item => item.type === 'file' && item.name.endsWith('.txt'));
         }
 
-        async function fetchFileContent(fileUrl) {
-            const resp = await fetch(fileUrl, { cache: 'no-store' });
+        // ----- 通过 raw 获取文件内容（绕过 API 限制） -----
+        async function fetchRawFile(filePath) {
+            const url = `${RAW_BASE}/${filePath}`;
+            const resp = await fetch(url, { cache: 'no-store' });
             if (!resp.ok) throw new Error(`文件读取失败 (${resp.status})`);
             return await resp.text();
         }
@@ -709,13 +708,12 @@
                     return;
                 }
 
-                // 清空，逐个追加
                 recipeGrid.innerHTML = '';
                 const loadedItems = [];
 
                 for (const file of files) {
                     try {
-                        const content = await fetchFileContent(file.download_url);
+                        const content = await fetchRawFile(`recipes/${file.name}`);
                         const { meta, body } = parseFrontMatter(content);
                         const parsed = parseRecipeContent(body);
 
@@ -731,7 +729,6 @@
                         };
                         loadedItems.push(item);
                         allRecipes = loadedItems;
-                        // 每加载一个，重新渲染（增量渲染）
                         renderRecipes();
                     } catch (e) {
                         console.warn('跳过菜谱:', file.name, e);
@@ -762,7 +759,7 @@
 
                 for (const file of files) {
                     try {
-                        const content = await fetchFileContent(file.download_url);
+                        const content = await fetchRawFile(`notes/${file.name}`);
                         const { meta, body } = parseFrontMatter(content);
 
                         const item = {
@@ -793,7 +790,6 @@
         //  渲染函数
         // ================================================================
 
-        // ----- 渲染菜谱 -----
         function renderRecipes() {
             let items = allRecipes;
             if (searchKeyword.trim()) {
@@ -804,10 +800,7 @@
             }
 
             if (!items || items.length === 0) {
-                if (allRecipes.length === 0) {
-                    // 空状态由加载函数处理
-                    return;
-                }
+                if (allRecipes.length === 0) return;
                 recipeGrid.innerHTML = `<div class="empty">没有匹配的菜谱</div>`;
                 return;
             }
@@ -843,7 +836,6 @@
             });
         }
 
-        // ----- 渲染随笔 -----
         function renderNotes() {
             const items = allNotes;
             if (!items || items.length === 0) {
@@ -955,22 +947,36 @@
         }
 
         // ================================================================
-        //  价格加载
+        //  价格加载（使用 raw 直接读取，稳定可靠）
         // ================================================================
         async function loadPrices() {
             try {
-                const url = `${BASE_URL}/prices.json?ref=${GITHUB_CONFIG.branch}`;
+                const url = `${RAW_BASE}/prices.json`;
+                console.log('价格请求 URL:', url);
+
                 const resp = await fetch(url, { cache: 'no-store' });
                 if (!resp.ok) {
-                    priceBody.innerHTML = `<tr class="empty-row"><td colspan="4">价格数据加载失败</td></tr>`;
+                    let msg = `HTTP ${resp.status}`;
+                    if (resp.status === 404) {
+                        msg = `prices.json 文件未找到，请确认文件在 /${GITHUB_CONFIG.path}/ 目录下`;
+                    }
+                    priceBody.innerHTML =
+                    `<tr class="empty-row"><td colspan="4">⚠️ 价格加载失败：${escapeHtml(msg)}</td></tr>`;
                     return;
                 }
+
                 const data = await resp.json();
-                priceData = data.list || [];
+                if (!data.list || !Array.isArray(data.list)) {
+                    priceBody.innerHTML = `<tr class="empty-row"><td colspan="4">⚠️ 数据格式错误，缺少 "list" 数组</td></tr>`;
+                    return;
+                }
+                priceData = data.list;
                 renderPriceTable(priceData);
+                console.log('✅ 价格数据加载成功，共', priceData.length, '条');
             } catch (err) {
-                console.error(err);
-                priceBody.innerHTML = `<tr class="empty-row"><td colspan="4">价格数据加载失败</td></tr>`;
+                console.error('价格加载错误:', err);
+                priceBody.innerHTML =
+                    `<tr class="empty-row"><td colspan="4">❌ 网络错误：${escapeHtml(err.message)}</td></tr>`;
             }
         }
 
@@ -1012,12 +1018,9 @@
         function switchPanel(name) {
             currentView = name;
             tabs.forEach(btn => btn.classList.toggle('active', btn.dataset.panel === name));
-            // 显示对应的面板
             document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
             document.getElementById(`panel-${name}`).classList.add('active');
-            // 搜索框仅菜谱可见
             searchBox.classList.toggle('visible', name === 'recipe');
-            // 如果是价格面板，重新渲染表格
             if (name === 'price') {
                 renderPriceTable(priceData);
             }
@@ -1065,17 +1068,15 @@
         // ================================================================
         //  启动
         // ================================================================
-        // 默认菜谱面板可见
         document.getElementById('panel-recipe').classList.add('active');
         searchBox.classList.add('visible');
 
-        // 并行启动流式加载
         loadRecipesStream();
         loadNotesStream();
         loadPrices();
 
-        console.log('✅ 已启动 — 流式加载，扫一篇加载一篇');
-        console.log('📁 recipes/ 和 notes/ 下的 .txt 文件会逐个加载并渲染');
+        console.log('✅ 已启动 — 价格使用 raw 直读，绕过 API 限制');
+        console.log('📁 配置文件路径:', RAW_BASE);
     </script>
 </body>
 </html>
