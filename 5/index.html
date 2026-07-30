@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
     <title>笔记</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, "Helvetica Neue", "PingFang SC", sans-serif;
             background: #f5f0eb;
@@ -18,10 +14,7 @@
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
-        .container {
-            max-width: 880px;
-            margin: 0 auto;
-        }
+        .container { max-width: 880px; margin: 0 auto; }
 
         .tabs {
             display: flex;
@@ -44,21 +37,14 @@
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
         }
-        .tabs button:hover {
-            color: #4a3520;
-        }
-        .tabs button.active {
-            color: #4a3520;
-            border-bottom-color: #d48c5c;
-        }
+        .tabs button:hover { color: #4a3520; }
+        .tabs button.active { color: #4a3520; border-bottom-color: #d48c5c; }
 
         .search-box {
             margin-bottom: 18px;
             display: none;
         }
-        .search-box.visible {
-            display: block;
-        }
+        .search-box.visible { display: block; }
         .search-box input {
             width: 100%;
             padding: 12px 18px;
@@ -81,9 +67,7 @@
             gap: 18px;
         }
         @media (min-width: 640px) {
-            .grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .grid { grid-template-columns: repeat(2, 1fr); }
         }
 
         /* 菜谱卡片 */
@@ -100,9 +84,7 @@
             position: relative;
             -webkit-tap-highlight-color: transparent;
         }
-        .card:active {
-            transform: scale(0.98);
-        }
+        .card:active { transform: scale(0.98); }
         @media (hover: hover) {
             .card:hover {
                 transform: translateY(-4px);
@@ -168,13 +150,9 @@
             transition: background 0.15s;
             -webkit-tap-highlight-color: transparent;
         }
-        .entry:active {
-            background: rgba(0,0,0,0.02);
-        }
+        .entry:active { background: rgba(0,0,0,0.02); }
         @media (hover: hover) {
-            .entry:hover {
-                background: rgba(0,0,0,0.01);
-            }
+            .entry:hover { background: rgba(0,0,0,0.01); }
         }
         .entry .entry-title {
             font-size: 1.2rem;
@@ -189,12 +167,8 @@
             letter-spacing: 0.2px;
         }
         @media (max-width: 460px) {
-            .entry {
-                padding: 12px 2px;
-            }
-            .entry .entry-title {
-                font-size: 1.1rem;
-            }
+            .entry { padding: 12px 2px; }
+            .entry .entry-title { font-size: 1.1rem; }
         }
 
         .loading, .empty {
@@ -244,9 +218,7 @@
             0% { opacity: 0; }
             100% { opacity: 1; }
         }
-        .modal-overlay.active {
-            display: flex;
-        }
+        .modal-overlay.active { display: flex; }
         .modal {
             background: white;
             border-radius: 24px;
@@ -277,9 +249,7 @@
             transition: color 0.2s;
         }
         .modal .close-btn:hover,
-        .modal .close-btn:active {
-            color: #c0392b;
-        }
+        .modal .close-btn:active { color: #c0392b; }
         .modal .modal-title {
             font-size: 1.8rem;
             font-weight: 700;
@@ -307,9 +277,7 @@
         .modal .modal-body ul,
         .modal .modal-body ol,
         .modal .modal-body blockquote,
-        .modal .modal-body pre {
-            text-indent: 0;
-        }
+        .modal .modal-body pre { text-indent: 0; }
         .modal .modal-body h2 {
             margin-top: 24px;
             margin-bottom: 10px;
@@ -328,9 +296,7 @@
             padding-left: 28px;
             margin: 8px 0 16px;
         }
-        .modal .modal-body li {
-            margin-bottom: 6px;
-        }
+        .modal .modal-body li { margin-bottom: 6px; }
         .modal .modal-body blockquote {
             border-left: 4px solid #d48c5c;
             padding: 10px 18px;
@@ -353,51 +319,20 @@
             border-radius: 6px;
             font-size: 0.9em;
         }
-        .modal::-webkit-scrollbar {
-            width: 6px;
-        }
-        .modal::-webkit-scrollbar-thumb {
-            background: #d48c5c;
-            border-radius: 12px;
-        }
-        .modal::-webkit-scrollbar-track {
-            background: #f5f0eb;
-            border-radius: 12px;
-        }
+        .modal::-webkit-scrollbar { width: 6px; }
+        .modal::-webkit-scrollbar-thumb { background: #d48c5c; border-radius: 12px; }
+        .modal::-webkit-scrollbar-track { background: #f5f0eb; border-radius: 12px; }
 
         @media (max-width: 460px) {
-            body {
-                padding: 10px 10px 20px;
-            }
-            .card {
-                padding: 16px 16px 18px;
-                border-radius: 14px;
-            }
-            .card .title {
-                font-size: 1.1rem;
-            }
-            .card .summary {
-                font-size: 0.9rem;
-                -webkit-line-clamp: 2;
-            }
-            .tabs button {
-                padding: 10px 14px;
-                font-size: 0.95rem;
-            }
-            .search-box input {
-                padding: 10px 14px;
-                font-size: 0.95rem;
-            }
-            .modal {
-                padding: 20px 18px 24px;
-                border-radius: 18px;
-            }
-            .modal .modal-title {
-                font-size: 1.5rem;
-            }
-            .entry .entry-title {
-                font-size: 1.1rem;
-            }
+            body { padding: 10px 10px 20px; }
+            .card { padding: 16px 16px 18px; border-radius: 14px; }
+            .card .title { font-size: 1.1rem; }
+            .card .summary { font-size: 0.9rem; -webkit-line-clamp: 2; }
+            .tabs button { padding: 10px 14px; font-size: 0.95rem; }
+            .search-box input { padding: 10px 14px; font-size: 0.95rem; }
+            .modal { padding: 20px 18px 24px; border-radius: 18px; }
+            .modal .modal-title { font-size: 1.5rem; }
+            .entry .entry-title { font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -426,29 +361,32 @@
     </div>
 
     <script>
-        // ============================================================
-        //  配置（请务必确认以下信息正确）
-        // ============================================================
+        // ================================================================
+        //  配置（请务必确认信息正确）
+        // ================================================================
         const GITHUB_CONFIG = {
             owner: 'eternallight-debug',   // 你的 GitHub 用户名
             repo: 'life_blog',             // 仓库名
             branch: 'main',                // 分支名（通常为 main 或 master）
             path: '5',                     // index.html 所在目录
         };
-        // 构造 API 基础 URL
-        const BASE_URL = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`;
 
-        // ============================================================
+        // ================================================================
+        //  构造 API URL（明确指定分支，避免默认分支问题）
+        // ================================================================
+        const BASE_URL = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}?ref=${GITHUB_CONFIG.branch}`;
+
+        // ================================================================
         //  状态
-        // ============================================================
+        // ================================================================
         let allRecipes = [];
         let allNotes = [];
         let currentView = 'recipe';
         let searchKeyword = '';
 
-        // ============================================================
+        // ================================================================
         //  DOM 引用
-        // ============================================================
+        // ================================================================
         const recipeGrid = document.getElementById('recipeGrid');
         const noteGrid = document.getElementById('noteGrid');
         const searchBox = document.getElementById('searchBox');
@@ -460,9 +398,9 @@
         const modalDate = document.getElementById('modalDate');
         const modalBody = document.getElementById('modalBody');
 
-        // ============================================================
+        // ================================================================
         //  工具函数
-        // ============================================================
+        // ================================================================
         function escapeHtml(str) {
             if (!str) return '';
             const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
@@ -524,18 +462,22 @@
             return ingredients;
         }
 
-        // ============================================================
-        //  数据加载（增强错误处理）
-        // ============================================================
+        // ================================================================
+        //  数据加载（增强错误输出）
+        // ================================================================
         async function fetchDir(folder) {
-            const url = `${BASE_URL}/${folder}`;
-            // 添加必要的请求头，避免缓存，并明确要求 JSON
+            // 注意：BASE_URL 已经包含 ?ref=分支，但我们要附加文件夹名，所以需要处理
+            // 因为 BASE_URL 是类似 .../contents/5?ref=main，我们追加 /recipes 会导致 ?ref 位置错误
+            // 所以重新构造：不带 ?ref 的主路径，再带参数
+            const baseWithoutRef = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`;
+            const url = `${baseWithoutRef}/${folder}?ref=${GITHUB_CONFIG.branch}`;
+            console.log('请求 URL:', url); // 输出到控制台，方便检查
+
             const resp = await fetch(url, {
-                headers: {
-                    'Accept': 'application/vnd.github.v3+json',
-                },
+                headers: { 'Accept': 'application/vnd.github.v3+json' },
                 cache: 'no-store',
             });
+
             if (!resp.ok) {
                 if (resp.status === 404) {
                     throw new Error(`文件夹 "/${GITHUB_CONFIG.path}/${folder}/" 不存在，请创建并放入 .txt 文件。`);
@@ -592,13 +534,15 @@
                 renderRecipes();
             } catch (err) {
                 console.error('加载菜谱失败:', err);
+                // 判断错误类型
+                let detail = escapeHtml(err.message);
+                if (err.message.includes('Failed to fetch')) {
+                    detail += '<br/><span style="font-size:0.8rem;color:#7a6a5a;">可能原因：网络中断、DNS解析失败，或 API 被拦截。请检查网络连接，或尝试使用 VPN/代理。</span>';
+                }
                 recipeGrid.innerHTML = `
                     <div class="empty">
                         加载失败
-                        <div class="error-detail">${escapeHtml(err.message)}</div>
-                        <div class="error-detail" style="font-size:0.8rem;color:#7a6a5a;">
-                            建议：检查网络连接、仓库是否为公开，或稍后重试（可能达到 API 限制）。
-                        </div>
+                        <div class="error-detail">${detail}</div>
                     </div>
                 `;
             }
@@ -638,21 +582,22 @@
                 renderNotes();
             } catch (err) {
                 console.error('加载随笔失败:', err);
+                let detail = escapeHtml(err.message);
+                if (err.message.includes('Failed to fetch')) {
+                    detail += '<br/><span style="font-size:0.8rem;color:#7a6a5a;">可能原因：网络中断、DNS解析失败，或 API 被拦截。请检查网络连接，或尝试使用 VPN/代理。</span>';
+                }
                 noteGrid.innerHTML = `
                     <div class="empty">
                         加载失败
-                        <div class="error-detail">${escapeHtml(err.message)}</div>
-                        <div class="error-detail" style="font-size:0.8rem;color:#7a6a5a;">
-                            建议：检查网络连接、仓库是否为公开，或稍后重试（可能达到 API 限制）。
-                        </div>
+                        <div class="error-detail">${detail}</div>
                     </div>
                 `;
             }
         }
 
-        // ============================================================
-        //  渲染函数
-        // ============================================================
+        // ================================================================
+        //  渲染函数（与之前相同）
+        // ================================================================
         function renderRecipes() {
             const items = allRecipes;
             let filtered = items;
@@ -734,35 +679,23 @@
             });
         }
 
-        // ============================================================
-        //  切换视图
-        // ============================================================
+        // ================================================================
+        //  切换视图、搜索、模态框（与之前相同）
+        // ================================================================
         function switchView(view) {
             currentView = view;
-            tabs.forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.view === view);
-            });
+            tabs.forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
             recipeGrid.style.display = (view === 'recipe') ? 'grid' : 'none';
             noteGrid.style.display = (view === 'note') ? 'block' : 'none';
             searchBox.classList.toggle('visible', view === 'recipe');
-            if (view === 'recipe') {
-                renderRecipes();
-            }
+            if (view === 'recipe') renderRecipes();
         }
 
-        // ============================================================
-        //  搜索
-        // ============================================================
         searchInput.addEventListener('input', (e) => {
             searchKeyword = e.target.value;
-            if (currentView === 'recipe') {
-                renderRecipes();
-            }
+            if (currentView === 'recipe') renderRecipes();
         });
 
-        // ============================================================
-        //  模态框
-        // ============================================================
         function openModal(item) {
             modalTitle.textContent = item.title;
             modalDate.textContent = item.date ? safeDate(item.date) : '';
@@ -796,9 +729,6 @@
             return html;
         }
 
-        // ============================================================
-        //  模态框事件
-        // ============================================================
         modalClose.addEventListener('click', () => {
             modalOverlay.classList.remove('active');
             document.body.style.overflow = '';
@@ -816,21 +746,16 @@
             }
         });
 
-        // ============================================================
-        //  标签切换
-        // ============================================================
         tabs.forEach(btn => {
             btn.addEventListener('click', () => {
                 const view = btn.dataset.view;
-                if (view !== currentView) {
-                    switchView(view);
-                }
+                if (view !== currentView) switchView(view);
             });
         });
 
-        // ============================================================
+        // ================================================================
         //  启动
-        // ============================================================
+        // ================================================================
         recipeGrid.style.display = 'grid';
         noteGrid.style.display = 'none';
         searchBox.classList.add('visible');
@@ -838,9 +763,9 @@
         loadRecipes();
         loadNotes();
 
-        console.log('✅ 已启动，菜谱卡片 + 随笔列表。');
-        console.log(`🔗 请求地址前缀: ${BASE_URL}`);
-        console.log('⚠️ 如果出现 "Failed to fetch"，请检查网络或 API 限制。');
+        console.log('✅ 已启动');
+        console.log('🔗 请求基础 URL（含分支）:', BASE_URL);
+        console.log('🔄 如果仍然 Failed to fetch，请检查浏览器控制台网络请求的详细信息。');
     </script>
 </body>
 </html>
