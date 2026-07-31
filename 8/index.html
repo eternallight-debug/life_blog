@@ -1,1 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>阅读</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"SimSun","Microsoft YaHei","Noto Serif SC",serif;
+}
+body{
+  background:#f7f6f2;
+  color:#222;
+  overflow-x:hidden;
+}
+.menu-toggle{
+  position:fixed;
+  top:16px;
+  left:16px;
+  z-index:200;
+  width:46px;
+  height:46px;
+  background:#fff;
+  border:none;
+  border-radius:10px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.15);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  cursor:pointer;
+}
+.menu-toggle span{
+  width:24px;
+  height:3px;
+  background:#333;
+  border-radius:2px;
+}
+.mask{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.4);
+  z-index:99;
+  opacity:0;
+  visibility:hidden;
+  transition:0.3s ease;
+}
+.mask.show{
+  opacity:1;
+  visibility:visible;
+}
+.sidebar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:320px;
+  height:100vh;
+  background:#ffffff;
+  border-right:1px solid #e0ddd8;
+  z-index:100;
+  transform:translateX(-100%);
+  transition:transform 0.3s ease;
+  padding:24px 16px;
+  overflow-y:auto;
+}
+.sidebar.open{
+  transform:translateX(0);
+}
+.sidebar-title{
+  font-size:20px;
+  font-weight:bold;
+  padding-bottom:16px;
+  margin-bottom:16px;
+  border-bottom:1px solid #eee;
+}
+.nav-list{
+  list-style:none;
+}
+.nav-item{
+  margin:6px 0;
+}
+.nav-link{
+  display:block;
+  padding:10px 12px;
+  border-radius:6px;
+  text-decoration:none;
+  color:#444;
+  font-size:15px;
+  transition:background 0.2s;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.nav-link.active{
+  background:#e8f0f9;
+  color:#1967b3;
+  font-weight:500;
+}
+.nav-link:hover{
+  background:#f0f4f9;
+}
+.main-wrap{
+  padding:70px 20px 40px;
+  max-width:900px;
+  margin:0 auto;
+}
+@media(min-width:768px){
+  .main-wrap{
+    padding:70px 40px 40px;
+  }
+}
+.article-box{
+  background:#fff;
+  padding:32px;
+  border-radius:12px;
+  box-shadow:0 1px 6px rgba(0,0,0,0.06);
+}
+.article-box h1{
+  font-size:26px;
+  margin:24px 0 16px;
+  padding-bottom:8px;
+  border-bottom:1px solid #ddd;
+}
+.article-box h2{
+  font-size:22px;
+  margin:22px 0 14px;
+}
+.article-box h3{
+  font-size:19px;
+  margin:20px 0 12px;
+}
+.article-box p{
+  line-height:1.95;
+  font-size:16px;
+  margin:14px 0;
+  text-indent:2em;
+}
+.article-box ul,.article-box ol{
+  padding-left:2.2em;
+  line-height:1.85;
+  margin:12px 0;
+}
+.article-box blockquote{
+  border-left:4px solid #b8c8d8;
+  padding:10px 16px;
+  background:#f7f9fb;
+  margin:16px 0;
+}
+.load-tip{
+  text-align:center;
+  padding:40px;
+  color:#666;
+  font-size:15px;
+}
+.cache-tag{
+  font-size:12px;
+  color:#888;
+  margin-left:8px;
+}
+</style>
+</head>
+<body>
+<button class="menu-toggle" id="menuBtn">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+<div class="mask" id="mask"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-title">目录导航</div>
+  <ul class="nav-list" id="navList"></ul>
+</aside>
 
+<main class="main-wrap">
+  <div class="article-box" id="articleContent">
+    <div class="load-tip">正在加载目录……</div>
+  </div>
+</main>
+
+<script>
+const menuBtn = document.getElementById('menuBtn');
+const mask = document.getElementById('mask');
+const sidebar = document.getElementById('sidebar');
+const navList = document.getElementById('navList');
+const articleContent = document.getElementById('articleContent');
+
+// 全局状态
+let catalogList = [];
+// 文本内存缓存 key=文件名 value=渲染后HTML
+const textCache = new Map();
+// 保存当前正在请求的控制器，用于中断并发请求
+let currentAbortController = null;
+
+// 侧边栏开关
+function toggleSidebar(){
+  sidebar.classList.toggle('open');
+  mask.classList.toggle('show');
+}
+menuBtn.addEventListener('click', toggleSidebar);
+mask.addEventListener('click', toggleSidebar);
+
+// 读取index.txt 仅生成导航，不加载正文
+async function loadIndexFile(){
+  try{
+    const res = await fetch('index.txt');
+    if(!res.ok) throw new Error('根目录缺少 index.txt');
+    const text = await res.text();
+    const lines = text.trim().split('\n');
+    navList.innerHTML = '';
+    catalogList = [];
+
+    lines.forEach(rawLine => {
+      const line = rawLine.trim();
+      if(!line || !line.includes('|')) return;
+      const [title, filename] = line.split('|').map(s => s.trim());
+      catalogList.push({title, filename});
+
+      const li = document.createElement('li');
+      li.className = 'nav-item';
+      const a = document.createElement('a');
+      a.className = 'nav-link';
+      a.textContent = title;
+      a.dataset.file = filename;
+      a.onclick = (e) => {
+        e.preventDefault();
+        loadArticle(filename, a);
+        toggleSidebar();
+      };
+      li.appendChild(a);
+      navList.appendChild(li);
+    });
+
+    // 导航渲染完成后，仅自动加载第一篇（其余完全不加载）
+    const firstLink = navList.querySelector('.nav-link');
+    if(firstLink) loadArticle(firstLink.dataset.file, firstLink);
+  }catch(err){
+    articleContent.innerHTML = `<div class="load-tip">目录加载失败：${err.message}<br>请检查根目录 index.txt 文件</div>`;
+    console.error(err);
+  }
+}
+
+// 按需流式加载单篇正文，带缓存、请求中断
+async function loadArticle(filePath, activeLink){
+  // 切换激活样式
+  document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+  if(activeLink) activeLink.classList.add('active');
+
+  // 中断上一次未完成的请求，防止渲染错乱
+  if(currentAbortController) currentAbortController.abort();
+  currentAbortController = new AbortController();
+  const signal = currentAbortController.signal;
+
+  // 命中内存缓存，直接渲染，无网络请求
+  if(textCache.has(filePath)){
+    articleContent.innerHTML = textCache.get(filePath);
+    return;
+  }
+
+  // 未缓存，发起流式网络请求
+  articleContent.innerHTML = '<div class="load-tip">正文加载中……</div>';
+  try{
+    const res = await fetch(filePath, { signal });
+    if(!res.ok) throw new Error(`文件 ${filePath} 不存在`);
+    const raw = await res.text();
+    const renderHtml = marked.parse(raw);
+    // 存入内存缓存
+    textCache.set(filePath, renderHtml);
+    articleContent.innerHTML = renderHtml;
+  }catch(err){
+    if(err.name !== 'AbortError'){
+      articleContent.innerHTML = `<div class="load-tip">读取失败：${err.message}</div>`;
+      console.error(err);
+    }
+  }
+}
+
+// 页面关闭/刷新：清空缓存、终止所有请求，释放内存
+window.addEventListener('beforeunload', () => {
+  // 中断进行中的网络请求
+  if(currentAbortController) currentAbortController.abort();
+  // 清空内存文本缓存
+  textCache.clear();
+  catalogList = [];
+  console.log('页面即将卸载，已释放全部文本缓存资源');
+});
+
+// 页面初始化：仅加载导航索引
+window.addEventListener('DOMContentLoaded', loadIndexFile);
+</script>
+</body>
+</html>
