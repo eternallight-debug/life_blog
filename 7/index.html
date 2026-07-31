@@ -1,1 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>徐霞客与木增</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei",system-ui,sans-serif;}
+html,body{min-height:100%;}
+.bg-external-layer{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;}
+.content-mask-layer{position:relative;z-index:2;}
+.mask-full{min-height:100vh;}
+.mask-wrap{width:fit-content;margin:0 auto;border-radius:8px;}
+.article-text-layer{position:relative;z-index:3;max-width:700px;margin:0 auto;padding:40px 24px;line-height:1.85;overflow-wrap:break-word;}
+.article-text-layer h1{text-align:center;margin-bottom:12px;font-size:28px;color:#222;}
+.article-text-layer .sub-title{text-align:center;font-size:16px;color:#555;margin-bottom:32px;}
+.article-text-layer p{font-size:16px;color:#333;text-indent:2em;margin-bottom:16px;}
 
+.bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(180,220,200,0.45));
+    box-shadow: inset 0 0 18px rgba(160,200,180,0.35), 0 0 22px rgba(120,190,160,0.25);
+    z-index: 1;
+    pointer-events: none;
+    animation: bubbleFloat 18s infinite ease-in-out;
+}
+.bubble:nth-child(1) {
+    width: 52px;
+    height: 52px;
+    left: 8%;
+    bottom: -60px;
+    animation-duration: 22s;
+    animation-delay: 0s;
+}
+.bubble:nth-child(2) {
+    width: 38px;
+    height: 38px;
+    left: 28%;
+    bottom: -40px;
+    animation-duration: 18s;
+    animation-delay: -3s;
+}
+.bubble:nth-child(3) {
+    width: 66px;
+    height: 66px;
+    left: 52%;
+    bottom: -80px;
+    animation-duration: 26s;
+    animation-delay: -6s;
+}
+.bubble:nth-child(4) {
+    width: 30px;
+    height: 30px;
+    left: 76%;
+    bottom: -30px;
+    animation-duration: 15s;
+    animation-delay: -9s;
+}
+.bubble:nth-child(5) {
+    width: 44px;
+    height: 44px;
+    left: 18%;
+    bottom: -50px;
+    animation-duration: 20s;
+    animation-delay: -12s;
+}
+.bubble:nth-child(6) {
+    width: 24px;
+    height: 24px;
+    left: 88%;
+    bottom: -20px;
+    animation-duration: 13s;
+    animation-delay: -7s;
+}
+@keyframes bubbleFloat {
+    0% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0;
+    }
+    18% {
+        opacity: 0.85;
+    }
+    50% {
+        transform: translateY(-450px) translateX(30px) scale(1.08);
+    }
+    82% {
+        opacity: 0.75;
+    }
+    100% {
+        transform: translateY(-900px) translateX(-20px) scale(0.55);
+        opacity: 0;
+    }
+}
+
+</style>
+</head>
+<body>
+<div class="bg-external-layer">
+<div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+</div>
+<div class="content-mask-layer mask-full" style="background:rgba(255,255,255,0.5);">
+    <div class="article-text-layer">
+        <h1>徐霞客与木增</h1>
+        <div class="sub-title">来是客，归是亲</div>
+        <p>徐霞客崇祯九年开启“万里遐征”西南远游，此行核心目的，是实地勘辨长江江源。古来典籍持“岷山导江”之说，以岷江为长江源头，徐霞客心存疑窦，欲亲赴滇西北，实地考察金沙江的流向，以此订正旧籍的谬误，《溯江纪源》自述：“岷江经成都至叙，不及千里，金沙江经丽江、云南、乌蒙至叙，共二千余里，舍远而宗近，岂其源独与河异乎？”。丽江地处金沙江上游要冲，欲亲履金沙江岸，必经丽江地界。</p><p>丽江为木氏土司辖地，关隘管控极严，非土司许可，外人不得擅入。徐霞客西行之前，致信江南名士陈继儒，告知自己西游计划，计划远及石门铁桥即丽江一带，《致陈继儒书》：“决策西游，自牂牁夜郎以极石门铁桥。” 。陈继儒与丽江土司木增素有文字交游，于是作书举荐徐霞客，向木增称扬其志行学识。徐霞客行至湘江遇盗，行囊被焚，举荐信随之遗失，陈继儒另遣信使，将书信先行送抵丽江。木增得书之后，派遣通事远赴昆明寻访等候徐霞客。《滇游日记七》：“丽江郡俗，出入者非奉木公命不得擅行。”。因木增特意相邀放行，徐霞客方得进入丽江。</p><p>崇祯十二年己卯正月二十五日，徐霞客越过邱塘关，进入丽江。正月二十九日，木增迎徐霞客入解脱林（福国寺），安置于法云阁南庑。</p><p>《滇游日记七》：“二月初一日，木公命大把事以家集黑香白镪十两来馈。下午，设宴解脱林东堂，下藉以松毛，以楚雄诸生许姓者陪宴。仍侑以杯缎，银杯二只，绿绉纱一疋。大肴八十品，罗列甚遥，不能辨其孰为异味也。抵暮乃散。复以卓席馈许生，为分犒诸役。”。</p><p>“所馈酒果，有白葡萄、龙眼、荔枝诸贵品，酥饼油线，细若发丝，中缠松子肉为片，甚松脆。发糖，白糖为丝，细过于发，千条万缕，合揉为一，以细面拌之，合而不腻，诸奇点。”。</p><p>木增邀徐霞客游木家院，观院内山茶古树。《滇游日记七》：“此树植与老把事年相似，屈指六十余。余初疑为数百年物，而岂知气机发旺，其妙如此。肴味中有柔猪、牦牛舌。柔猪乃五六斤小猪，以米饭喂成者，其骨俱柔脆，全体炙之，乃切片以食。牦牛舌似猪舌而大，甘脆有异味。”。</p><p>二月初二，大把事前来，求为木增诗文集作序。《滇游日记七》：“下午，又命大把事来，求作所辑《云薖淡墨》序。初三日，余以叙稿送进，复令大把事来。初四日，有鸡足僧以省中录就《云薖淡墨》缴纳木公。木公即令大把事传示，求为较政。其所书洪武体虽甚整，而讹字极多，既舛落无序，而重叠颠倒者亦甚。余略为标正，且言是书宜分门编类，庶无错出之病。晚乃以其书缴入。初五日，复令大把事来致谢。求再停数日，烦将《淡墨》分门标类，如余前所言。余从之。”。</p><p>徐霞客连夜篝灯校勘，为《云薖淡墨》划分门类，订正讹误。又为木增诗集《山中逸趣》撰写跋文，跋文：“公闲意荣禄，早谢尘缨……拈题命韵，高旷孤闲，烟霞之色，扑入眉宇。读之，犹冷嚼梅花雪瓣也。”。木增复请徐霞客指点其四子木宿制义时文，评判文章得失；又托徐霞客代为致信江南，邀约吴方生赴丽江。徐霞客本欲自丽江前往忠甸，观三丈六铜像，木增以沿途多盗，道路凶险，写信劝阻，此行遂止。</p><p>徐霞客在丽江期间，实地记录丽江坝山川水系、玉龙雪山、金沙江流向，观察纳西风俗土司制度，写下《丽江纪略》。</p><p>二月十一日，徐霞客辞别木增，离开丽江继续西行。经鹤庆、剑川、大理，抵达永昌、腾冲，亲历火山热海，考察澜沧江、金沙江诸水系。崇祯十二年八月二十二日，徐霞客再登鸡足山，应木增嘱托，居于木增捐建的悉檀寺，纂修《鸡足山志》。</p><p>久处南方瘴疠之地，身体受瘴气侵蚀。《游鸡足山日记后》：“先以久涉瘴地，头面四肢俱发疹块，累累丛肤理间。左耳左足，时时有蠕动状。” 。寺中僧人以药汤熏蒸医治，不见成效，渐至双足俱废，不能起立行走。</p><p>崇祯十二年九月，跟随徐霞客三年的仆人顾行借机叛逃。《游鸡足山日记后》完整原文：“和光欲下山，因命顾仆与俱，恐山庐无余被，怜其寒也。奴请匙钥，余并箱篚者与之，以一时解缚不便也。奴去，兰宗即曳杖导余。初十日晨起，见顾仆不至，余疑而问之。兰宗曰：‘彼知君即下，何以复上？’而余心犹怏怏不释，待沈翁不至，即辞兰宗下。才下，见一僧仓皇至，兰宗尚随行，讯其来何以故。曰：‘悉檀长老命来候相公者。’余知仆逋矣。再讯之。曰：‘长老见尊使负包囊往大理，询和光，疑其未奉相公命，故使余来告。’余固知其逃也，非往大理也。遂别兰宗，同僧亟下。五里，过兰那寺前幻住庵东，又下三里，过东西两涧会处，抵悉檀，已午。启箧而视，所有尽去。体极、弘辨欲为余急发二寺僧往追，余止之，谓：‘追或不能及。及亦不能强之必来。亦听其去而已矣。’但离乡三载，一主一仆，形影相依，一旦弃予于万里之外，何其忍也。”。</p><p>顾仆卷走全部盘缠财物，徐霞客双脚残废，囊橐一空，困守悉檀寺。悉檀寺将徐霞客危困情形传报丽江木增。木增于是挑选八名纳西健壮轿夫，制备笋舆，配备通事，备足路费、药材干粮，自丽江奔赴鸡足山。</p><p>崇祯十三年庚辰正月，护送队伍自鸡足山悉檀寺启程，以笋舆抬徐霞客向东归乡。徐霞客归乡一路无本人日记留存，相关记录出自陈函辉《徐霞客墓志铭》：“丽江木守为饬舆从送归。转侧笋舆者百五十日，至楚江困甚，黄冈侯大令为具舟楫，六日而达江口，遂得生还。是庚辰夏间事也。” 。</p><p>笋舆陆路经楚雄、昆明，取道四川，历时一百五十余日抵达湖北黄冈。行至黄冈，随行钱粮耗尽，黄冈知县侯鼎铉备办舟船。徐霞客登舟，顺长江而下，六日抵达京口，转入运河。崇祯十三年六月，回到江苏江阴家中。</p><p>归家之后双脚伤病依旧，常年卧榻，整理游历手稿，云南携回翠生石置于床前。崇祯十四年正月，徐霞客病卒，终年五十五岁，在悉檀寺着手编纂的《鸡足山志》亦赖以留存。</p>
+    </div>
+</body>
+</html>
