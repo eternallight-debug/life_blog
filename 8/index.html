@@ -1,296 +1,696 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>阅读</title>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:"SimSun","Microsoft YaHei","Noto Serif SC",serif;
-}
-body{
-  background:#f7f6f2;
-  color:#222;
-  overflow-x:hidden;
-}
-.menu-toggle{
-  position:fixed;
-  top:16px;
-  left:16px;
-  z-index:200;
-  width:46px;
-  height:46px;
-  background:#fff;
-  border:none;
-  border-radius:10px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.15);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:5px;
-  cursor:pointer;
-}
-.menu-toggle span{
-  width:24px;
-  height:3px;
-  background:#333;
-  border-radius:2px;
-}
-.mask{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.4);
-  z-index:99;
-  opacity:0;
-  visibility:hidden;
-  transition:0.3s ease;
-}
-.mask.show{
-  opacity:1;
-  visibility:visible;
-}
-.sidebar{
-  position:fixed;
-  top:0;
-  left:0;
-  width:320px;
-  height:100vh;
-  background:#ffffff;
-  border-right:1px solid #e0ddd8;
-  z-index:100;
-  transform:translateX(-100%);
-  transition:transform 0.3s ease;
-  padding:24px 16px;
-  overflow-y:auto;
-}
-.sidebar.open{
-  transform:translateX(0);
-}
-.sidebar-title{
-  font-size:20px;
-  font-weight:bold;
-  padding-bottom:16px;
-  margin-bottom:16px;
-  border-bottom:1px solid #eee;
-}
-.nav-list{
-  list-style:none;
-}
-.nav-item{
-  margin:6px 0;
-}
-.nav-link{
-  display:block;
-  padding:10px 12px;
-  border-radius:6px;
-  text-decoration:none;
-  color:#444;
-  font-size:15px;
-  transition:background 0.2s;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.nav-link.active{
-  background:#e8f0f9;
-  color:#1967b3;
-  font-weight:500;
-}
-.nav-link:hover{
-  background:#f0f4f9;
-}
-.main-wrap{
-  padding:70px 20px 40px;
-  max-width:900px;
-  margin:0 auto;
-}
-@media(min-width:768px){
-  .main-wrap{
-    padding:70px 40px 40px;
-  }
-}
-.article-box{
-  background:#fff;
-  padding:32px;
-  border-radius:12px;
-  box-shadow:0 1px 6px rgba(0,0,0,0.06);
-}
-.article-box h1{
-  font-size:26px;
-  margin:24px 0 16px;
-  padding-bottom:8px;
-  border-bottom:1px solid #ddd;
-}
-.article-box h2{
-  font-size:22px;
-  margin:22px 0 14px;
-}
-.article-box h3{
-  font-size:19px;
-  margin:20px 0 12px;
-}
-.article-box p{
-  line-height:1.95;
-  font-size:16px;
-  margin:14px 0;
-  text-indent:2em;
-}
-.article-box ul,.article-box ol{
-  padding-left:2.2em;
-  line-height:1.85;
-  margin:12px 0;
-}
-.article-box blockquote{
-  border-left:4px solid #b8c8d8;
-  padding:10px 16px;
-  background:#f7f9fb;
-  margin:16px 0;
-}
-.load-tip{
-  text-align:center;
-  padding:40px;
-  color:#666;
-  font-size:15px;
-}
-.cache-tag{
-  font-size:12px;
-  color:#888;
-  margin-left:8px;
-}
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>阅读 · 文集</title>
+    <!-- marked.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
+    </script>
+    <style>
+        /* ── 全局重置 ── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "SimSun", "Microsoft YaHei", "Noto Serif SC", serif;
+        }
+
+        body {
+            background: #f7f6f2;
+            color: #222;
+            overflow-x: hidden;
+        }
+
+        /* ── 汉堡菜单 ── */
+        .menu-toggle {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 200;
+            width: 46px;
+            height: 46px;
+            background: #fff;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .menu-toggle:hover {
+            background: #f0f0f0;
+        }
+        .menu-toggle span {
+            width: 24px;
+            height: 3px;
+            background: #333;
+            border-radius: 2px;
+            transition: 0.2s;
+        }
+
+        /* ── 遮罩 ── */
+        .mask {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s ease;
+        }
+        .mask.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ── 侧边栏 ── */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 320px;
+            height: 100vh;
+            background: #ffffff;
+            border-right: 1px solid #e0ddd8;
+            z-index: 100;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            padding: 24px 16px 40px;
+            overflow-y: auto;
+        }
+        .sidebar.open {
+            transform: translateX(0);
+        }
+        .sidebar-title {
+            font-size: 20px;
+            font-weight: bold;
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .sidebar-title .badge {
+            font-size: 13px;
+            font-weight: normal;
+            color: #888;
+        }
+
+        /* ── 导航列表 ── */
+        .nav-list {
+            list-style: none;
+        }
+        .nav-item {
+            margin: 4px 0;
+        }
+        .nav-link {
+            display: block;
+            padding: 10px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #444;
+            font-size: 15px;
+            transition: background 0.2s, color 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            user-select: none;
+        }
+        .nav-link.active {
+            background: #e8f0f9;
+            color: #1967b3;
+            font-weight: 500;
+        }
+        .nav-link:hover {
+            background: #f0f4f9;
+        }
+        .nav-link .file-hint {
+            float: right;
+            color: #bbb;
+            font-size: 12px;
+            font-weight: normal;
+            margin-left: 8px;
+        }
+
+        /* ── 主内容 ── */
+        .main-wrap {
+            padding: 70px 20px 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        @media (min-width: 768px) {
+            .main-wrap {
+                padding: 70px 40px 40px;
+            }
+        }
+
+        .article-box {
+            background: #fff;
+            padding: 32px 28px;
+            border-radius: 12px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+            min-height: 300px;
+            transition: opacity 0.15s;
+        }
+        .article-box.loading {
+            opacity: 0.6;
+        }
+
+        /* ── 文章排版 (含首行缩进) ── */
+        .article-box h1 {
+            font-size: 28px;
+            margin: 28px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e8e6e1;
+        }
+        .article-box h2 {
+            font-size: 24px;
+            margin: 24px 0 14px;
+        }
+        .article-box h3 {
+            font-size: 20px;
+            margin: 22px 0 12px;
+        }
+        .article-box h4 {
+            font-size: 18px;
+            margin: 18px 0 10px;
+        }
+        .article-box p {
+            line-height: 1.95;
+            font-size: 16px;
+            margin: 14px 0;
+            text-indent: 2em;
+            word-break: break-word;
+        }
+        .article-box p:first-of-type {
+            margin-top: 4px;
+        }
+        .article-box ul,
+        .article-box ol {
+            padding-left: 2.4em;
+            line-height: 1.85;
+            margin: 12px 0;
+        }
+        .article-box li {
+            margin: 4px 0;
+        }
+        .article-box blockquote {
+            border-left: 4px solid #b8c8d8;
+            padding: 10px 18px;
+            background: #f7f9fb;
+            margin: 16px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .article-box blockquote p {
+            text-indent: 0;
+            margin: 6px 0;
+        }
+        .article-box pre {
+            background: #f4f4f4;
+            padding: 14px 18px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: "Courier New", monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 16px 0;
+        }
+        .article-box code {
+            font-family: "Courier New", monospace;
+            font-size: 14px;
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .article-box pre code {
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+        }
+        .article-box img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin: 12px 0;
+        }
+        .article-box table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 15px;
+        }
+        .article-box th,
+        .article-box td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        .article-box th {
+            background: #f5f5f5;
+        }
+
+        /* ── 占位 / 提示 ── */
+        .load-tip {
+            text-align: center;
+            padding: 50px 20px;
+            color: #888;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+        .load-tip .icon {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 12px;
+        }
+        .load-tip .sub {
+            color: #bbb;
+            font-size: 13px;
+        }
+        .load-tip .retry-btn {
+            margin-top: 16px;
+            padding: 8px 24px;
+            background: #e8f0f9;
+            border: none;
+            border-radius: 6px;
+            color: #1967b3;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .load-tip .retry-btn:hover {
+            background: #d4e3f5;
+        }
+
+        /* ── 底部状态 ── */
+        .footer-status {
+            text-align: center;
+            font-size: 12px;
+            color: #bbb;
+            padding: 20px 0 6px;
+            border-top: 1px solid #f0eeea;
+            margin-top: 20px;
+        }
+
+        /* ── 滚动条美化 ── */
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: #f5f5f5;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #d0d0d0;
+            border-radius: 4px;
+        }
+
+        /* ── 响应式微调 ── */
+        @media (max-width: 480px) {
+            .article-box {
+                padding: 20px 16px;
+            }
+            .article-box h1 {
+                font-size: 22px;
+            }
+            .article-box h2 {
+                font-size: 20px;
+            }
+            .article-box p {
+                font-size: 15px;
+            }
+            .sidebar {
+                width: 280px;
+            }
+            .menu-toggle {
+                top: 12px;
+                left: 12px;
+                width: 40px;
+                height: 40px;
+            }
+            .main-wrap {
+                padding: 60px 12px 30px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-<button class="menu-toggle" id="menuBtn">
-  <span></span>
-  <span></span>
-  <span></span>
-</button>
-<div class="mask" id="mask"></div>
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-title">目录导航</div>
-  <ul class="nav-list" id="navList"></ul>
-</aside>
 
-<main class="main-wrap">
-  <div class="article-box" id="articleContent">
-    <div class="load-tip">正在加载目录……</div>
-  </div>
-</main>
+    <!-- ─── 汉堡按钮 ─── -->
+    <button class="menu-toggle" id="menuBtn" aria-label="切换导航">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
 
-<script>
-const menuBtn = document.getElementById('menuBtn');
-const mask = document.getElementById('mask');
-const sidebar = document.getElementById('sidebar');
-const navList = document.getElementById('navList');
-const articleContent = document.getElementById('articleContent');
+    <!-- ─── 遮罩 ─── -->
+    <div class="mask" id="mask"></div>
 
-// 全局状态
-let catalogList = [];
-// 文本内存缓存 key=文件名 value=渲染后HTML
-const textCache = new Map();
-// 保存当前正在请求的控制器，用于中断并发请求
-let currentAbortController = null;
+    <!-- ─── 侧边栏 ─── -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-title">
+            <span>📖 目录导航</span>
+            <span class="badge" id="countBadge">0 篇</span>
+        </div>
+        <ul class="nav-list" id="navList">
+            <li class="nav-item" style="padding:12px 0;color:#999;text-align:center;font-size:14px;">
+                正在加载目录…
+            </li>
+        </ul>
+    </aside>
 
-// 侧边栏开关
-function toggleSidebar(){
-  sidebar.classList.toggle('open');
-  mask.classList.toggle('show');
-}
-menuBtn.addEventListener('click', toggleSidebar);
-mask.addEventListener('click', toggleSidebar);
+    <!-- ─── 主内容 ─── -->
+    <main class="main-wrap">
+        <div class="article-box" id="articleContent">
+            <div class="load-tip">
+                <span class="icon">📚</span>
+                加载目录中…<br />
+                <span class="sub">请稍候</span>
+            </div>
+        </div>
+        <div class="footer-status" id="footerStatus">就绪</div>
+    </main>
 
-// 读取index.txt 仅生成导航，不加载正文
-async function loadIndexFile(){
-  try{
-    const res = await fetch('index.txt');
-    if(!res.ok) throw new Error('根目录缺少 index.txt');
-    const text = await res.text();
-    const lines = text.trim().split('\n');
-    navList.innerHTML = '';
-    catalogList = [];
+    <script>
+        (function() {
+            'use strict';
 
-    lines.forEach(rawLine => {
-      const line = rawLine.trim();
-      if(!line || !line.includes('|')) return;
-      const [title, filename] = line.split('|').map(s => s.trim());
-      catalogList.push({title, filename});
+            // ─── DOM 引用 ───
+            const menuBtn = document.getElementById('menuBtn');
+            const mask = document.getElementById('mask');
+            const sidebar = document.getElementById('sidebar');
+            const navList = document.getElementById('navList');
+            const articleContent = document.getElementById('articleContent');
+            const footerStatus = document.getElementById('footerStatus');
+            const countBadge = document.getElementById('countBadge');
 
-      const li = document.createElement('li');
-      li.className = 'nav-item';
-      const a = document.createElement('a');
-      a.className = 'nav-link';
-      a.textContent = title;
-      a.dataset.file = filename;
-      a.onclick = (e) => {
-        e.preventDefault();
-        loadArticle(filename, a);
-        toggleSidebar();
-      };
-      li.appendChild(a);
-      navList.appendChild(li);
-    });
+            // ─── 状态 ───
+            let catalog = []; // [{ title, filename }]
+            const textCache = new Map(); // filename -> 渲染后的 HTML
+            let currentAbortController = null;
+            let isLoadingArticle = false;
+            let firstLoadDone = false;
 
-    // 导航渲染完成后，仅自动加载第一篇（其余完全不加载）
-    const firstLink = navList.querySelector('.nav-link');
-    if(firstLink) loadArticle(firstLink.dataset.file, firstLink);
-  }catch(err){
-    articleContent.innerHTML = `<div class="load-tip">目录加载失败：${err.message}<br>请检查根目录 index.txt 文件</div>`;
-    console.error(err);
-  }
-}
+            // ─── 侧边栏切换 ───
+            function toggleSidebar() {
+                sidebar.classList.toggle('open');
+                mask.classList.toggle('show');
+            }
+            menuBtn.addEventListener('click', toggleSidebar);
+            mask.addEventListener('click', toggleSidebar);
 
-// 按需流式加载单篇正文，带缓存、请求中断
-async function loadArticle(filePath, activeLink){
-  // 切换激活样式
-  document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-  if(activeLink) activeLink.classList.add('active');
+            // 点击侧边栏外部关闭（通过遮罩已实现）
 
-  // 中断上一次未完成的请求，防止渲染错乱
-  if(currentAbortController) currentAbortController.abort();
-  currentAbortController = new AbortController();
-  const signal = currentAbortController.signal;
+            // ─── 更新底部状态 ───
+            function setStatus(msg, isError) {
+                footerStatus.textContent = msg;
+                footerStatus.style.color = isError ? '#c0392b' : '#bbb';
+            }
 
-  // 命中内存缓存，直接渲染，无网络请求
-  if(textCache.has(filePath)){
-    articleContent.innerHTML = textCache.get(filePath);
-    return;
-  }
+            // ─── 显示加载中 ───
+            function showLoadingTip(text) {
+                articleContent.innerHTML = `
+                    <div class="load-tip">
+                        <span class="icon">⏳</span>
+                        ${text || '加载中…'}<br />
+                        <span class="sub">请稍候</span>
+                    </div>
+                `;
+                articleContent.classList.remove('loading');
+            }
 
-  // 未缓存，发起流式网络请求
-  articleContent.innerHTML = '<div class="load-tip">正文加载中……</div>';
-  try{
-    const res = await fetch(filePath, { signal });
-    if(!res.ok) throw new Error(`文件 ${filePath} 不存在`);
-    const raw = await res.text();
-    const renderHtml = marked.parse(raw);
-    // 存入内存缓存
-    textCache.set(filePath, renderHtml);
-    articleContent.innerHTML = renderHtml;
-  }catch(err){
-    if(err.name !== 'AbortError'){
-      articleContent.innerHTML = `<div class="load-tip">读取失败：${err.message}</div>`;
-      console.error(err);
-    }
-  }
-}
+            // ─── 显示错误 ───
+            function showErrorTip(msg, retryFn) {
+                const retryHtml = retryFn ?
+                    `<br /><button class="retry-btn" id="retryBtn">🔄 重试</button>` :
+                    '';
+                articleContent.innerHTML = `
+                    <div class="load-tip">
+                        <span class="icon">⚠️</span>
+                        ${msg}<br />
+                        <span class="sub">${retryFn ? '点击下方按钮重试' : '请检查文件是否存在'}</span>
+                        ${retryHtml}
+                    </div>
+                `;
+                articleContent.classList.remove('loading');
+                if (retryFn) {
+                    const btn = document.getElementById('retryBtn');
+                    if (btn) btn.addEventListener('click', retryFn);
+                }
+            }
 
-// 页面关闭/刷新：清空缓存、终止所有请求，释放内存
-window.addEventListener('beforeunload', () => {
-  // 中断进行中的网络请求
-  if(currentAbortController) currentAbortController.abort();
-  // 清空内存文本缓存
-  textCache.clear();
-  catalogList = [];
-  console.log('页面即将卸载，已释放全部文本缓存资源');
-});
+            // ─── 渲染文章（从缓存或原始文本） ───
+            function renderArticle(html) {
+                articleContent.innerHTML = html;
+                articleContent.classList.remove('loading');
+                // 触发 marked 后对代码块做额外处理（可选）
+            }
 
-// 页面初始化：仅加载导航索引
-window.addEventListener('DOMContentLoaded', loadIndexFile);
-</script>
+            // ─── 加载单篇文章（支持缓存 + 中断） ───
+            async function loadArticle(filePath, activeLink, retryCallback) {
+                // 如果同一篇文章正在加载且没有中断，避免重复请求
+                if (isLoadingArticle && textCache.has(filePath)) {
+                    // 如果已缓存，直接渲染
+                    renderArticle(textCache.get(filePath));
+                    return;
+                }
+
+                // 切换激活样式
+                document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                    // 滚动到可视区域
+                    activeLink.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                }
+
+                // 命中内存缓存 → 直接渲染
+                if (textCache.has(filePath)) {
+                    renderArticle(textCache.get(filePath));
+                    setStatus(`已加载: ${filePath}`);
+                    return;
+                }
+
+                // 中断上一次未完成的请求
+                if (currentAbortController) {
+                    currentAbortController.abort();
+                    currentAbortController = null;
+                }
+
+                currentAbortController = new AbortController();
+                const signal = currentAbortController.signal;
+
+                isLoadingArticle = true;
+                articleContent.classList.add('loading');
+                showLoadingTip(`正在加载 <strong>${filePath}</strong>…`);
+
+                try {
+                    const res = await fetch(filePath, { signal });
+                    if (!res.ok) {
+                        throw new Error(`HTTP ${res.status} — 文件 "${filePath}" 不存在或无法访问`);
+                    }
+                    const raw = await res.text();
+
+                    // 空文件检查
+                    if (!raw || raw.trim().length === 0) {
+                        throw new Error(`文件 "${filePath}" 内容为空`);
+                    }
+
+                    // 使用 marked 渲染
+                    let renderHtml;
+                    try {
+                        renderHtml = marked.parse(raw);
+                    } catch (markErr) {
+                        throw new Error(`Markdown 解析失败: ${markErr.message}`);
+                    }
+
+                    // 存入缓存
+                    textCache.set(filePath, renderHtml);
+                    renderArticle(renderHtml);
+                    setStatus(`✅ 已加载: ${filePath} (${(raw.length / 1024).toFixed(1)} KB)`);
+
+                } catch (err) {
+                    if (err.name === 'AbortError') {
+                        setStatus('⏹ 已取消加载', false);
+                        // 不显示错误，因为是被中断的
+                        return;
+                    }
+                    // 如果是重试回调，传入重试函数
+                    const retryFn = retryCallback ? () => {
+                        loadArticle(filePath, activeLink, retryCallback);
+                    } : null;
+                    showErrorTip(`加载失败: ${err.message}`, retryFn);
+                    setStatus(`❌ ${err.message}`, true);
+                    console.error('[loadArticle] 错误:', err);
+                } finally {
+                    isLoadingArticle = false;
+                    currentAbortController = null;
+                    articleContent.classList.remove('loading');
+                }
+            }
+
+            // ─── 读取 index.txt 生成导航 ───
+            async function loadIndexFile() {
+                // 重置状态
+                catalog = [];
+                textCache.clear();
+                navList.innerHTML = '';
+
+                try {
+                    const res = await fetch('index.txt');
+                    if (!res.ok) {
+                        throw new Error(`HTTP ${res.status} — 根目录缺少 index.txt`);
+                    }
+                    const text = await res.text();
+
+                    // 按行解析，过滤空行和无效行
+                    const lines = text.split('\n')
+                        .map(line => line.trim())
+                        .filter(line => line.length > 0 && line.includes('|'));
+
+                    if (lines.length === 0) {
+                        throw new Error('index.txt 格式错误：请使用 "标题|文件名" 每行一条');
+                    }
+
+                    // 构建导航
+                    const fragment = document.createDocumentFragment();
+                    const items = [];
+
+                    lines.forEach((line, idx) => {
+                        const [title, filename] = line.split('|').map(s => s.trim());
+                        if (!title || !filename) {
+                            console.warn(`[index] 第 ${idx + 1} 行格式无效:`, line);
+                            return;
+                        }
+                        items.push({ title, filename });
+                        catalog.push({ title, filename });
+
+                        const li = document.createElement('li');
+                        li.className = 'nav-item';
+
+                        const a = document.createElement('a');
+                        a.className = 'nav-link';
+                        a.textContent = title;
+                        a.dataset.file = filename;
+                        a.setAttribute('role', 'button');
+                        a.setAttribute('tabindex', '0');
+
+                        // 小提示：文件名
+                        const hint = document.createElement('span');
+                        hint.className = 'file-hint';
+                        hint.textContent = filename.replace(/^.*\//, ''); // 只显示文件名
+                        a.appendChild(hint);
+
+                        // 点击加载
+                        a.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            const file = this.dataset.file;
+                            // 传递当前链接作为激活项，并传入重试回调
+                            loadArticle(file, this, () => {
+                                loadArticle(file, this, null);
+                            });
+                            // 移动端自动关闭侧边栏
+                            if (window.innerWidth < 768) {
+                                toggleSidebar();
+                            }
+                        });
+
+                        li.appendChild(a);
+                        fragment.appendChild(li);
+                    });
+
+                    navList.innerHTML = '';
+                    navList.appendChild(fragment);
+
+                    // 更新计数
+                    countBadge.textContent = `${catalog.length} 篇`;
+
+                    // 自动加载第一篇
+                    if (catalog.length > 0) {
+                        const firstFile = catalog[0].filename;
+                        const firstLink = navList.querySelector('.nav-link');
+                        if (firstLink) {
+                            // 标记激活
+                            firstLink.classList.add('active');
+                            // 加载第一篇
+                            await loadArticle(firstFile, firstLink, () => {
+                                loadArticle(firstFile, firstLink, null);
+                            });
+                            firstLoadDone = true;
+                        }
+                    } else {
+                        showErrorTip('index.txt 中没有有效条目', null);
+                    }
+
+                    setStatus(`📖 共 ${catalog.length} 篇文章`);
+
+                } catch (err) {
+                    console.error('[loadIndex] 错误:', err);
+                    navList.innerHTML = `
+                        <li class="nav-item" style="padding:12px 0;color:#c0392b;text-align:center;font-size:14px;">
+                            ⚠️ ${err.message}
+                        </li>
+                    `;
+                    countBadge.textContent = '0 篇';
+                    showErrorTip(`目录加载失败: ${err.message}`, () => {
+                        loadIndexFile();
+                    });
+                    setStatus(`❌ ${err.message}`, true);
+                }
+            }
+
+            // ─── 页面关闭时释放资源 ───
+            window.addEventListener('beforeunload', function() {
+                if (currentAbortController) {
+                    currentAbortController.abort();
+                    currentAbortController = null;
+                }
+                textCache.clear();
+                catalog = [];
+                console.log('[阅读器] 已释放所有缓存资源');
+            });
+
+            // ─── 键盘快捷键: ESC 关闭侧边栏 ───
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+                    toggleSidebar();
+                }
+            });
+
+            // ─── 点击侧边栏外部区域关闭 (通过遮罩已实现) ───
+
+            // ─── 初始化 ───
+            window.addEventListener('DOMContentLoaded', function() {
+                // 检查 marked 是否加载成功
+                if (typeof marked === 'undefined') {
+                    showErrorTip('Markdown 渲染库加载失败，请检查网络', () => {
+                        location.reload();
+                    });
+                    setStatus('❌ marked.js 未加载', true);
+                    return;
+                }
+                // 配置 marked 选项 (可选)
+                if (marked.setOptions) {
+                    marked.setOptions({
+                        breaks: true,
+                        gfm: true,
+                        pedantic: false,
+                    });
+                }
+                loadIndexFile();
+            });
+
+            // ─── 暴露 reload 到控制台方便调试 ───
+            window.reloadReader = function() {
+                loadIndexFile();
+            };
+
+        })();
+    </script>
+
 </body>
 </html>
