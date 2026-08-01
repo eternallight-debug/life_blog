@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>文档阅读器</title>
+    <!-- 使用 marked 进行 Markdown 渲染 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
+    </script>
     <style>
         * {
             margin: 0;
@@ -184,7 +187,7 @@
             }
         }
 
-        /* ===== 文章内容样式 ===== */
+        /* ===== 文章内容样式（Markdown 渲染后） ===== */
         .article-title {
             font-size: 28px;
             font-weight: 700;
@@ -194,17 +197,40 @@
             color: #1a1a1a;
             line-height: 1.3;
         }
+
         .article-body {
             font-size: 16px;
             line-height: 1.9;
             color: #2c2c2c;
         }
+
+        /* 自动首行缩进：仅对正文段落生效，标题、列表、引用等不受影响 */
         .article-body p {
+            text-indent: 2em;
             margin: 0 0 1.2em 0;
         }
         .article-body p:last-child {
             margin-bottom: 0;
         }
+
+        /* 标题、列表、引用等不缩进 */
+        .article-body h1,
+        .article-body h2,
+        .article-body h3,
+        .article-body h4,
+        .article-body h5,
+        .article-body h6,
+        .article-body ul,
+        .article-body ol,
+        .article-body blockquote,
+        .article-body pre,
+        .article-body table,
+        .article-body hr,
+        .article-body div,
+        .article-body figure {
+            text-indent: 0;
+        }
+
         .article-body h2 {
             font-size: 22px;
             margin: 1.6em 0 0.6em 0;
@@ -389,7 +415,7 @@
             }
         }
 
-        /* 暗色模式下微调（跟随系统） */
+        /* 暗色模式 */
         @media (prefers-color-scheme: dark) {
             body {
                 background: #1a1a1e;
@@ -526,6 +552,17 @@
         const CACHE_KEY_PREFIX = 'doc_cache_';
         const INDEX_FILE = 'index.txt';
 
+        // 配置 marked（启用 GFM、表格、换行等）
+        marked.setOptions({
+            gfm: true,
+            tables: true,
+            breaks: true,
+            pedantic: false,
+            sanitize: false, // 不清理，由 marked 自身防护 XSS（默认转义 HTML）
+            smartLists: true,
+            smartypants: false,
+        });
+
         // 当前状态
         let articles = []; // [{ title, filename, content }]
         let currentIndex = -1;
@@ -552,11 +589,9 @@
                 const raw = localStorage.getItem(getCacheKey(title));
                 if (raw) {
                     const data = JSON.parse(raw);
-                    // 简单过期：超过7天视为过期
                     if (data.timestamp && Date.now() - data.timestamp < 7 * 24 * 60 * 60 * 1000) {
                         return data.content;
                     }
-                    // 过期则删除
                     localStorage.removeItem(getCacheKey(title));
                     return null;
                 }
@@ -572,75 +607,6 @@
                 };
                 localStorage.setItem(getCacheKey(title), JSON.stringify(data));
             } catch (_) { /* ignore */ }
-        }
-
-        // 将纯文本转换为 HTML（支持简单的 markdown 风格）
-        function txtToHtml(text) {
-            if (!text) return '<p><em>（空内容）</em></p>';
-
-            // 先按空行分割成段落
-            const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim() !== '');
-
-            let html = '';
-            for (let p of paragraphs) {
-                const lines = p.split('\n').filter(l => l.trim() !== '');
-                if (lines.length === 0) continue;
-
-                // 检测是否为标题行（以 # 开头）
-                const firstLine = lines[0];
-                if (/^#+\s/.test(firstLine)) {
-                    // 标题
-                    const match = firstLine.match(/^(#+)\s+(.*)/);
-                    if (match) {
-                        const level = Math.min(match[1].length, 3);
-                        const titleText = match[2].trim();
-                        const tag = `h${level}`;
-                        html += `<${tag}>${escapeHtml(titleText)}</${tag}>`;
-                        // 剩余行作为正文
-                        const rest = lines.slice(1).join('\n');
-                        if (rest.trim()) {
-                            html += `<p>${escapeHtml(rest).replace(/\n/g, '<br>')}</p>`;
-                        }
-                        continue;
-                    }
-                }
-
-                // 检测是否为列表（以 - 或 * 或数字. 开头）
-                let listItems = [];
-                let isList = false;
-                let listType = 'ul';
-                for (let line of lines) {
-                    const trimmed = line.trim();
-                    if (/^[-*]\s/.test(trimmed)) {
-                        isList = true;
-                        listItems.push(trimmed.replace(/^[-*]\s/, '').trim());
-                    } else if (/^\d+\.\s/.test(trimmed)) {
-                        isList = true;
-                        listType = 'ol';
-                        listItems.push(trimmed.replace(/^\d+\.\s/, '').trim());
-                    } else {
-                        // 如果检测到列表但某行不是列表项，则把前面的列表关闭，这一行作为普通段落
-                        if (isList && listItems.length > 0) {
-                            html += renderList(listItems, listType);
-                            listItems = [];
-                            isList = false;
-                            listType = 'ul';
-                        }
-                        html += `<p>${escapeHtml(trimmed)}</p>`;
-                    }
-                }
-                if (isList && listItems.length > 0) {
-                    html += renderList(listItems, listType);
-                }
-            }
-
-            return html || '<p><em>（空内容）</em></p>';
-        }
-
-        function renderList(items, type) {
-            const tag = type === 'ol' ? 'ol' : 'ul';
-            const lis = items.map(item => `<li>${escapeHtml(item)}</li>`).join('');
-            return `<${tag}>${lis}</${tag}>`;
         }
 
         function escapeHtml(str) {
@@ -709,14 +675,12 @@
             });
             tocList.innerHTML = html;
 
-            // 绑定点击事件
             tocList.querySelectorAll('.toc-link').forEach(el => {
                 el.addEventListener('click', function(e) {
                     const idx = parseInt(this.dataset.index, 10);
                     if (!isNaN(idx) && idx !== currentIndex) {
                         loadArticle(idx);
                     }
-                    // 移动端点击后自动关闭侧边栏
                     if (window.innerWidth < 768) {
                         closeSidebar();
                     }
@@ -734,7 +698,6 @@
             const item = articles[index];
             if (!item) return;
 
-            // 如果已经是当前文章，只关闭侧边栏并返回
             if (index === currentIndex && item.content) {
                 if (window.innerWidth < 768) closeSidebar();
                 return;
@@ -743,10 +706,8 @@
             isLoading = true;
             currentIndex = index;
 
-            // 更新目录高亮
             renderTOC(articles, currentIndex);
 
-            // 显示加载状态
             mainContent.innerHTML = `
                     <div class="loading-wrap">
                         <div class="loading-spinner"></div>
@@ -755,28 +716,21 @@
                 `;
 
             try {
-                // 1. 检查缓存
                 let content = getCached(item.title);
                 if (content !== null) {
                     item.content = content;
                     item.cached = true;
                     renderArticle(item);
-                    // 后台静默更新
                     refreshInBackground(item);
                     isLoading = false;
                     return;
                 }
 
-                // 2. 从服务器加载
                 const url = encodeURIComponent(item.filename) + '.txt';
-                const response = await fetch(url, {
-                    cache: 'no-cache'
-                });
-
+                const response = await fetch(url, { cache: 'no-cache' });
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
                 }
-
                 content = await response.text();
                 item.content = content;
                 item.cached = true;
@@ -796,27 +750,25 @@
             isLoading = false;
         }
 
-        // 后台静默更新（先显示缓存，后台拉取最新，如有变化则刷新）
+        // 后台静默更新
         async function refreshInBackground(item) {
             try {
                 const url = encodeURIComponent(item.filename) + '.txt?_t=' + Date.now();
                 const response = await fetch(url, { cache: 'no-cache' });
                 if (!response.ok) return;
                 const newContent = await response.text();
-                // 如果内容变化，更新缓存和显示
                 if (newContent !== item.content) {
                     item.content = newContent;
                     setCache(item.title, newContent);
-                    // 如果当前显示的就是这篇文章，刷新显示
                     if (currentIndex >= 0 && articles[currentIndex] === item) {
                         renderArticle(item);
                     }
                 }
-            } catch (_) { /* 静默失败，不影响用户 */ }
+            } catch (_) { /* 静默失败 */ }
         }
 
         // ================================================================
-        //  渲染文章到主区域
+        //  渲染文章（使用 marked 解析 Markdown）
         // ================================================================
         function renderArticle(item) {
             if (!item || !item.content) {
@@ -824,13 +776,13 @@
                 return;
             }
 
-            const bodyHtml = txtToHtml(item.content);
+            // 使用 marked 渲染 Markdown
+            const bodyHtml = marked.parse(item.content);
             mainContent.innerHTML = `
                     <div class="article-title">${escapeHtml(item.title)}</div>
                     <div class="article-body">${bodyHtml}</div>
                 `;
 
-            // 滚动到顶部
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -839,20 +791,18 @@
         // ================================================================
         async function init() {
             try {
-                // 读取 index.txt
                 const resp = await fetch(INDEX_FILE, { cache: 'no-cache' });
                 if (!resp.ok) {
                     throw new Error(`无法读取 ${INDEX_FILE} (HTTP ${resp.status})`);
                 }
                 const text = await resp.text();
 
-                // 解析：每行一个标题，忽略空行和注释行（以#开头）
                 const lines = text.split(/\r?\n/);
                 const titles = [];
                 for (let line of lines) {
                     const trimmed = line.trim();
                     if (trimmed === '') continue;
-                    if (trimmed.startsWith('#')) continue; // 注释行
+                    if (trimmed.startsWith('#')) continue;
                     titles.push(trimmed);
                 }
 
@@ -867,9 +817,7 @@
                     return;
                 }
 
-                // 构建文章列表
                 articles = titles.map(title => {
-                    // 文件名：去除可能存在的非法字符，保留中文、字母、数字、空格、下划线、连字符
                     const filename = title.replace(/[\\/:*?"<>|]/g, '').trim();
                     return {
                         title: title,
@@ -879,10 +827,8 @@
                     };
                 });
 
-                // 渲染目录
                 renderTOC(articles, -1);
 
-                // 默认加载第一篇
                 if (articles.length > 0) {
                     await loadArticle(0);
                 }
@@ -904,20 +850,13 @@
         // ================================================================
         init();
 
-        // ================================================================
-        //  键盘快捷键：ESC 关闭侧边栏
-        // ================================================================
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && sidebarOpen) {
                 closeSidebar();
             }
         });
 
-        // ================================================================
-        //  窗口大小变化时，自动关闭侧边栏（大屏可保持打开？但为了统一，保持交互一致）
-        // ================================================================
-        // 大屏默认不自动打开，用户手动控制
-        console.log('📖 文档阅读器已启动 — 点击左上角 ☰ 打开目录');
+        console.log('📖 文档阅读器已启动（支持 Markdown） — 点击左上角 ☰ 打开目录');
     </script>
 
 </body>
