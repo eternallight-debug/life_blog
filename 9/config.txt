@@ -1,0 +1,5 @@
+title:二维码
+description:文本转二维码或者反过来哦
+time:2026-08-03
+label:二维码,解码
+category:工具/编码

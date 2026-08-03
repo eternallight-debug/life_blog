@@ -1,1 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>二维码 · 极简</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js">
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            background: #f0f4f8;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 1.5rem;
+        }
+
+        .app {
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+            padding: 2rem 2rem 2.2rem;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        /* 导航 */
+        .nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.8rem;
+            border-bottom: 1.5px solid #edf2f7;
+            padding-bottom: 0.6rem;
+        }
+
+        .nav button {
+            background: transparent;
+            border: none;
+            padding: 0.4rem 1.6rem;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #6b7f8f;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .nav button:hover {
+            color: #1a3344;
+            background: #f4f8fc;
+        }
+
+        .nav button.active {
+            color: #ffffff;
+            background: #1a3344;
+        }
+
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+
+        /* 生成页 */
+        .gen-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .gen-row input {
+            flex: 1;
+            padding: 0.7rem 1.1rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 60px;
+            font-size: 0.95rem;
+            background: #fafcfe;
+            outline: none;
+            transition: 0.15s;
+            color: #1a2a3a;
+        }
+
+        .gen-row input:focus {
+            border-color: #7a9bb5;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(26, 51, 68, 0.06);
+        }
+
+        .gen-row input::placeholder {
+            color: #b0c4d4;
+        }
+
+        .gen-row button {
+            background: #1a3344;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.8rem;
+            border-radius: 60px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.12s;
+            white-space: nowrap;
+        }
+
+        .gen-row button:hover {
+            background: #0f232f;
+            transform: scale(0.97);
+        }
+
+        /* 控制行 - 每个选项都是完整的按钮样式 */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+            padding: 0 2px;
+        }
+
+        .control-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.3rem 0.9rem 0.3rem 0.7rem;
+            border-radius: 40px;
+            border: 1.5px solid #e2e8f0;
+            background: #fafcfe;
+            font-size: 0.78rem;
+            font-weight: 450;
+            color: #1a3344;
+            cursor: pointer;
+            transition: 0.12s;
+            white-space: nowrap;
+        }
+
+        .control-btn:hover {
+            border-color: #b0c8da;
+            background: #f4f8fc;
+        }
+
+        .control-btn label {
+            cursor: pointer;
+            font-weight: 500;
+            color: #4a6579;
+            font-size: 0.75rem;
+            letter-spacing: 0.2px;
+        }
+
+        .control-btn select {
+            border: none;
+            background: transparent;
+            font-size: 0.78rem;
+            font-weight: 450;
+            color: #1a3344;
+            outline: none;
+            cursor: pointer;
+            padding: 0.1rem 1.2rem 0.1rem 0.2rem;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%236b7f8f'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 2px center;
+            background-size: 8px 5px;
+        }
+
+        .control-btn select:hover {
+            color: #0f232f;
+        }
+
+        .control-btn input[type="color"] {
+            width: 26px;
+            height: 26px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 40px;
+            padding: 2px;
+            cursor: pointer;
+            background: white;
+            flex-shrink: 0;
+        }
+
+        .control-btn input[type="color"]:hover {
+            border-color: #b0c8da;
+        }
+
+        /* 预览 */
+        .preview-box {
+            background: #fafcfe;
+            border-radius: 20px;
+            border: 1.5px solid #edf2f7;
+            padding: 1.2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 180px;
+            margin: 4px 0 14px;
+        }
+
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        #qrcode canvas,
+        #qrcode img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .placeholder {
+            color: #b8ccdd;
+            font-size: 0.85rem;
+            font-weight: 350;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .action-row button {
+            background: transparent;
+            border: 1.5px solid #e2e8f0;
+            padding: 0.5rem 2rem;
+            border-radius: 60px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: #1a3344;
+            cursor: pointer;
+            transition: 0.12s;
+            background: #fafcfe;
+        }
+
+        .action-row button:hover {
+            background: #f0f6fc;
+            border-color: #b0c8da;
+        }
+
+        .action-row button.download {
+            background: #1a3344;
+            border-color: #1a3344;
+            color: white;
+        }
+
+        .action-row button.download:hover {
+            background: #0d1f2b;
+        }
+
+        /* 解码页 */
+        .drop-zone {
+            border: 2px dashed #d5e0e8;
+            border-radius: 24px;
+            padding: 2.4rem 1.2rem;
+            text-align: center;
+            background: #fafcfe;
+            transition: 0.15s;
+            cursor: pointer;
+            position: relative;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .drop-zone.dragover {
+            border-color: #1a3344;
+            background: #f0f6fc;
+        }
+
+        .drop-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .drop-zone .icon {
+            font-size: 2.4rem;
+            line-height: 1;
+            opacity: 0.4;
+            user-select: none;
+        }
+
+        #previewImg {
+            max-width: 100%;
+            max-height: 160px;
+            border-radius: 16px;
+            margin: 8px 0 10px;
+            display: none;
+        }
+
+        .decode-result {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 1rem 1.2rem;
+            border: 1.5px solid #edf2f7;
+            margin-top: 12px;
+            min-height: 56px;
+            word-break: break-all;
+            font-size: 0.95rem;
+            color: #1a2a3a;
+        }
+
+        .decode-result .empty {
+            color: #b8ccdd;
+            font-weight: 350;
+        }
+
+        .decode-result .error {
+            color: #c0392b;
+        }
+
+        .decode-clear {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 6px;
+        }
+
+        .decode-clear button {
+            background: transparent;
+            border: 1.5px solid #e2e8f0;
+            padding: 0.25rem 1.6rem;
+            border-radius: 40px;
+            font-size: 0.78rem;
+            color: #4a6579;
+            cursor: pointer;
+            transition: 0.1s;
+            background: #fafcfe;
+        }
+
+        .decode-clear button:hover {
+            background: #f0f6fc;
+        }
+
+        @media (max-width: 480px) {
+            .app {
+                padding: 1.2rem 1rem 1.6rem;
+            }
+            .controls {
+                gap: 8px;
+            }
+            .control-btn {
+                padding: 0.25rem 0.7rem 0.25rem 0.5rem;
+                font-size: 0.72rem;
+            }
+            .control-btn input[type="color"] {
+                width: 22px;
+                height: 22px;
+            }
+            .gen-row button {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+            .preview-box {
+                min-height: 140px;
+                padding: 0.8rem;
+            }
+            .drop-zone {
+                padding: 1.6rem 0.8rem;
+                min-height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="nav">
+            <button class="active" data-page="generate">生成</button>
+            <button data-page="decode">解码</button>
+        </div>
+
+        <!-- 生成页 -->
+        <div id="page-generate" class="page active">
+            <div class="gen-row">
+                <input type="text" id="textInput" placeholder="输入文本或链接">
+                <button id="generateBtn">生成</button>
+            </div>
+
+            <div class="controls">
+                <!-- 纠错 -->
+                <span class="control-btn">
+                    <label>纠错</label>
+                    <select id="levelSelect">
+                        <option value="L">L</option>
+                        <option value="M">M</option>
+                        <option value="Q">Q</option>
+                        <option value="H" selected>H</option>
+                    </select>
+                </span>
+
+                <!-- 前景色 -->
+                <span class="control-btn">
+                    <label>前景</label>
+                    <input type="color" id="fgColor" value="#1a2e3f">
+                </span>
+
+                <!-- 背景色 -->
+                <span class="control-btn">
+                    <label>背景</label>
+                    <input type="color" id="bgColor" value="#ffffff">
+                </span>
+
+                <!-- 透明下拉 -->
+                <span class="control-btn">
+                    <label>透明</label>
+                    <select id="transparentMode">
+                        <option value="none">无</option>
+                        <option value="fg">前景</option>
+                        <option value="bg">背景</option>
+                    </select>
+                </span>
+            </div>
+
+            <div class="preview-box">
+                <div id="qrcode"><span class="placeholder">预览</span></div>
+            </div>
+
+            <div class="action-row">
+                <button id="downloadBtn" class="download">下载</button>
+            </div>
+        </div>
+
+        <!-- 解码页 -->
+        <div id="page-decode" class="page">
+            <div class="drop-zone" id="dropZone">
+                <span class="icon">⬇</span>
+                <input type="file" id="fileInput" accept="image/*">
+            </div>
+            <img id="previewImg" alt="预览">
+            <div class="decode-result" id="decodeResult">
+                <span class="empty">等待图片</span>
+            </div>
+            <div class="decode-clear">
+                <button id="clearDecodeBtn">清空</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            "use strict";
+
+            // DOM
+            const navBtns = document.querySelectorAll('.nav button');
+            const pages = {
+                generate: document.getElementById('page-generate'),
+                decode: document.getElementById('page-decode')
+            };
+
+            const textInput = document.getElementById('textInput');
+            const generateBtn = document.getElementById('generateBtn');
+            const qrContainer = document.getElementById('qrcode');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const levelSelect = document.getElementById('levelSelect');
+            const fgColor = document.getElementById('fgColor');
+            const bgColor = document.getElementById('bgColor');
+            const transparentMode = document.getElementById('transparentMode');
+
+            const fileInput = document.getElementById('fileInput');
+            const dropZone = document.getElementById('dropZone');
+            const previewImg = document.getElementById('previewImg');
+            const decodeResult = document.getElementById('decodeResult');
+
+            let currentQR = null;
+            let currentCanvas = null;
+
+            // 导航
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    navBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const page = this.dataset.page;
+                    Object.keys(pages).forEach(key => {
+                        pages[key].classList.toggle('active', key === page);
+                    });
+                });
+            });
+
+            // 获取纠错等级
+            function getLevel() {
+                const v = levelSelect.value;
+                switch (v) {
+                    case 'L':
+                        return QRCode.CorrectLevel.L;
+                    case 'M':
+                        return QRCode.CorrectLevel.M;
+                    case 'Q':
+                        return QRCode.CorrectLevel.Q;
+                    case 'H':
+                    default:
+                        return QRCode.CorrectLevel.H;
+                }
+            }
+
+            // 获取颜色（透明通过下拉控制）
+            function getColors() {
+                const mode = transparentMode.value;
+                let fg = fgColor.value || '#1a2e3f';
+                let bg = bgColor.value || '#ffffff';
+
+                if (mode === 'fg') {
+                    fg = 'rgba(0,0,0,0)';
+                } else if (mode === 'bg') {
+                    bg = 'rgba(0,0,0,0)';
+                }
+                // 'none' 保持原色
+                return { fg, bg };
+            }
+
+            // 生成二维码
+            function generateQR(text) {
+                const content = text.trim();
+                if (!content) {
+                    while (qrContainer.firstChild) qrContainer.removeChild(qrContainer.firstChild);
+                    const ph = document.createElement('span');
+                    ph.className = 'placeholder';
+                    ph.textContent = '预览';
+                    qrContainer.appendChild(ph);
+                    currentQR = null;
+                    currentCanvas = null;
+                    return;
+                }
+
+                if (currentQR) {
+                    try { currentQR.clear(); } catch (e) {}
+                    currentQR = null;
+                }
+                while (qrContainer.firstChild) qrContainer.removeChild(qrContainer.firstChild);
+
+                const { fg, bg } = getColors();
+                const level = getLevel();
+
+                try {
+                    currentQR = new QRCode(qrContainer, {
+                        text: content,
+                        width: 220,
+                        height: 220,
+                        colorDark: fg,
+                        colorLight: bg,
+                        correctLevel: level
+                    });
+
+                    const canvas = qrContainer.querySelector('canvas');
+                    const img = qrContainer.querySelector('img');
+                    currentCanvas = canvas || img || null;
+                } catch (err) {
+                    console.warn('生成失败', err);
+                    while (qrContainer.firstChild) qrContainer.removeChild(qrContainer.firstChild);
+                    const ph = document.createElement('span');
+                    ph.className = 'placeholder';
+                    ph.textContent = '⚠️ 错误';
+                    qrContainer.appendChild(ph);
+                    currentQR = null;
+                    currentCanvas = null;
+                }
+            }
+
+            function refreshQR() {
+                generateQR(textInput.value);
+            }
+
+            // 事件绑定
+            generateBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                refreshQR();
+            });
+
+            textInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    generateBtn.click();
+                }
+            });
+
+            // 自动重新生成
+            [levelSelect, fgColor, bgColor, transparentMode].forEach(el => {
+                el.addEventListener('change', function() {
+                    if (textInput.value.trim() !== '') {
+                        refreshQR();
+                    }
+                });
+            });
+
+            // 下载
+            downloadBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const canvas = qrContainer.querySelector('canvas');
+                const img = qrContainer.querySelector('img');
+                let downloadCanvas = null;
+
+                if (canvas) {
+                    downloadCanvas = canvas;
+                } else if (img) {
+                    const off = document.createElement('canvas');
+                    const ctx = off.getContext('2d');
+                    const w = img.naturalWidth || img.width || 220;
+                    const h = img.naturalHeight || img.height || 220;
+                    off.width = w;
+                    off.height = h;
+                    ctx.drawImage(img, 0, 0, w, h);
+                    downloadCanvas = off;
+                } else {
+                    return;
+                }
+
+                try {
+                    const dataURL = downloadCanvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.download = `qrcode_${Date.now()}.png`;
+                    link.href = dataURL;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } catch (err) {
+                    console.warn('下载失败', err);
+                }
+            });
+
+            // 解码
+            function decodeImage(file) {
+                if (!file) return;
+                if (!file.type.startsWith('image/')) {
+                    decodeResult.innerHTML = `<span class="error">请上传图片</span>`;
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        previewImg.src = e.target.result;
+                        previewImg.style.display = 'block';
+
+                        try {
+                            const c = document.createElement('canvas');
+                            const ctx = c.getContext('2d');
+                            c.width = img.width;
+                            c.height = img.height;
+                            ctx.drawImage(img, 0, 0);
+                            const imageData = ctx.getImageData(0, 0, img.width, img.height);
+                            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                                inversionAttempts: "dontInvert",
+                            });
+                            if (code && code.data) {
+                                decodeResult.innerHTML = code.data;
+                            } else {
+                                decodeResult.innerHTML = `<span class="error">未检测到二维码</span>`;
+                            }
+                        } catch (err) {
+                            decodeResult.innerHTML = `<span class="error">解码错误</span>`;
+                            console.warn(err);
+                        }
+                    };
+                    img.onerror = function() {
+                        decodeResult.innerHTML = `<span class="error">图片加载失败</span>`;
+                    };
+                    img.src = e.target.result;
+                };
+                reader.onerror = function() {
+                    decodeResult.innerHTML = `<span class="error">文件读取失败</span>`;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files.length > 0) {
+                    decodeImage(this.files[0]);
+                }
+            });
+
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+            dropZone.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files && files.length > 0) {
+                    const f = files[0];
+                    if (f.type.startsWith('image/')) {
+                        const dt = new DataTransfer();
+                        dt.items.add(f);
+                        fileInput.files = dt.files;
+                        decodeImage(f);
+                    } else {
+                        decodeResult.innerHTML = `<span class="error">请拖拽图片</span>`;
+                    }
+                }
+            });
+
+            dropZone.addEventListener('click', function(e) {
+                if (e.target.tagName !== 'INPUT') {
+                    fileInput.click();
+                }
+            });
+
+            document.getElementById('clearDecodeBtn').addEventListener('click', function() {
+                fileInput.value = '';
+                previewImg.style.display = 'none';
+                previewImg.src = '';
+                decodeResult.innerHTML = `<span class="empty">等待图片</span>`;
+            });
+
+            // 初始化
+            window.addEventListener('load', function() {
+                while (qrContainer.firstChild) qrContainer.removeChild(qrContainer.firstChild);
+                const ph = document.createElement('span');
+                ph.className = 'placeholder';
+                ph.textContent = '预览';
+                qrContainer.appendChild(ph);
+                decodeResult.innerHTML = `<span class="empty">等待图片</span>`;
+                previewImg.style.display = 'none';
+            });
+
+        })();
+    </script>
+</body>
+</html>
