@@ -1,0 +1,5 @@
+title:奇思妙想
+description:呃呃呃，，，突然有个疑问
+time:2026-08-04
+label:百科,奇思妙想,有趣,无聊,推荐
+category:知识/百科
