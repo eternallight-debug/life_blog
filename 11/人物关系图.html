@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>红楼梦 · 全人物家谱树（层级布局）</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js">
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Georgia", "宋体", "Microsoft YaHei", serif;
+        }
+        body {
+            background: #f5efe8;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .top-bar {
+            height: 62px;
+            background: linear-gradient(135deg, #6b1a1a, #8c2323);
+            color: #f0e0c0;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            gap: 18px;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+        .top-bar .title {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+            white-space: nowrap;
+        }
+        .top-bar .title small {
+            font-size: 13px;
+            font-weight: 400;
+            opacity: 0.75;
+            margin-left: 10px;
+        }
+        .search-wrap {
+            display: flex;
+            gap: 6px;
+            flex: 1;
+            max-width: 480px;
+            margin-left: auto;
+        }
+        .search-wrap input {
+            flex: 1;
+            height: 36px;
+            padding: 0 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #f0e0c0;
+            outline: none;
+            transition: 0.3s;
+            min-width: 120px;
+        }
+        .search-wrap input::placeholder {
+            color: #b09070;
+        }
+        .search-wrap input:focus {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        .search-wrap button {
+            height: 36px;
+            padding: 0 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .btn-primary {
+            background: #d4af37;
+            color: #3d1a0a;
+        }
+        .btn-primary:hover {
+            background: #e4c04a;
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: #f0e0c0;
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        #chart-box {
+            width: 100vw;
+            height: calc(100vh - 62px);
+            background: #f5efe8;
+            position: relative;
+        }
+        .footer-tip {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #8a7a6a;
+            font-size: 13px;
+            background: rgba(245, 239, 232, 0.85);
+            padding: 6px 20px;
+            border-radius: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            z-index: 5;
+            pointer-events: none;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+        .legend-generations {
+            position: absolute;
+            top: 18px;
+            right: 24px;
+            z-index: 8;
+            background: rgba(255, 248, 240, 0.92);
+            border-radius: 10px;
+            padding: 12px 16px;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e0d4c8;
+            font-size: 12px;
+            line-height: 1.8;
+            color: #3d2a1a;
+            pointer-events: none;
+        }
+        .legend-generations .row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-generations .dot {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            flex-shrink: 0;
+        }
+        @media (max-width: 768px) {
+            .top-bar {
+                height: auto;
+                padding: 10px 16px;
+                gap: 10px;
+            }
+            .top-bar .title {
+                font-size: 16px;
+            }
+            .top-bar .title small {
+                font-size: 11px;
+                display: block;
+                margin-left: 0;
+            }
+            .search-wrap {
+                max-width: 100%;
+                margin-left: 0;
+                flex-wrap: wrap;
+            }
+            .search-wrap input {
+                min-width: 80px;
+                font-size: 13px;
+                height: 32px;
+            }
+            .search-wrap button {
+                height: 32px;
+                font-size: 12px;
+                padding: 0 12px;
+            }
+            .legend-generations {
+                top: 10px;
+                right: 10px;
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+            .legend-generations .dot {
+                width: 12px;
+                height: 12px;
+            }
+            .footer-tip {
+                font-size: 11px;
+                padding: 4px 14px;
+                bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="title">
+            📜 红楼梦
+            <small>全人物 · 家谱树</small>
+        </div>
+        <div class="search-wrap">
+            <input id="search-input" placeholder="搜索人物姓名…" />
+            <button class="btn-primary" id="search-btn">定位</button>
+            <button class="btn-secondary" id="reset-btn">重置</button>
+        </div>
+    </div>
+
+    <div id="chart-box">
+        <div class="legend-generations" id="legendGens">
+            <!-- js动态生成 -->
+        </div>
+        <div class="footer-tip">🖱 拖拽移动 · 滚轮缩放 · 悬停查看人物故事</div>
+    </div>
+
+    <script>
+        // ============================================================
+        // 1. 人物数据（含代际 generation：1~6）
+        // ============================================================
+        const people = [
+            // 第1代
+            { name: "贾演", gen: 1, desc: "宁国公，贾家宁国府始祖。", cat: "宁国府" },
+            { name: "贾源", gen: 1, desc: "荣国公，贾家荣国府始祖。", cat: "荣国府" },
+            // 第2代
+            { name: "贾代化", gen: 2, desc: "贾演之子，袭宁国公爵，神威将军。", cat: "宁国府" },
+            { name: "贾代善", gen: 2, desc: "贾源之子，袭荣国公爵，娶史家小姐（贾母）。", cat: "荣国府" },
+            { name: "贾母(史太君)", gen: 2, desc: "史家小姐，贾代善之妻，贾府最高长辈。", cat: "荣国府" },
+            // 第3代
+            { name: "贾敷", gen: 3, desc: "贾代化长子，早夭。", cat: "宁国府" },
+            { name: "贾敬", gen: 3, desc: "贾代化次子，袭宁国公爵，痴迷炼丹，服食丹药而亡。", cat: "宁国府" },
+            { name: "贾赦", gen: 3, desc: "贾代善长子，袭荣国公爵，一等将军。好色贪财。", cat: "荣国府" },
+            { name: "贾政", gen: 3, desc: "贾代善次子，工部员外郎，宝玉之父，为人端正古板。", cat: "荣国府" },
+            { name: "贾敏", gen: 3, desc: "贾代善幼女，林如海之妻，林黛玉生母，早逝。", cat: "荣国府" },
+            // 第4代
+            { name: "贾珍", gen: 4, desc: "贾敬之子，袭宁国公爵，贾家族长，荒淫无度。", cat: "宁国府" },
+            { name: "尤氏", gen: 4, desc: "贾珍续弦之妻，尤二姐、尤三姐异母姐。", cat: "宁国府" },
+            { name: "贾蓉", gen: 4, desc: "贾珍之子，龙禁尉，娶秦可卿。", cat: "宁国府" },
+            { name: "秦可卿", gen: 4, desc: "贾蓉原配，十二钗之一，身世隐秘，早逝。", cat: "宁国府" },
+            { name: "贾琏", gen: 4, desc: "贾赦长子，琏二爷，王熙凤丈夫，风流倜傥。", cat: "荣国府" },
+            { name: "王熙凤", gen: 4, desc: "贾琏之妻，王夫人侄女，荣国府管家，杀伐决断。", cat: "荣国府" },
+            { name: "贾宝玉", gen: 4, desc: "贾政次子，衔通灵玉而生，林黛玉知己，后出家。", cat: "荣国府" },
+            { name: "贾元春", gen: 4, desc: "贾政长女，贤德妃，省亲修建大观园。", cat: "荣国府" },
+            { name: "贾迎春", gen: 4, desc: "贾赦庶女，二姑娘，懦弱，嫁孙绍祖被虐待致死。", cat: "荣国府" },
+            { name: "贾探春", gen: 4, desc: "贾政庶女，三姑娘，精明能干，远嫁和亲。", cat: "荣国府" },
+            { name: "贾惜春", gen: 4, desc: "贾珍胞妹，四姑娘，冷漠孤僻，后出家为尼。", cat: "宁国府" },
+            { name: "贾珠", gen: 4, desc: "贾政长子，早亡，遗妻李纨、子贾兰。", cat: "荣国府" },
+            { name: "李纨", gen: 4, desc: "贾珠之妻，守寡抚育贾兰，晚年诰命加身。", cat: "荣国府" },
+            { name: "贾环", gen: 4, desc: "贾政庶子，赵姨娘所生，嫉妒宝玉。", cat: "荣国府" },
+            { name: "林黛玉", gen: 4, desc: "林如海、贾敏之女，绛珠仙草转世，聪慧多愁。", cat: "亲戚" },
+            { name: "薛宝钗", gen: 4, desc: "薛姨妈之女，王夫人外甥女，稳重端庄，嫁宝玉。", cat: "亲戚" },
+            { name: "史湘云", gen: 4, desc: "史家侄孙女，贾母侄孙女，豪爽阔朗。", cat: "史家" },
+            { name: "妙玉", gen: 4, desc: "栊翠庵带发修行的尼姑，孤傲洁癖。", cat: "方外" },
+            { name: "尤二姐", gen: 4, desc: "尤氏异母妹，嫁给贾琏为妾，被王熙凤设计吞金自尽。", cat: "宁国府" },
+            { name: "尤三姐", gen: 4, desc: "尤氏异母妹，刚烈泼辣，因被柳湘莲拒婚而自刎。", cat: "宁国府" },
+            { name: "邢岫烟", gen: 4, desc: "邢夫人侄女，端庄稳重，后嫁薛蝌。", cat: "亲戚" },
+            // 第5代
+            { name: "贾兰", gen: 5, desc: "贾珠、李纨之子，考中举人，重振贾家。", cat: "荣国府" },
+            { name: "巧姐", gen: 5, desc: "贾琏、王熙凤之女，被刘姥姥救出，嫁板儿。", cat: "荣国府" },
+            // 第6代（仆役、亲友、方外、市井等）
+            { name: "袭人(蕊珠)", gen: 6, desc: "宝玉大丫鬟，温柔和顺，后改嫁蒋玉菡。", cat: "仆役" },
+            { name: "晴雯", gen: 6, desc: "宝玉丫鬟，风流灵巧，遭谗被撵，病逝。", cat: "仆役" },
+            { name: "麝月", gen: 6, desc: "宝玉丫鬟，稳重可靠。", cat: "仆役" },
+            { name: "秋纹", gen: 6, desc: "宝玉丫鬟，势利眼。", cat: "仆役" },
+            { name: "碧痕", gen: 6, desc: "宝玉丫鬟。", cat: "仆役" },
+            { name: "四儿", gen: 6, desc: "宝玉丫鬟，因与宝玉同日生日被撵。", cat: "仆役" },
+            { name: "芳官", gen: 6, desc: "贾府伶人，后入怡红院。", cat: "仆役" },
+            { name: "茜雪", gen: 6, desc: "早期宝玉丫鬟，因枫露茶事件被撵。", cat: "仆役" },
+            { name: "坠儿", gen: 6, desc: "怡红院小丫鬟，偷窃被撵。", cat: "仆役" },
+            { name: "春燕", gen: 6, desc: "怡红院小丫鬟。", cat: "仆役" },
+            { name: "佳蕙", gen: 6, desc: "怡红院小丫鬟。", cat: "仆役" },
+            { name: "茗烟", gen: 6, desc: "宝玉头号小厮，机灵胆大。", cat: "仆役" },
+            { name: "李贵", gen: 6, desc: "宝玉奶兄，陪读小厮。", cat: "仆役" },
+            { name: "李嬷嬷", gen: 6, desc: "宝玉乳母。", cat: "仆役" },
+            { name: "平儿", gen: 6, desc: "凤姐陪房丫鬟，贾琏通房，善良聪慧。", cat: "仆役" },
+            { name: "鸳鸯", gen: 6, desc: "贾母首席大丫鬟，刚烈拒婚，自尽。", cat: "仆役" },
+            { name: "琥珀", gen: 6, desc: "贾母二等丫鬟。", cat: "仆役" },
+            { name: "紫鹃", gen: 6, desc: "黛玉贴身丫鬟，情同姐妹。", cat: "仆役" },
+            { name: "雪雁", gen: 6, desc: "黛玉从苏州带来的小丫鬟。", cat: "仆役" },
+            { name: "莺儿", gen: 6, desc: "宝钗贴身丫鬟。", cat: "仆役" },
+            { name: "文杏", gen: 6, desc: "宝钗丫鬟。", cat: "仆役" },
+            { name: "司棋", gen: 6, desc: "迎春大丫鬟，与潘又安私会，殉情。", cat: "仆役" },
+            { name: "侍书", gen: 6, desc: "探春贴身丫鬟，口齿伶俐。", cat: "仆役" },
+            { name: "入画", gen: 6, desc: "惜春大丫鬟，被惜春撵出。", cat: "仆役" },
+            { name: "翠缕", gen: 6, desc: "湘云丫鬟。", cat: "仆役" },
+            { name: "金钏", gen: 6, desc: "王夫人丫鬟，投井自尽。", cat: "仆役" },
+            { name: "玉钏", gen: 6, desc: "王夫人丫鬟，金钏之妹。", cat: "仆役" },
+            { name: "彩云", gen: 6, desc: "王夫人丫鬟。", cat: "仆役" },
+            { name: "彩霞", gen: 6, desc: "王夫人丫鬟。", cat: "仆役" },
+            { name: "小红(林红玉)", gen: 6, desc: "贾府底层丫鬟，伶俐能干。", cat: "仆役" },
+            { name: "柳五儿", gen: 6, desc: "厨役之女，貌美如晴雯。", cat: "仆役" },
+            { name: "赖大", gen: 6, desc: "荣国府大总管。", cat: "仆役" },
+            { name: "赖嬷嬷", gen: 6, desc: "赖大之母，老嬷嬷。", cat: "仆役" },
+            { name: "周瑞家的", gen: 6, desc: "王夫人陪房，内院管事婆子。", cat: "仆役" },
+            { name: "林之孝家的", gen: 6, desc: "内院女总管。", cat: "仆役" },
+            // 亲戚
+            { name: "林如海", gen: 6, desc: "贾敏之夫，林黛玉之父，巡盐御史。", cat: "亲戚" },
+            { name: "薛姨妈", gen: 6, desc: "王夫人胞妹，薛宝钗、薛蟠之母。", cat: "亲戚" },
+            { name: "薛蟠", gen: 6, desc: "薛姨妈长子，纨绔霸王。", cat: "亲戚" },
+            { name: "薛蝌", gen: 6, desc: "薛姨妈侄子，稳重本分。", cat: "亲戚" },
+            { name: "薛宝琴", gen: 6, desc: "薛蝌胞妹，容貌才华出众。", cat: "亲戚" },
+            { name: "香菱(甄英莲)", gen: 6, desc: "甄士隐之女，被拐卖，后为薛蟠之妾。", cat: "亲戚" },
+            { name: "王子腾", gen: 6, desc: "王夫人、薛姨妈之兄，九省都检点。", cat: "亲戚" },
+            { name: "王仁", gen: 6, desc: "王熙凤之兄，唯利是图。", cat: "亲戚" },
+            { name: "尤老娘", gen: 6, desc: "尤氏、尤二姐、尤三姐之母。", cat: "亲戚" },
+            { name: "邢夫人", gen: 6, desc: "贾赦续弦之妻，刻薄贪利。", cat: "亲戚" },
+            { name: "赵姨娘", gen: 6, desc: "贾政之妾，探春、贾环生母。", cat: "亲戚" },
+            { name: "周姨娘", gen: 6, desc: "贾政之妾，一生低调。", cat: "亲戚" },
+            { name: "秋桐", gen: 6, desc: "贾赦赏给贾琏的丫鬟。", cat: "亲戚" },
+            // 方外 / 市井
+            { name: "智能", gen: 6, desc: "水月庵小尼姑，与秦钟相恋。", cat: "方外" },
+            { name: "净虚", gen: 6, desc: "水月庵老尼，唆使凤姐包揽诉讼。", cat: "方外" },
+            { name: "马道婆", gen: 6, desc: "巫婆，用巫术诅咒宝玉、凤姐。", cat: "方外" },
+            { name: "跛足道人", gen: 6, desc: "疯癫道人，送风月宝鉴。", cat: "方外" },
+            { name: "癞头和尚", gen: 6, desc: "通灵玉守护者。", cat: "方外" },
+            { name: "甄士隐", gen: 6, desc: "姑苏乡绅，梦识通灵玉，晚年出家。", cat: "市井" },
+            { name: "贾雨村", gen: 6, desc: "穷书生发迹，趋炎附势，乱判葫芦案。", cat: "市井" },
+            { name: "刘姥姥", gen: 6, desc: "乡下老妪，三进大观园，救出巧姐。", cat: "市井" },
+            { name: "板儿", gen: 6, desc: "刘姥姥外孙，后与巧姐成婚。", cat: "市井" },
+            { name: "柳湘莲", gen: 6, desc: "冷面二郎，悔婚尤三姐，出家。", cat: "市井" },
+            { name: "蒋玉菡", gen: 6, desc: "戏子琪官，后娶袭人。", cat: "市井" },
+            { name: "冯紫英", gen: 6, desc: "宝玉好友。", cat: "市井" },
+            { name: "秦钟", gen: 6, desc: "秦可卿之弟，与智能相恋，早逝。", cat: "市井" },
+            { name: "北静王", gen: 6, desc: "水溶，王爷，宝玉好友。", cat: "市井" },
+            { name: "冷子兴", gen: 6, desc: "古董商人，演说荣国府。", cat: "市井" },
+            { name: "詹光", gen: 6, desc: "贾政清客。", cat: "市井" },
+            { name: "单聘仁", gen: 6, desc: "贾政清客。", cat: "市井" }
+        ];
+
+        // ============================================================
+        // 2. 关系数据
+        // ============================================================
+        const rawLinks = [
+            { source: "贾演", target: "贾代化", label: "父子" },
+            { source: "贾源", target: "贾代善", label: "父子" },
+            { source: "贾代善", target: "贾母(史太君)", label: "夫妻" },
+            { source: "贾代化", target: "贾敷", label: "父子" },
+            { source: "贾代化", target: "贾敬", label: "父子" },
+            { source: "贾代善", target: "贾赦", label: "父子" },
+            { source: "贾代善", target: "贾政", label: "父子" },
+            { source: "贾代善", target: "贾敏", label: "父女" },
+            { source: "贾母(史太君)", target: "贾赦", label: "母子" },
+            { source: "贾母(史太君)", target: "贾政", label: "母子" },
+            { source: "贾母(史太君)", target: "贾敏", label: "母女" },
+            { source: "贾敬", target: "贾珍", label: "父子" },
+            { source: "贾敬", target: "贾惜春", label: "父女" },
+            { source: "贾赦", target: "贾琏", label: "父子" },
+            { source: "贾赦", target: "贾迎春", label: "父女" },
+            { source: "贾政", target: "贾珠", label: "父子" },
+            { source: "贾政", target: "贾元春", label: "父女" },
+            { source: "贾政", target: "贾宝玉", label: "父子" },
+            { source: "贾政", target: "贾探春", label: "父女" },
+            { source: "贾政", target: "贾环", label: "父子" },
+            { source: "贾敏", target: "林黛玉", label: "母女" },
+            { source: "贾珍", target: "尤氏", label: "夫妻" },
+            { source: "贾蓉", target: "秦可卿", label: "夫妻" },
+            { source: "贾琏", target: "王熙凤", label: "夫妻" },
+            { source: "贾珠", target: "李纨", label: "夫妻" },
+            { source: "贾宝玉", target: "薛宝钗", label: "夫妻" },
+            { source: "贾宝玉", target: "林黛玉", label: "知己" },
+            { source: "贾珠", target: "贾兰", label: "父子" },
+            { source: "贾琏", target: "巧姐", label: "父女" },
+            // 主仆
+            { source: "贾宝玉", target: "袭人(蕊珠)", label: "主仆" },
+            { source: "贾宝玉", target: "晴雯", label: "主仆" },
+            { source: "贾宝玉", target: "麝月", label: "主仆" },
+            { source: "贾宝玉", target: "秋纹", label: "主仆" },
+            { source: "贾宝玉", target: "碧痕", label: "主仆" },
+            { source: "贾宝玉", target: "四儿", label: "主仆" },
+            { source: "贾宝玉", target: "芳官", label: "主仆" },
+            { source: "贾宝玉", target: "茜雪", label: "主仆" },
+            { source: "贾宝玉", target: "坠儿", label: "主仆" },
+            { source: "贾宝玉", target: "茗烟", label: "主仆" },
+            { source: "贾宝玉", target: "李贵", label: "主仆" },
+            { source: "贾宝玉", target: "李嬷嬷", label: "主仆" },
+            { source: "林黛玉", target: "紫鹃", label: "主仆" },
+            { source: "林黛玉", target: "雪雁", label: "主仆" },
+            { source: "薛宝钗", target: "莺儿", label: "主仆" },
+            { source: "薛宝钗", target: "文杏", label: "主仆" },
+            { source: "王熙凤", target: "平儿", label: "主仆" },
+            { source: "王熙凤", target: "小红(林红玉)", label: "主仆" },
+            { source: "贾母(史太君)", target: "鸳鸯", label: "主仆" },
+            { source: "贾母(史太君)", target: "琥珀", label: "主仆" },
+            { source: "贾迎春", target: "司棋", label: "主仆" },
+            { source: "贾探春", target: "侍书", label: "主仆" },
+            { source: "贾惜春", target: "入画", label: "主仆" },
+            { source: "史湘云", target: "翠缕", label: "主仆" },
+            { source: "王夫人", target: "金钏", label: "主仆" },
+            { source: "王夫人", target: "玉钏", label: "主仆" },
+            // 亲戚
+            { source: "贾敏", target: "林如海", label: "夫妻" },
+            { source: "林如海", target: "林黛玉", label: "父女" },
+            { source: "王夫人", target: "薛姨妈", label: "姐妹" },
+            { source: "王夫人", target: "王子腾", label: "兄妹" },
+            { source: "薛姨妈", target: "薛宝钗", label: "母女" },
+            { source: "薛姨妈", target: "薛蟠", label: "母子" },
+            { source: "薛姨妈", target: "薛蝌", label: "婶侄" },
+            { source: "薛蝌", target: "薛宝琴", label: "兄妹" },
+            { source: "薛蟠", target: "香菱(甄英莲)", label: "主妾" },
+            { source: "王熙凤", target: "王仁", label: "兄妹" },
+            { source: "贾母(史太君)", target: "史湘云", label: "姑侄孙" },
+            { source: "尤氏", target: "尤二姐", label: "异母姐妹" },
+            { source: "尤氏", target: "尤三姐", label: "异母姐妹" },
+            { source: "尤老娘", target: "尤二姐", label: "母女" },
+            { source: "尤老娘", target: "尤三姐", label: "母女" },
+            { source: "邢夫人", target: "邢岫烟", label: "姑侄" },
+            { source: "贾政", target: "赵姨娘", label: "主妾" },
+            { source: "贾政", target: "周姨娘", label: "主妾" },
+            // 方外与市井
+            { source: "秦可卿", target: "秦钟", label: "姐弟" },
+            { source: "秦钟", target: "智能", label: "相恋" },
+            { source: "净虚", target: "智能", label: "师徒" },
+            { source: "赵姨娘", target: "马道婆", label: "雇佣" },
+            { source: "甄士隐", target: "香菱(甄英莲)", label: "父女" },
+            { source: "甄士隐", target: "贾雨村", label: "恩人" },
+            { source: "贾雨村", target: "冷子兴", label: "旧交" },
+            { source: "刘姥姥", target: "板儿", label: "祖孙" },
+            { source: "尤三姐", target: "柳湘莲", label: "婚约" },
+            { source: "贾宝玉", target: "蒋玉菡", label: "好友" },
+            { source: "贾宝玉", target: "柳湘莲", label: "好友" },
+            { source: "贾宝玉", target: "冯紫英", label: "好友" },
+            { source: "贾宝玉", target: "北静王", label: "好友" },
+            { source: "袭人(蕊珠)", target: "蒋玉菡", label: "夫妻" },
+            { source: "贾政", target: "詹光", label: "主客" },
+            { source: "贾政", target: "单聘仁", label: "主客" },
+            { source: "赖大", target: "赖嬷嬷", label: "母子" },
+            { source: "王夫人", target: "周瑞家的", label: "陪房" },
+        ];
+
+        // ============================================================
+        // 3. 构建层级布局（手动计算坐标）
+        // ============================================================
+
+        // 按代际分组
+        const genMap = {};
+        people.forEach(p => {
+            const g = p.gen || 6;
+            if (!genMap[g]) genMap[g] = [];
+            genMap[g].push(p);
+        });
+        const sortedGens = Object.keys(genMap).map(Number).sort((a, b) => a - b);
+
+        // 定义层高和水平间距
+        const layerHeight = 110;
+        const topMargin = 60;
+        const leftMargin = 40;
+        const rightMargin = 40;
+        const chartWidth = window.innerWidth || 1200;
+        const chartHeight = window.innerHeight - 62;
+
+        // 为每个节点计算 x, y
+        const nodePositions = {};
+        sortedGens.forEach((gen, index) => {
+            const nodesInGen = genMap[gen];
+            const count = nodesInGen.length;
+            // 水平可用宽度
+            const usableWidth = chartWidth - leftMargin - rightMargin;
+            const spacing = Math.min(120, usableWidth / Math.max(count, 1));
+            const totalWidth = (count - 1) * spacing;
+            const startX = (chartWidth - totalWidth) / 2;
+            const y = topMargin + index * layerHeight;
+
+            nodesInGen.forEach((node, i) => {
+                const x = startX + i * spacing;
+                nodePositions[node.name] = { x, y };
+            });
+        });
+
+        // 为所有节点添加坐标
+        const nodes = people.map(p => {
+            const pos = nodePositions[p.name] || { x: Math.random() * chartWidth, y: Math.random() * chartHeight };
+            return {
+                name: p.name,
+                value: p.gen,
+                desc: p.desc || '',
+                cat: p.cat || '',
+                x: pos.x,
+                y: pos.y,
+                symbolSize: p.gen <= 4 ? (p.gen === 1 ? 56 : p.gen === 2 ? 50 : p.gen === 3 ? 46 : 42) : 28,
+                itemStyle: {
+                    color: (() => {
+                        const colors = { 1: '#8B1A1A', 2: '#B22222', 3: '#CD5C5C', 4: '#D4847A', 5: '#E8A87C',
+                            6: '#B8A090' };
+                        return colors[p.gen] || '#B8A090';
+                    })(),
+                    borderColor: '#f0e0c0',
+                    borderWidth: 1.2
+                },
+                label: {
+                    fontSize: p.gen <= 4 ? 12 : 9,
+                    fontWeight: p.gen <= 4 ? 600 : 400,
+                    color: p.gen <= 4 ? '#2a1a0a' : '#5a4a3a'
+                }
+            };
+        });
+
+        // 边
+        const links = rawLinks.map(l => {
+            const s = nodes.find(n => n.name === l.source);
+            const t = nodes.find(n => n.name === l.target);
+            if (!s || !t) {
+                console.warn('Missing node:', l.source, l.target);
+                return null;
+            }
+            return {
+                source: l.source,
+                target: l.target,
+                label: l.label || '关系',
+                lineStyle: {
+                    color: '#8a7a6a',
+                    width: 1.5,
+                    curveness: 0.1,
+                    opacity: 0.7
+                }
+            };
+        }).filter(e => e !== null);
+
+        // ============================================================
+        // 4. 图表渲染
+        // ============================================================
+
+        const genColors = {
+            1: '#8B1A1A',
+            2: '#B22222',
+            3: '#CD5C5C',
+            4: '#D4847A',
+            5: '#E8A87C',
+            6: '#B8A090'
+        };
+        const genNames = {
+            1: '第1代·宁荣二公',
+            2: '第2代·世袭',
+            3: '第3代·第三代',
+            4: '第4代·玉字辈',
+            5: '第5代·草字辈',
+            6: '其他·仆役/亲友'
+        };
+
+        // 图例
+        const legendHtml = Object.keys(genNames).map(k =>
+            `<div class="row"><span class="dot" style="background:${genColors[k]};"></span><span class="label">${genNames[k]}</span></div>`
+        ).join('');
+        document.getElementById('legendGens').innerHTML = legendHtml;
+
+        const chartDom = document.getElementById('chart-box');
+        const myChart = echarts.init(chartDom);
+
+        const option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: function(params) {
+                    if (params.dataType === 'node') {
+                        const d = params.data;
+                        let html = `<div style="font-weight:700;font-size:16px;color:#3d1a0a;">${d.name}</div>`;
+                        if (d.desc) {
+                            html += `<div style="font-size:13px;color:#5a3a2a;margin-top:4px;max-width:260px;">${d.desc}</div>`;
+                        }
+                        if (d.cat) {
+                            html += `<div style="font-size:12px;color:#8a7a6a;margin-top:2px;">🏷️ ${d.cat}</div>`;
+                        }
+                        const genLabel = genNames[d.value] || `第${d.value}代`;
+                        html += `<div style="font-size:11px;color:#aa9a8a;margin-top:2px;">📍 ${genLabel}</div>`;
+                        return html;
+                    } else if (params.dataType === 'edge') {
+                        const d = params.data;
+                        return `<div style="font-weight:600;color:#5a3a2a;">${d.source} → ${d.target}</div>
+                                <div style="font-size:13px;color:#8a7a6a;">${d.label || '关系'}</div>`;
+                    }
+                    return '';
+                },
+                backgroundColor: 'rgba(255,248,240,0.94)',
+                borderColor: '#d4c0b0',
+                borderWidth: 1,
+                textStyle: { color: '#3d2a1a' },
+                padding: [12, 16],
+                extraCssText: 'border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.12);'
+            },
+            legend: { show: false },
+            series: [{
+                type: 'graph',
+                layout: 'none', // 使用手动坐标
+                roam: true,
+                draggable: true,
+                data: nodes,
+                links: links,
+                categories: [],
+                label: {
+                    show: true,
+                    position: 'bottom',
+                    fontSize: 11,
+                    color: '#3d2a1a',
+                    textShadowColor: 'rgba(255,248,240,0.8)',
+                    textShadowBlur: 4,
+                    distance: 4
+                },
+                edgeLabel: {
+                    show: true,
+                    formatter: function(params) {
+                        return params.data.label || '';
+                    },
+                    fontSize: 9,
+                    color: '#8a7a6a',
+                    backgroundColor: 'rgba(255,248,240,0.7)',
+                    padding: [2, 6],
+                    borderRadius: 4,
+                    borderColor: '#d4c0b0',
+                    borderWidth: 0.5
+                },
+                lineStyle: {
+                    color: '#8a7a6a',
+                    width: 1.5,
+                    curveness: 0.1,
+                    opacity: 0.7
+                },
+                emphasis: {
+                    focus: 'adjacency',
+                    lineStyle: {
+                        width: 3,
+                        color: '#b8860b',
+                        opacity: 0.9
+                    },
+                    itemStyle: {
+                        borderColor: '#b8860b',
+                        borderWidth: 3,
+                        shadowBlur: 12,
+                        shadowColor: 'rgba(184,134,11,0.3)'
+                    },
+                    label: {
+                        fontWeight: 700,
+                        fontSize: 14,
+                        color: '#3d1a0a'
+                    }
+                },
+                itemStyle: {
+                    borderColor: '#f0e0c0',
+                    borderWidth: 1.5,
+                    shadowBlur: 4,
+                    shadowColor: 'rgba(0,0,0,0.06)'
+                }
+            }]
+        };
+
+        myChart.setOption(option);
+        myChart.resize();
+
+        // ============================================================
+        // 5. 交互功能
+        // ============================================================
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const resetBtn = document.getElementById('reset-btn');
+
+        function performSearch() {
+            const keyword = searchInput.value.trim();
+            if (!keyword) { alert('请输入人物姓名'); return; }
+
+            const found = nodes.filter(n => n.name.includes(keyword) || (n.desc && n.desc.includes(keyword)));
+            if (found.length === 0) {
+                alert(`未找到 "${keyword}" 相关人物`);
+                return;
+            }
+
+            const target = found[0];
+            const dataIndex = nodes.indexOf(target);
+            if (dataIndex >= 0) {
+                myChart.dispatchAction({
+                    type: 'highlight',
+                    seriesIndex: 0,
+                    dataIndex: dataIndex
+                });
+                myChart.dispatchAction({
+                    type: 'focusNodeAdjacency',
+                    seriesIndex: 0,
+                    dataIndex: dataIndex
+                });
+                myChart.dispatchAction({
+                    type: 'showTip',
+                    seriesIndex: 0,
+                    dataIndex: dataIndex
+                });
+                if (found.length > 1) {
+                    const names = found.map(n => n.name).join('、');
+                    alert(`找到 ${found.length} 位：${names}，已定位到 "${target.name}"`);
+                }
+            }
+        }
+
+        function resetView() {
+            searchInput.value = '';
+            myChart.dispatchAction({ type: 'unfocusNodeAdjacency', seriesIndex: 0 });
+            myChart.dispatchAction({ type: 'hideTip' });
+            myChart.setOption(option, true);
+        }
+
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') performSearch();
+            if (e.key === 'Escape') resetView();
+        });
+        resetBtn.addEventListener('click', resetView);
+
+        window.addEventListener('resize', () => myChart.resize());
+
+        console.log(`📜 家谱树加载完成，共 ${nodes.length} 人，${links.length} 条关系`);
+    </script>
+</body>
+</html>
