@@ -1,1 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>奇思妙想 </title>
+    <!-- 使用 marked 渲染 Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "SF Pro Display", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+        }
 
+        body {
+            background: #f2efe9;
+            color: #1e1e1e;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 20px 16px 40px;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 880px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 4px 8px;
+            border-bottom: 2px solid #dbd5cb;
+        }
+        .back-btn {
+            background: transparent;
+            border: none;
+            font-size: 18px;
+            color: #7b7163;
+            cursor: pointer;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            touch-action: manipulation;
+        }
+        .back-btn:hover {
+            background: #e5dfd6;
+            color: #1e1e1e;
+        }
+        .back-btn.hidden {
+            visibility: hidden;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .catalog-view {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            animation: fadeUp 0.3s ease;
+        }
+
+        .question-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+        @media (min-width: 480px) {
+            .question-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .question-card {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 28px 28px 26px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e9e2d8;
+            transition: 0.2s;
+            cursor: pointer;
+            touch-action: manipulation;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-height: 100px;
+        }
+        .question-card:hover {
+            transform: translateY(-3px);
+            border-color: #cdbdb0;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+            background: #fcfaf7;
+        }
+        .question-card .q-text {
+            font-size: 20px;
+            font-weight: 500;
+            color: #1e1e1e;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .answer-view {
+            animation: fadeUp 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .answer-view .answer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0d8ce;
+        }
+        .answer-view .answer-title {
+            font-size: 26px;
+            font-weight: 500;
+            color: #1e1e1e;
+            line-height: 1.4;
+        }
+        .answer-view .answer-body {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 32px 28px 36px;
+            border: 1px solid #e9e2d8;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+            min-height: 200px;
+        }
+
+        /* ===== Markdown 渲染样式 + 首行缩进 ===== */
+        .answer-body .md-content p {
+            text-indent: 2em;
+            margin: 0 0 1.2em 0;
+        }
+        .answer-body .md-content p:last-child {
+            margin-bottom: 0;
+        }
+        .answer-body .md-content h1,
+        .answer-body .md-content h2,
+        .answer-body .md-content h3,
+        .answer-body .md-content h4,
+        .answer-body .md-content ul,
+        .answer-body .md-content ol,
+        .answer-body .md-content blockquote,
+        .answer-body .md-content pre,
+        .answer-body .md-content table,
+        .answer-body .md-content hr,
+        .answer-body .md-content div,
+        .answer-body .md-content figure {
+            text-indent: 0;
+        }
+        .answer-body .md-content {
+            font-size: 16.5px;
+            line-height: 1.85;
+            color: #222;
+        }
+        .answer-body .md-content h1 {
+            font-size: 28px;
+            margin: 0.8em 0 0.4em;
+            font-weight: 600;
+        }
+        .answer-body .md-content h2 {
+            font-size: 23px;
+            margin: 1.2em 0 0.6em;
+            font-weight: 600;
+            border-left: 4px solid #b8a692;
+            padding-left: 16px;
+        }
+        .answer-body .md-content h3 {
+            font-size: 19px;
+            margin: 1em 0 0.4em;
+            font-weight: 600;
+        }
+        .answer-body .md-content ul,
+        .answer-body .md-content ol {
+            padding-left: 1.8em;
+            margin: 0.4em 0 1em;
+        }
+        .answer-body .md-content blockquote {
+            background: #f5f1eb;
+            border-left: 4px solid #b8a692;
+            padding: 0.6em 1.2em;
+            border-radius: 0 12px 12px 0;
+            margin: 1em 0;
+            color: #3d3832;
+        }
+        .answer-body .md-content pre {
+            background: #f0ebe4;
+            padding: 18px 20px;
+            border-radius: 16px;
+            overflow-x: auto;
+            font-family: "JetBrains Mono", Consolas, monospace;
+            font-size: 14px;
+            margin: 1em 0;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .answer-body .md-content code {
+            background: #f0ebe4;
+            padding: 0.15em 0.5em;
+            border-radius: 6px;
+            font-family: "JetBrains Mono", Consolas, monospace;
+            font-size: 0.9em;
+        }
+        .answer-body .md-content img {
+            max-width: 100%;
+            border-radius: 12px;
+            margin: 0.6em 0;
+        }
+        .answer-body .md-content hr {
+            border: none;
+            border-top: 1px solid #e0d8ce;
+            margin: 1.8em 0;
+        }
+        .answer-body .md-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1em 0;
+            font-size: 0.95em;
+        }
+        .answer-body .md-content th,
+        .answer-body .md-content td {
+            border: 1px solid #d0d7de;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        .answer-body .md-content th {
+            background: #f0f4f9;
+            font-weight: 600;
+        }
+
+        .loading-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            color: #a89989;
+        }
+        .loading-spinner {
+            width: 36px;
+            height: 36px;
+            border: 4px solid #e0d8ce;
+            border-top-color: #b8a692;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 14px;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .error-msg {
+            color: #b35a4a;
+            background: #f6edea;
+            padding: 20px 24px;
+            border-radius: 28px;
+            text-align: center;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #1c1c1e;
+                color: #ececec;
+            }
+            .header {
+                border-bottom-color: #3a3a3e;
+            }
+            .back-btn {
+                color: #b0a89c;
+            }
+            .back-btn:hover {
+                background: #2e2e32;
+                color: #ececec;
+            }
+            .question-card {
+                background: #26262a;
+                border-color: #3a3a3e;
+            }
+            .question-card:hover {
+                background: #2e2e32;
+                border-color: #5a5248;
+            }
+            .question-card .q-text {
+                color: #ececec;
+            }
+            .answer-view .answer-header {
+                border-bottom-color: #3a3a3e;
+            }
+            .answer-view .answer-title {
+                color: #ececec;
+            }
+            .answer-view .answer-body {
+                background: #26262a;
+                border-color: #3a3a3e;
+            }
+            .answer-body .md-content {
+                color: #ddd;
+            }
+            .answer-body .md-content blockquote {
+                background: #2e2e32;
+                border-left-color: #b8a692;
+                color: #ccc;
+            }
+            .answer-body .md-content pre {
+                background: #2e2e32;
+            }
+            .answer-body .md-content code {
+                background: #2e2e32;
+            }
+            .answer-body .md-content h1 {
+                color: #ececec;
+            }
+            .answer-body .md-content h2 {
+                border-left-color: #b8a692;
+                color: #ececec;
+            }
+            .answer-body .md-content h3 {
+                color: #ececec;
+            }
+            .answer-body .md-content hr {
+                border-top-color: #3a3a3e;
+            }
+            .answer-body .md-content th,
+            .answer-body .md-content td {
+                border-color: #3a3a3e;
+            }
+            .answer-body .md-content th {
+                background: #2e2e32;
+            }
+            .loading-spinner {
+                border-color: #3a3a3e;
+                border-top-color: #b8a692;
+            }
+            .error-msg {
+                background: #2e2424;
+                color: #e6a89c;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app" id="app">
+        <header class="header">
+            <button class="back-btn hidden" id="backBtn">
+                <span>←</span> 返回目录
+            </button>
+        </header>
+
+        <div id="catalogView" class="catalog-view">
+            <div class="question-grid" id="questionGrid">
+                <div class="loading-placeholder" style="grid-column:1/-1;">
+                    <div class="loading-spinner"></div>
+                    <span>加载问题列表…</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="answerView" class="answer-view hidden">
+            <div class="answer-header">
+                <div class="answer-title" id="answerTitle"></div>
+            </div>
+            <div class="answer-body" id="answerBody">
+                <div class="loading-placeholder">
+                    <div class="loading-spinner"></div>
+                    <span>加载答案中…</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ====================================================
+            //  状态
+            // ====================================================
+            let questions = [];
+            let currentQuestion = null;
+            let isLoading = false;
+
+            const catalogView = document.getElementById('catalogView');
+            const answerView = document.getElementById('answerView');
+            const questionGrid = document.getElementById('questionGrid');
+            const backBtn = document.getElementById('backBtn');
+            const answerTitle = document.getElementById('answerTitle');
+            const answerBody = document.getElementById('answerBody');
+
+            // ====================================================
+            //  工具函数
+            // ====================================================
+            function escapeHtml(str) {
+                if (!str) return '';
+                const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+                return str.replace(/[&<>"']/g, function(m) { return map[m]; });
+            }
+
+            // 将问题文本转换为安全的文件名（去除或替换特殊字符）
+            function getSafeFileName(question) {
+                // 去除首尾空格，替换不合法字符为下划线
+                let name = question.trim();
+                // 移除或替换 Windows/Linux 文件名中不允许的字符
+                name = name.replace(/[\\/:*?"<>|]/g, '_');
+                // 限制长度，避免文件名过长
+                if (name.length > 80) {
+                    name = name.substring(0, 80);
+                }
+                return name;
+            }
+
+            // ====================================================
+            //  加载 questions.txt
+            // ====================================================
+            async function loadQuestions() {
+                try {
+                    const response = await fetch('questions.txt', { cache: 'no-cache' });
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status} — 无法加载 questions.txt`);
+                    }
+                    const text = await response.text();
+                    const lines = text.split(/\r?\n/);
+
+                    const parsed = [];
+                    for (let line of lines) {
+                        const trimmed = line.trim();
+                        if (trimmed === '') continue;
+                        // 跳过注释行（以 # 开头）
+                        if (trimmed.startsWith('#')) continue;
+                        parsed.push(trimmed);
+                    }
+
+                    if (parsed.length === 0) {
+                        questionGrid.innerHTML =
+                            `<div style="grid-column:1/-1; text-align:center; color:#a89989; padding:40px 0;">📭 questions.txt 中没有有效条目</div>`;
+                        return;
+                    }
+
+                    questions = parsed;
+                    renderCatalog();
+
+                } catch (err) {
+                    console.error('加载 questions.txt 失败:', err);
+                    questionGrid.innerHTML =
+                        `<div style="grid-column:1/-1; text-align:center; color:#b35a4a; padding:40px 20px;">⚠️ 加载问题列表失败: ${escapeHtml(err.message)}</div>`;
+                }
+            }
+
+            // ====================================================
+            //  渲染目录
+            // ====================================================
+            function renderCatalog() {
+                if (!questions.length) {
+                    questionGrid.innerHTML =
+                        `<div style="grid-column:1/-1; text-align:center; color:#a89989; padding:40px 0;">📭 暂无问题</div>`;
+                    return;
+                }
+
+                let html = '';
+                questions.forEach((q) => {
+                    html += `
+                        <div class="question-card" data-question="${escapeHtml(q)}">
+                            <div class="q-text">${escapeHtml(q)}</div>
+                        </div>
+                    `;
+                });
+                questionGrid.innerHTML = html;
+
+                questionGrid.querySelectorAll('.question-card').forEach((card) => {
+                    card.addEventListener('click', function(e) {
+                        const question = this.dataset.question;
+                        if (question) openAnswer(question);
+                    });
+                });
+            }
+
+            // ====================================================
+            //  加载并显示答案
+            // ====================================================
+            async function openAnswer(question) {
+                if (isLoading) return;
+                if (!question) return;
+
+                currentQuestion = question;
+                catalogView.classList.add('hidden');
+                answerView.classList.remove('hidden');
+                backBtn.classList.remove('hidden');
+
+                answerTitle.textContent = question;
+
+                answerBody.innerHTML = `
+                    <div class="loading-placeholder">
+                        <div class="loading-spinner"></div>
+                        <span>加载答案…</span>
+                    </div>
+                `;
+
+                isLoading = true;
+
+                try {
+                    // 使用问题文本作为文件名
+                    const fileName = getSafeFileName(question);
+                    const url = `answers/${fileName}.txt`;
+                    const response = await fetch(url, { cache: 'no-cache' });
+
+                    let content = '';
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            content = `## 答案未找到\n\n抱歉，未找到问题 **${escapeHtml(question)}** 对应的答案文件。\n\n请确保 \`answers/${fileName}.txt\` 文件存在。`;
+                        } else {
+                            throw new Error(`HTTP ${response.status}`);
+                        }
+                    } else {
+                        content = await response.text();
+                    }
+
+                    // 使用 marked 解析 Markdown
+                    let htmlContent = marked.parse(content.trim() || '（答案内容为空）');
+                    answerBody.innerHTML = `
+                        <div class="md-content">${htmlContent}</div>
+                    `;
+
+                } catch (err) {
+                    console.error('加载答案失败:', err);
+                    answerBody.innerHTML = `
+                        <div class="error-msg">
+                            ⚠️ 加载答案失败: ${escapeHtml(err.message)}
+                        </div>
+                    `;
+                }
+
+                isLoading = false;
+            }
+
+            // ====================================================
+            //  返回目录
+            // ====================================================
+            function goToCatalog() {
+                if (isLoading) return;
+                currentQuestion = null;
+                catalogView.classList.remove('hidden');
+                answerView.classList.add('hidden');
+                backBtn.classList.add('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // ====================================================
+            //  初始化
+            // ====================================================
+            function init() {
+                backBtn.addEventListener('click', goToCatalog);
+                loadQuestions();
+                console.log('奇思妙想已启动 (文件版本，问题即文件名)');
+            }
+
+            init();
+        })();
+    </script>
+
+</body>
+</html>
