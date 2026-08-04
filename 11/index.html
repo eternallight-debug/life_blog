@@ -8,20 +8,18 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
     </script>
     <style>
+        /* 所有样式保持不变，省略... (与上一版完全一致) */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
         }
-
         body {
             background: #f8f9fa;
             color: #333;
             overflow-x: hidden;
         }
-
-        /* ===== 汉堡菜单按钮 ===== */
         .hamburger-btn {
             position: fixed;
             top: 14px;
@@ -61,8 +59,6 @@
         .hamburger-btn.open span:nth-child(3) {
             transform: translateY(-8px) rotate(-45deg);
         }
-
-        /* ===== 遮罩 ===== */
         .overlay {
             position: fixed;
             inset: 0;
@@ -78,8 +74,6 @@
             opacity: 1;
             visibility: visible;
         }
-
-        /* ===== 侧边栏 ===== */
         .sidebar {
             position: fixed;
             top: 0;
@@ -127,13 +121,10 @@
         .sidebar-close:hover {
             color: #333;
         }
-
-        /* ===== 目录列表 ===== */
         .toc-list {
             list-style: none;
             padding: 0;
             margin: 0;
-            /* 提升滚动性能 */
             contain: layout style;
         }
         .toc-item {
@@ -180,8 +171,6 @@
             color: #999;
             font-size: 14px;
         }
-
-        /* ===== 主内容区 ===== */
         .main-content {
             padding: 80px 20px 50px;
             min-height: 100vh;
@@ -194,8 +183,6 @@
                 padding: 90px 48px 60px;
             }
         }
-
-        /* ===== 文章内容样式（Markdown 渲染后） ===== */
         .article-title {
             font-size: 28px;
             font-weight: 700;
@@ -205,14 +192,11 @@
             color: #1a1a1a;
             line-height: 1.3;
         }
-
         .article-body {
             font-size: 16px;
             line-height: 1.9;
             color: #2c2c2c;
         }
-
-        /* 自动首行缩进：仅对正文段落生效，标题、列表、引用等不受影响 */
         .article-body p {
             text-indent: 2em;
             margin: 0 0 1.2em 0;
@@ -220,8 +204,6 @@
         .article-body p:last-child {
             margin-bottom: 0;
         }
-
-        /* 标题、列表、引用等不缩进 */
         .article-body h1,
         .article-body h2,
         .article-body h3,
@@ -238,7 +220,6 @@
         .article-body figure {
             text-indent: 0;
         }
-
         .article-body h2 {
             font-size: 22px;
             margin: 1.6em 0 0.6em 0;
@@ -315,8 +296,6 @@
             background: #f0f4f9;
             font-weight: 600;
         }
-
-        /* ===== 加载状态 ===== */
         .loading-wrap {
             display: flex;
             flex-direction: column;
@@ -343,8 +322,6 @@
             font-size: 15px;
             color: #888;
         }
-
-        /* ===== 错误状态 ===== */
         .error-wrap {
             padding: 50px 20px;
             text-align: center;
@@ -358,8 +335,6 @@
         .error-wrap .msg {
             font-size: 16px;
         }
-
-        /* ===== 欢迎提示（保留，但自动加载后不显示） ===== */
         .welcome-wrap {
             display: flex;
             flex-direction: column;
@@ -383,8 +358,6 @@
             font-size: 15px;
             color: #aaa;
         }
-
-        /* ===== 滚动条美化 ===== */
         .sidebar::-webkit-scrollbar {
             width: 4px;
         }
@@ -398,8 +371,6 @@
         .sidebar::-webkit-scrollbar-thumb:hover {
             background: #b0b8c0;
         }
-
-        /* ===== 响应式微调 ===== */
         @media (max-width: 480px) {
             .hamburger-btn {
                 top: 10px;
@@ -426,8 +397,6 @@
                 font-size: 15px;
             }
         }
-
-        /* ===== 顶部渐变条（装饰） ===== */
         .top-glow {
             position: fixed;
             top: 0;
@@ -447,8 +416,6 @@
                 background-position: 200% 0%;
             }
         }
-
-        /* 暗色模式 */
         @media (prefers-color-scheme: dark) {
             body {
                 background: #1a1a1e;
@@ -594,7 +561,7 @@
         const CACHE_KEY_PREFIX = 'doc_cache_';
         const INDEX_FILE = 'index.txt';
 
-        // 配置 marked（启用 GFM、表格、换行等）
+        // 配置 marked
         marked.setOptions({
             gfm: true,
             tables: true,
@@ -606,11 +573,11 @@
         });
 
         // 当前状态
-        let articles = []; // [{ title, filename, content, cached }]
+        let articles = [];
         let currentIndex = -1;
         let isLoading = false;
         let sidebarOpen = false;
-        let isInitialized = false; // 标记目录是否已构建
+        let isInitialized = false;
 
         // DOM 引用
         const menuBtn = document.getElementById('menuBtn');
@@ -621,7 +588,7 @@
         const mainContent = document.getElementById('mainContent');
 
         // ================================================================
-        //  工具函数 — 使用 sessionStorage（关闭页面即清除）
+        //  工具函数
         // ================================================================
         function getCacheKey(title) {
             return CACHE_KEY_PREFIX + title.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_');
@@ -660,21 +627,14 @@
             return str.replace(/[&<>"']/g, function(m) { return map[m]; });
         }
 
-        /**
-         * 根据标题生成文件名，保留用户输入的扩展名，若没有则自动添加 .txt
-         */
         function resolveFilename(title) {
             let clean = title.replace(/[\\/:*?"<>|]/g, '').trim();
-            // 如果包含 '.' 则直接使用，否则补 .txt
             if (clean.indexOf('.') === -1) {
                 clean += '.txt';
             }
             return clean;
         }
 
-        /**
-         * 判断文件是否为 HTML（扩展名为 .html 或 .htm）
-         */
         function isHtmlFile(filename) {
             const lower = filename.toLowerCase();
             return lower.endsWith('.html') || lower.endsWith('.htm');
@@ -712,12 +672,8 @@
         closeSidebarBtn.addEventListener('click', closeSidebar);
 
         // ================================================================
-        //  目录构建（仅一次）+ 更新（只改状态，不重建DOM）
+        //  目录构建与更新
         // ================================================================
-
-        /**
-         * 构建目录列表 — 只在初始化时调用一次
-         */
         function buildTOC(articles) {
             if (!articles || articles.length === 0) {
                 tocList.innerHTML = `<li class="toc-empty">📭 暂无文章，请检查 index.txt</li>`;
@@ -739,12 +695,24 @@
             }
             tocList.innerHTML = html;
 
-            // 事件委托：在 tocList 上统一监听点击（高效）
+            // 事件委托
             tocList.addEventListener('click', function(e) {
                 const link = e.target.closest('.toc-link');
                 if (!link) return;
                 const idx = parseInt(link.dataset.index, 10);
                 if (isNaN(idx)) return;
+
+                const item = articles[idx];
+                if (!item) return;
+
+                // ★ 核心修改：若为 HTML 文件，则在新窗口打开，不加载到阅读器
+                if (isHtmlFile(item.filename)) {
+                    window.open(item.filename, '_blank');
+                    if (window.innerWidth < 768) closeSidebar();
+                    return;
+                }
+
+                // 非 HTML 文件，正常加载
                 if (idx === currentIndex) {
                     if (window.innerWidth < 768) closeSidebar();
                     return;
@@ -756,23 +724,18 @@
             isInitialized = true;
         }
 
-        /**
-         * 更新目录状态：高亮 + 缓存标记（不重建DOM）
-         */
         function updateTOC(activeIndex) {
             if (!isInitialized) return;
 
             const links = tocList.querySelectorAll('.toc-link');
             for (let idx = 0; idx < links.length; idx++) {
                 const el = links[idx];
-                // 高亮
                 if (idx === activeIndex) {
                     el.classList.add('active');
                 } else {
                     el.classList.remove('active');
                 }
 
-                // 缓存标记
                 const badge = el.querySelector('.toc-badge');
                 const item = articles[idx];
                 if (item && item.cached) {
@@ -791,7 +754,7 @@
         }
 
         // ================================================================
-        //  加载文章
+        //  加载非 HTML 文章（仅文本/Markdown）
         // ================================================================
         async function loadArticle(index) {
             if (isLoading) return;
@@ -800,7 +763,12 @@
             const item = articles[index];
             if (!item) return;
 
-            // 如果已是当前文章，滚动到顶部
+            // 防御：如果误调用到 HTML，直接忽略（但点击已拦截）
+            if (isHtmlFile(item.filename)) {
+                console.warn('HTML 文件应通过新窗口打开，不会加载到阅读器');
+                return;
+            }
+
             if (index === currentIndex && item.content) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 return;
@@ -809,11 +777,8 @@
             isLoading = true;
             const prevIndex = currentIndex;
             currentIndex = index;
-
-            // 更新高亮（不重建DOM）
             updateTOC(currentIndex);
 
-            // 显示加载状态
             mainContent.innerHTML = `
                     <div class="loading-wrap">
                         <div class="loading-spinner"></div>
@@ -822,19 +787,16 @@
                 `;
 
             try {
-                // 1. 尝试从 sessionStorage 缓存读取
                 let content = getCached(item.title);
                 if (content !== null) {
                     item.content = content;
                     item.cached = true;
                     renderArticle(item);
-                    // 后台静默更新
                     refreshInBackground(item);
                     isLoading = false;
                     return;
                 }
 
-                // 2. 从网络加载（使用 item.filename，已包含扩展名）
                 const url = encodeURIComponent(item.filename);
                 const response = await fetch(url, { cache: 'no-cache' });
                 if (!response.ok) {
@@ -845,7 +807,7 @@
                 item.cached = true;
                 setCache(item.title, content);
                 renderArticle(item);
-                updateTOC(currentIndex); // 更新缓存标记
+                updateTOC(currentIndex);
 
             } catch (err) {
                 console.error('加载文章失败:', err);
@@ -855,7 +817,6 @@
                             <div class="msg">加载《${escapeHtml(item.title)}》失败<br><small>${escapeHtml(err.message)}</small></div>
                         </div>
                     `;
-                // 恢复之前的索引
                 currentIndex = prevIndex;
                 updateTOC(currentIndex);
             }
@@ -863,7 +824,6 @@
             isLoading = false;
         }
 
-        // 后台静默更新（不阻塞用户）
         async function refreshInBackground(item) {
             try {
                 const url = encodeURIComponent(item.filename) + '?_t=' + Date.now();
@@ -882,7 +842,7 @@
         }
 
         // ================================================================
-        //  渲染文章（根据文件类型选择解析方式）
+        //  渲染文章（只处理非HTML）
         // ================================================================
         function renderArticle(item) {
             if (!item || !item.content) {
@@ -890,16 +850,8 @@
                 return;
             }
 
-            const isHtml = isHtmlFile(item.filename);
-            let bodyHtml;
-            if (isHtml) {
-                // HTML 文件直接插入（信任本地文件）
-                bodyHtml = item.content;
-            } else {
-                // 否则作为 Markdown 解析
-                bodyHtml = marked.parse(item.content);
-            }
-
+            // 由于点击已拦截HTML，这里不会出现HTML，但保留判断
+            const bodyHtml = marked.parse(item.content);
             mainContent.innerHTML = `
                     <div class="article-title">${escapeHtml(item.title)}</div>
                     <div class="article-body">${bodyHtml}</div>
@@ -909,7 +861,20 @@
         }
 
         // ================================================================
-        //  初始化：读取 index.txt，构建目录，自动加载第一篇
+        //  显示欢迎
+        // ================================================================
+        function showWelcome() {
+            mainContent.innerHTML = `
+                    <div class="welcome-wrap">
+                        <div class="icon">📖</div>
+                        <div class="title">欢迎阅读</div>
+                        <div class="sub">请从左侧目录选择一篇文章</div>
+                    </div>
+                `;
+        }
+
+        // ================================================================
+        //  初始化：读取 index.txt，自动加载第一篇非 HTML 文章
         // ================================================================
         async function init() {
             try {
@@ -939,7 +904,6 @@
                     return;
                 }
 
-                // 构建文章列表（确定文件名）
                 articles = titles.map(title => {
                     const filename = resolveFilename(title);
                     return {
@@ -950,18 +914,35 @@
                     };
                 });
 
-                // 构建目录（只一次）
                 buildTOC(articles);
 
-                // 自动加载第一篇（如果存在）
-                if (articles.length > 0) {
-                    await loadArticle(0);
-                } else {
-                    // 显示欢迎（实际上不会走到这里）
-                    showWelcome();
+                // ★ 自动加载第一篇 **非 HTML** 文章
+                // 查找第一个非 HTML 索引
+                let firstNonHtmlIndex = -1;
+                for (let i = 0; i < articles.length; i++) {
+                    if (!isHtmlFile(articles[i].filename)) {
+                        firstNonHtmlIndex = i;
+                        break;
+                    }
                 }
 
-                // 目录高亮已由 loadArticle 更新
+                if (firstNonHtmlIndex !== -1) {
+                    await loadArticle(firstNonHtmlIndex);
+                } else {
+                    // 全部都是 HTML，显示欢迎页并提示
+                    showWelcome();
+                    // 在欢迎页加个提示
+                    const welcome = document.querySelector('.welcome-wrap .sub');
+                    if (welcome) {
+                        welcome.textContent = '所有文章均为 HTML 文件，请点击目录项在新窗口打开';
+                    }
+                }
+
+                // 更新高亮（如果加载了非HTML，高亮已由loadArticle设置；如果没加载，高亮为-1）
+                if (firstNonHtmlIndex === -1) {
+                    currentIndex = -1;
+                    updateTOC(-1);
+                }
 
             } catch (err) {
                 console.error('初始化失败:', err);
@@ -975,17 +956,6 @@
             }
         }
 
-        // 保留欢迎函数（但自动加载后不会调用）
-        function showWelcome() {
-            mainContent.innerHTML = `
-                    <div class="welcome-wrap">
-                        <div class="icon">📖</div>
-                        <div class="title">欢迎阅读</div>
-                        <div class="sub">请从左侧目录选择一篇文章</div>
-                    </div>
-                `;
-        }
-
         // ================================================================
         //  启动
         // ================================================================
@@ -997,7 +967,7 @@
             }
         });
 
-        console.log('📖 文档阅读器已启动（自动加载首篇，支持 .html，性能优化）— 点击左上角 ☰ 打开目录');
+        console.log('📖 文档阅读器已启动 — HTML 文件将在新窗口打开，自动加载第一篇非 HTML 文章');
     </script>
 
 </body>
