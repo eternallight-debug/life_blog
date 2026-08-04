@@ -2,4 +2,5 @@ title:徐霞客与木增
 description:来时千里知心客，送别家乡骨肉亲
 time:2026-07-31
 label:徐霞客,木增,回家,情谊,义气,丽江,推荐
-category:文章/知识/历史趣味
+category:知识/历史趣闻
+
