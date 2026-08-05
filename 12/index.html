@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>复古黑胶唱片机 · MIDI 播放器</title>
+    <title>音乐</title>
     <style>
-        /* ===== 样式与之前相同，此处省去重复 ===== */
+        /* ===== 样式不变，仅去掉与 loading-tip 相关的样式？无需改动 ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { width:100vw; height:100vh; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; font-family:system-ui, sans-serif; background:#1a1a1a; }
+        body { width:100vw; height:100vh; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; font-family:system-ui, -apple-system, sans-serif; background:#1a1a1a; }
         html:fullscreen .top-toolbar, html:fullscreen .playlist-drawer { display:none !important; }
         .bg-blur-layer { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-2; background-image:var(--cover-img); background-size:cover; background-position:center; filter:blur(45px) brightness(0.82); transform:scale(1.25); transition:background-image 0.6s ease; }
         .bg-color-overlay { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; background-color:#7c6852; transition:background-color 0.6s ease; }
@@ -27,24 +27,25 @@
         .mode-btn { padding:6px 14px; border-radius:20px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.7); font-size:13px; cursor:pointer; transition:all 0.2s; }
         .mode-btn.active { background:rgba(255,255,255,0.2); border-color:rgba(255,255,255,0.5); color:#fff; }
         .playlist-title { font-size:18px; font-weight:500; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.1); }
-        .song-item { padding:12px 14px; border-radius:10px; cursor:pointer; margin-bottom:4px; transition:background 0.2s, transform 0.15s; }
+        .song-item { padding:12px 14px; border-radius:10px; cursor:pointer; margin-bottom:4px; transition:background 0.2s, transform 0.15s; display:flex; justify-content:space-between; align-items:center; }
         .song-item:hover { background:rgba(255,255,255,0.08); }
         .song-item.active { background:rgba(255,255,255,0.16); }
         .song-name { font-size:15px; font-weight:450; }
         .song-artist { font-size:12px; opacity:0.6; margin-top:3px; }
+        .song-duration { font-size:12px; opacity:0.5; margin-left:10px; white-space:nowrap; }
         .turntable-wrap { position:relative; display:flex; align-items:center; transform:translateX(-4vw); scale:clamp(0.5, 1.2vw, 1); }
         .album-cover { width:540px; height:540px; border-radius:16px; z-index:2; background:var(--cover-img) center/cover no-repeat; box-shadow:0 12px 40px rgba(0,0,0,0.5),0 4px 12px rgba(0,0,0,0.2),inset 0 0 0 1px rgba(255,255,255,0.06); position:relative; transition:background-image 0.5s ease; }
         .vinyl-record { width:520px; height:520px; border-radius:50%; position:absolute; left:340px; top:50%; transform:translateY(-50%); box-shadow:0 10px 35px rgba(0,0,0,0.5),inset 0 0 20px rgba(0,0,0,0.6); animation:vinylSpin 9s linear infinite; animation-play-state:paused; cursor:pointer; background-image:repeating-radial-gradient(circle at center,transparent 0 170px,#222 170px 173px,transparent 173px 260px),radial-gradient(circle at center,transparent 0 180px,#111 180px 100%); display:flex; align-items:center; justify-content:center; }
         .vinyl-center-img { width:360px; height:360px; border-radius:50%; background:var(--cover-img) center/cover no-repeat; box-shadow:0 0 8px rgba(0,0,0,0.3); transition:background-image 0.5s ease; }
         .vinyl-record::after { content:""; width:22px; height:22px; border-radius:50%; background:#0a0a0a; z-index:3; position:absolute; box-shadow:inset 0 2px 4px rgba(0,0,0,0.8); }
         @keyframes vinylSpin { from { transform:translateY(-50%) rotate(0deg); } to { transform:translateY(-50%) rotate(360deg); } }
-        .loading-tip { color:rgba(255,255,255,0.3); font-size:14px; position:absolute; bottom:30px; left:50%; transform:translateX(-50%); z-index:5; pointer-events:none; background:rgba(0,0,0,0.3); padding:6px 18px; border-radius:30px; backdrop-filter:blur(4px); }
+        /* 移除 .loading-tip 样式，因为已删除该元素 */
         @media (max-width:600px) { .top-toolbar { top:16px; left:16px; right:16px; } .hamburger-btn { width:38px; height:38px; } .fullscreen-btn { padding:6px 14px; font-size:12px; } .playlist-drawer { width:280px; } }
     </style>
 </head>
 <body>
 
-    <!-- 顶部工具栏 -->
+    <!-- ===== 顶部工具栏 ===== -->
     <div class="top-toolbar">
         <div class="hamburger-btn" id="hamburgerBtn">
             <div class="hamburger-line"></div>
@@ -52,11 +53,11 @@
             <div class="hamburger-line"></div>
         </div>
         <div class="btn-group">
-            <button class="fullscreen-btn" id="fullscreenBtn">⛶ 全屏</button>
+            <button class="fullscreen-btn" id="fullscreenBtn">全屏</button>
         </div>
     </div>
 
-    <!-- 侧边播放列表抽屉 -->
+    <!-- ===== 侧边播放列表抽屉 ===== -->
     <div class="playlist-drawer" id="playlistDrawer">
         <div class="sidebar-control-card">
             <button class="play-main-btn" id="playMainBtn">▶</button>
@@ -66,15 +67,15 @@
                 <button class="mode-btn" data-mode="list">列表循环</button>
             </div>
         </div>
-        <div class="playlist-title">🎵 播放列表</div>
-        <div id="songListContainer"><!-- 动态生成 --></div>
+        <div class="playlist-title">播放列表</div>
+        <div id="songListContainer"></div>
     </div>
 
-    <!-- 背景 -->
+    <!-- ===== 背景层 ===== -->
     <div class="bg-blur-layer" id="bgBlurLayer"></div>
     <div class="bg-color-overlay" id="colorOverlay"></div>
 
-    <!-- 唱片机主体 -->
+    <!-- ===== 唱片机主体 ===== -->
     <div class="turntable-wrap">
         <div class="album-cover" id="albumCover"></div>
         <div class="vinyl-record" id="vinylDisk">
@@ -82,24 +83,12 @@
         </div>
     </div>
 
-    <div class="loading-tip" id="statusTip">加载播放列表...</div>
+    <!-- ===== 引入 MIDIjs 库 ===== -->
+    <script src="https://www.midijs.net/lib/midi.js"></script>
 
-    <!-- ====== 修正后的 importmap ====== -->
-    <script type="importmap">
-    {
-        "imports": {
-            "spessasynth_lib": "https://cdn.jsdelivr.net/npm/spessasynth_lib@4/dist/spessasynth_lib.js"
-        }
-    }
-    </script>
-
-    <script type="module">
-        // 导入 SpessaSynth
-        import { Synthetizer, Sequencer, SoundFont2 } from 'spessasynth_lib';
-        const WORKLET_URL = 'https://cdn.jsdelivr.net/npm/spessasynth_lib@4/dist/worklet.js';
-
+    <script>
         // ============================================================
-        //  DOM 引用
+        //  1. DOM 引用（去掉 statusTip）
         // ============================================================
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const playlistDrawer = document.getElementById('playlistDrawer');
@@ -111,20 +100,18 @@
         const colorOverlay = document.getElementById('colorOverlay');
         const bgBlurLayer = document.getElementById('bgBlurLayer');
         const songListContainer = document.getElementById('songListContainer');
-        const statusTip = document.getElementById('statusTip');
 
-        // 状态
+        // ============================================================
+        //  2. 状态变量
+        // ============================================================
         let isPlaying = false;
         let playMode = 'loop';
         let currentSongIndex = 0;
         let songData = [];
-        let isSynthReady = false;
-        let synth = null;
-        let sequencer = null;
-        let audioCtx = null;
+        let timerId = null;
 
         // ============================================================
-        //  加载 index.txt
+        //  3. 加载播放列表 (index.txt)
         // ============================================================
         async function loadPlaylist() {
             try {
@@ -142,29 +129,34 @@
                     const midiName = parts[0] || '';
                     const artist = parts[1] || '未知艺术家';
                     const pictureName = parts[2] || '';
+                    const duration = parseInt(parts[3], 10) || 180;
                     const displayName = midiName.replace(/\.mid$/i, '');
-                    return { name: displayName, artist, picture: pictureName, midiFile: midiName };
+                    return { name: displayName, artist, picture: pictureName, midiFile: midiName, duration };
                 }).filter(item => item.midiFile);
 
                 if (songData.length === 0) throw new Error('没有有效的歌曲条目');
 
                 renderSongList();
                 await loadSongCover(0);
-                statusTip.textContent = `✅ 已加载 ${songData.length} 首歌曲`;
                 setActiveSong(0);
-                await initSynth();
+                // 不自动播放，等待用户操作
             } catch (err) {
-                console.error('加载失败:', err);
-                statusTip.textContent = `❌ 加载失败: ${err.message}`;
+                console.error('加载播放列表失败:', err);
                 songListContainer.innerHTML = `<div style="color:#f88;padding:20px;">加载失败: ${err.message}</div>`;
             }
         }
 
+        // ============================================================
+        //  4. 渲染播放列表
+        // ============================================================
         function renderSongList() {
             songListContainer.innerHTML = songData.map((item, idx) => `
-                <div class="song-item" data-index="${idx}">
-                    <div class="song-name">${item.name}</div>
-                    <div class="song-artist">${item.artist}</div>
+                <div class="song-item ${idx === currentSongIndex ? 'active' : ''}" data-index="${idx}">
+                    <div>
+                        <div class="song-name">${item.name}</div>
+                        <div class="song-artist">${item.artist}</div>
+                    </div>
+                    <span class="song-duration">${formatDuration(item.duration)}</span>
                 </div>
             `).join('');
 
@@ -191,7 +183,16 @@
         }
 
         // ============================================================
-        //  加载封面（只尝试 .webp）
+        //  5. 格式化时长
+        // ============================================================
+        function formatDuration(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        // ============================================================
+        //  6. 加载封面 (只尝试 .webp)
         // ============================================================
         async function loadSongCover(index) {
             const item = songData[index];
@@ -213,14 +214,12 @@
                 getImageAverageColor(url, (avgColor) => {
                     colorOverlay.style.backgroundColor = avgColor;
                 });
-                statusTip.textContent = `🎵 ${item.name} - ${item.artist}`;
             } catch {
                 albumCover.style.backgroundImage = 'linear-gradient(145deg, #2a2a2a, #1a1a1a)';
                 vinylCenterImg.style.backgroundImage = 'linear-gradient(145deg, #2a2a2a, #1a1a1a)';
                 bgBlurLayer.style.backgroundImage = 'none';
                 bgBlurLayer.style.backgroundColor = '#1a1a1a';
                 colorOverlay.style.backgroundColor = '#2a2a2a';
-                statusTip.textContent = `⚠️ 无封面: ${item.name}`;
             }
         }
 
@@ -230,7 +229,7 @@
             const img = new Image();
             img.crossOrigin = 'anonymous';
             img.src = imgSrc;
-            img.onload = function () {
+            img.onload = function() {
                 canvas.width = img.width;
                 canvas.height = img.height;
                 ctx.drawImage(img, 0, 0);
@@ -250,113 +249,71 @@
         }
 
         // ============================================================
-        //  初始化 SpessaSynth
+        //  7. 播放控制 (MIDIjs)
         // ============================================================
-        async function initSynth() {
-            try {
-                statusTip.textContent = '🎹 加载音色库...';
-                const SF2_URL = 'https://cdn.jsdelivr.net/gh/eternallight-debug/life_blog@main/life_blog/12/sound_bank/TimGM6mb.sf2';
-                const sf2Resp = await fetch(SF2_URL);
-                if (!sf2Resp.ok) throw new Error(`音色库 HTTP ${sf2Resp.status}`);
-                const arrayBuffer = await sf2Resp.arrayBuffer();
-                const soundFont = new SoundFont2(arrayBuffer);
-
-                audioCtx = new(window.AudioContext || window.webkitAudioContext)();
-                await audioCtx.audioWorklet.addModule(WORKLET_URL);
-
-                const outputNode = audioCtx.createGain();
-                outputNode.connect(audioCtx.destination);
-                synth = new Synthetizer(outputNode, soundFont);
-                synth.setVolume(0.75);
-
-                sequencer = new Sequencer(synth);
-                sequencer.setLoop(true);
-
-                isSynthReady = true;
-                console.log('✅ 音色库初始化成功');
-                statusTip.textContent = `🎵 就绪，点击唱片播放`;
-            } catch (err) {
-                console.error('音色库初始化失败:', err);
-                statusTip.textContent = `❌ 音色库加载失败: ${err.message}`;
-                isSynthReady = false;
-            }
-        }
-
-        // ============================================================
-        //  播放控制
-        // ============================================================
-        async function playMusic(index) {
-            if (!isSynthReady || !sequencer) return;
+        function playMusic(index) {
             if (index < 0 || index >= songData.length) return;
 
-            try {
-                if (isPlaying) await sequencer.stop();
-                isPlaying = false;
+            const item = songData[index];
+            currentSongIndex = index;
+            setActiveSong(index);
+            loadSongCover(index);
 
-                const item = songData[index];
-                setActiveSong(index);
-                await loadSongCover(index);
+            if (timerId) {
+                clearTimeout(timerId);
+                timerId = null;
+            }
 
-                const midiResp = await fetch(`MIDI_files/${item.midiFile}`);
-                if (!midiResp.ok) throw new Error(`MIDI 加载失败 HTTP ${midiResp.status}`);
-                const midiBuffer = await midiResp.arrayBuffer();
+            const midiPath = `MIDI_files/${item.midiFile}`;
+            MIDIjs.play(midiPath);
+            isPlaying = true;
+            updatePlayStateUI(true);
 
-                await sequencer.loadMIDI(midiBuffer);
-                sequencer.setLoop(playMode === 'loop' || playMode === 'list');
-                await sequencer.play();
-                isPlaying = true;
-                updatePlayStateUI(true);
-
-                sequencer.onFinish = () => {
-                    if (playMode === 'loop') {
-                        playMusic(currentSongIndex);
-                    } else if (playMode === 'random') {
-                        const next = Math.floor(Math.random() * songData.length);
-                        playMusic(next);
-                    } else {
-                        const next = (currentSongIndex + 1) % songData.length;
-                        playMusic(next);
-                    }
-                };
-
-                statusTip.textContent = `▶️ ${item.name} - ${item.artist}`;
-            } catch (err) {
-                console.error('播放失败:', err);
-                statusTip.textContent = `❌ 播放失败: ${err.message}`;
+            timerId = setTimeout(() => {
                 isPlaying = false;
                 updatePlayStateUI(false);
-            }
+                if (playMode === 'loop') {
+                    playMusic(currentSongIndex);
+                } else if (playMode === 'random') {
+                    const next = Math.floor(Math.random() * songData.length);
+                    playMusic(next);
+                } else { // list
+                    const next = (currentSongIndex + 1) % songData.length;
+                    playMusic(next);
+                }
+            }, item.duration * 1000);
+
+            playMainBtn.textContent = '⏸';
         }
 
-        async function stopMusic() {
-            if (sequencer && isPlaying) {
-                try { await sequencer.stop(); } catch (e) {}
-            }
+        function stopMusic() {
+            MIDIjs.stop();
             isPlaying = false;
-            updatePlayStateUI(false);
-            if (currentSongIndex >= 0) {
-                const item = songData[currentSongIndex];
-                statusTip.textContent = `⏹ 已停止 - ${item.name}`;
+            if (timerId) {
+                clearTimeout(timerId);
+                timerId = null;
             }
+            updatePlayStateUI(false);
+            playMainBtn.textContent = '▶';
         }
 
-        async function togglePlayPause() {
-            if (!isSynthReady || songData.length === 0) return;
+        function togglePlayPause() {
+            if (songData.length === 0) return;
 
             if (isPlaying) {
-                await sequencer.pause();
+                MIDIjs.pause();
                 isPlaying = false;
+                if (timerId) {
+                    clearTimeout(timerId);
+                    timerId = null;
+                }
                 updatePlayStateUI(false);
-                statusTip.textContent = `⏸ 已暂停 - ${songData[currentSongIndex].name}`;
+                playMainBtn.textContent = '▶';
             } else {
-                if (sequencer && sequencer.isPaused) {
-                    await sequencer.play();
-                    isPlaying = true;
-                    updatePlayStateUI(true);
-                    statusTip.textContent = `▶️ ${songData[currentSongIndex].name}`;
+                if (currentSongIndex >= 0) {
+                    playMusic(currentSongIndex);
                 } else {
-                    const idx = currentSongIndex >= 0 ? currentSongIndex : 0;
-                    await playMusic(idx);
+                    playMusic(0);
                 }
             }
         }
@@ -364,14 +321,13 @@
         function updatePlayStateUI(playing) {
             isPlaying = playing;
             vinylDisk.style.animationPlayState = playing ? 'running' : 'paused';
-            playMainBtn.textContent = playing ? '⏸' : '▶';
             document.querySelectorAll('.song-item').forEach((el, i) => {
                 el.classList.toggle('active', i === currentSongIndex);
             });
         }
 
         // ============================================================
-        //  事件绑定
+        //  8. 事件绑定
         // ============================================================
         hamburgerBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -399,22 +355,14 @@
                 document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 playMode = btn.dataset.mode;
-                if (sequencer && isPlaying) {
-                    sequencer.setLoop(playMode === 'loop' || playMode === 'list');
-                }
             });
         });
 
         // ============================================================
-        //  启动
+        //  9. 启动
         // ============================================================
-        await loadPlaylist();
-        if (songData.length > 0) {
-            currentSongIndex = 0;
-            setActiveSong(0);
-            statusTip.textContent = `🎵 ${songData[0].name} - ${songData[0].artist}  点击唱片播放`;
-        }
-        console.log('🎵 黑胶唱片播放器已启动');
+        loadPlaylist();
+        console.log('黑胶唱片播放器已启动 (MIDIjs)');
     </script>
 </body>
 </html>
