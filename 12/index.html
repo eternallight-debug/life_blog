@@ -79,7 +79,7 @@
         </div>
     </div>
 
-    <!-- 引入 Tone.js + Midi 解析库（用 CDN 替代有问题的本地 bundle） -->
+    <!-- 引入 Tone.js + Midi 解析库 -->
     <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tonejs/midi@2.0.28/build/Midi.min.js"></script>
 
@@ -104,18 +104,28 @@
         let currentMidi = null;
         let synth = null;
         let part = null;
+        let endEventId = null; // 记录结束事件ID，用于清理
 
-        // ========== 初始化合成器 ==========
+        // ========== 初始化合成器（优化性能配置） ==========
         function initSynth() {
             if (synth) return;
-            // 使用多声部合成器模拟钢琴音色
+            // 限制最大同时发音数，避免过载卡顿；优化包络参数降低计算量
             synth = new Tone.PolySynth(Tone.Synth, {
+                maxPolyphony: 24,
                 oscillator: { type: 'triangle' },
-                envelope: { attack: 0.02, decay: 0.1, sustain: 0.3, release: 1 }
+                envelope: { 
+                    attack: 0.015, 
+                    decay: 0.08, 
+                    sustain: 0.25, 
+                    release: 0.8 
+                }
             }).toDestination();
+            
+            // 调大预读缓冲，用微小延迟换流畅度
+            Tone.Transport.lookAhead = 0.1;
         }
 
-        // ========== 激活音频上下文（用户手势时同步调用） ==========
+        // ========== 激活音频上下文 ==========
         function ensureAudioContext() {
             if (Tone.context.state === 'suspended') {
                 Tone.start().catch(() => {});
@@ -236,7 +246,7 @@
             img.onerror = () => callback('#2a2a2a');
         }
 
-        // ========== 核心：解析并播放 MIDI ==========
+        // ========== 核心：解析并播放 MIDI（性能优化版） ==========
         async function playMusic(index) {
             if (index < 0 || index >= songData.length) return;
             ensureAudioContext();
@@ -247,17 +257,14 @@
             const midiPath = `MIDI_files/${item.midiFile}`;
 
             try {
-                // 加载并解析 MIDI 文件
+                // 加载并解析 MIDI
                 const midi = await Midi.fromUrl(midiPath);
                 currentMidi = midi;
 
-                // 停止之前的播放
-                if (part) {
-                    part.stop();
-                    part.dispose();
-                }
+                // 清理上一首的所有资源与事件
+                clearPrevPlay();
 
-                // 构建音符序列
+                // 收集所有轨道音符并按时间排序，保证调度有序
                 const notes = [];
                 midi.tracks.forEach(track => {
                     track.notes.forEach(note => {
@@ -265,22 +272,21 @@
                             time: note.time,
                             note: note.name,
                             duration: note.duration,
-                            velocity: note.velocity
+                            velocity: note.velocity * 0.7 // 统一降低音量，避免爆音
                         });
                     });
                 });
+                notes.sort((a, b) => a.time - b.time);
 
                 // 创建音序器
                 part = new Tone.Part((time, value) => {
                     synth.triggerAttackRelease(value.note, value.duration, time, value.velocity);
                 }, notes).start(0);
 
-                // 播放结束回调
-                part.callback = (time) => {
-                    Tone.Transport.scheduleOnce(() => {
-                        onSongEnded();
-                    }, time);
-                };
+                // 单次调度结束事件（核心修复：只注册一次，不再每个音符触发）
+                endEventId = Tone.Transport.scheduleOnce(() => {
+                    onSongEnded();
+                }, midi.duration);
 
                 // 启动传输
                 Tone.Transport.start();
@@ -293,12 +299,30 @@
             }
         }
 
-        function stopMusic() {
+        // ========== 清理上一首播放资源 ==========
+        function clearPrevPlay() {
+            // 清理结束事件
+            if (endEventId !== null) {
+                Tone.Transport.clear(endEventId);
+                endEventId = null;
+            }
+            // 销毁旧音序器
             if (part) {
                 part.stop();
+                part.dispose();
+                part = null;
             }
+            // 重置传输位置
             Tone.Transport.stop();
             Tone.Transport.position = 0;
+            // 释放所有正在发声的音符
+            if (synth) {
+                synth.releaseAll();
+            }
+        }
+
+        function stopMusic() {
+            clearPrevPlay();
             isPlaying = false;
             updatePlayStateUI(false);
             playMainBtn.textContent = '▶';
@@ -330,6 +354,7 @@
             updatePlayStateUI(false);
             playMainBtn.textContent = '▶';
             Tone.Transport.position = 0;
+            endEventId = null;
 
             if (playMode === 'loop') {
                 playMusic(currentSongIndex);
@@ -380,7 +405,7 @@
         // ========== 启动 ==========
         window.addEventListener('load', () => {
             loadPlaylist();
-            console.log('黑胶唱片播放器已启动 (原生 Tone.js 版)');
+            console.log('黑胶唱片播放器已启动 (性能优化版)');
         });
     </script>
 </body>
