@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MIDI 播放器</title>
+    <title>复古黑胶唱片机 · MIDI 播放器</title>
     <style>
-        /* ===== 所有样式与之前相同，此处省略以节省篇幅 ===== */
+        /* ===== 样式与之前相同，此处省去重复 ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         body { width:100vw; height:100vh; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; font-family:system-ui, sans-serif; background:#1a1a1a; }
         html:fullscreen .top-toolbar, html:fullscreen .playlist-drawer { display:none !important; }
@@ -84,11 +84,11 @@
 
     <div class="loading-tip" id="statusTip">加载播放列表...</div>
 
-    <!-- ====== 使用 importmap 加载 SpessaSynth ====== -->
+    <!-- ====== 修正后的 importmap ====== -->
     <script type="importmap">
     {
         "imports": {
-            "spessasynth_lib": "https://unpkg.com/spessasynth_lib@4.3.0/dist/spessasynth_lib.js"
+            "spessasynth_lib": "https://cdn.jsdelivr.net/npm/spessasynth_lib@4/dist/spessasynth_lib.js"
         }
     }
     </script>
@@ -96,7 +96,7 @@
     <script type="module">
         // 导入 SpessaSynth
         import { Synthetizer, Sequencer, SoundFont2 } from 'spessasynth_lib';
-        const WORKLET_URL = 'https://unpkg.com/spessasynth_lib@4.3.0/dist/worklet.js';
+        const WORKLET_URL = 'https://cdn.jsdelivr.net/npm/spessasynth_lib@4/dist/worklet.js';
 
         // ============================================================
         //  DOM 引用
@@ -382,42 +382,6 @@
                 playlistDrawer.classList.remove('open');
             }
         });
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>复古黑胶唱片机 · MIDI 播放器</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            font-family: system-ui, -apple-system, sans-serif;
-            background: #1a1a1a;
-        }
-        /* 全屏状态下隐藏所有UI控件 */
-        html:fullscreen .top-toolbar,
-        html:fullscreen .playlist-drawer {
-            display: none !important;
-        }
-
-        /* 模糊纹理背景层 */
-        .bg-blur-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
 
         fullscreenBtn.addEventListener('click', () => {
             if (!document.fullscreenElement) {
