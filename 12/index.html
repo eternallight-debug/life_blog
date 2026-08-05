@@ -3,300 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>复古黑胶唱片机 · MIDI 播放器</title>
+    <title>MIDI 播放器</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            font-family: system-ui, -apple-system, sans-serif;
-            background: #1a1a1a;
-        }
-        /* 全屏状态下隐藏所有UI控件 */
-        html:fullscreen .top-toolbar,
-        html:fullscreen .playlist-drawer {
-            display: none !important;
-        }
-
-        /* 模糊纹理背景层 */
-        .bg-blur-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            background-image: var(--cover-img);
-            background-size: cover;
-            background-position: center;
-            filter: blur(45px) brightness(0.82);
-            transform: scale(1.25);
-            transition: background-image 0.6s ease;
-        }
-        /* 平均色调遮罩 */
-        .bg-color-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background-color: #7c6852;
-            transition: background-color 0.6s ease;
-        }
-
-        /* ===== 顶部工具栏 ===== */
-        .top-toolbar {
-            position: absolute;
-            top: 24px;
-            left: 24px;
-            right: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
-        }
-        .hamburger-btn {
-            width: 44px;
-            height: 44px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: background 0.2s;
-        }
-        .hamburger-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-        }
-        .hamburger-line {
-            width: 22px;
-            height: 2px;
-            background: #fff;
-            border-radius: 1px;
-        }
-        .btn-group {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-        .fullscreen-btn {
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.18);
-            backdrop-filter: blur(8px);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 99px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.25s ease;
-        }
-        .fullscreen-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        /* ===== 侧边播放列表抽屉 ===== */
-        .playlist-drawer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 340px;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(16px);
-            z-index: 15;
-            transform: translateX(-100%);
-            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 20px 18px;
-            color: #fff;
-            overflow-y: auto;
-        }
-        .playlist-drawer.open {
-            transform: translateX(0);
-        }
-        .sidebar-control-card {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            padding: 18px 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .play-main-btn {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.18);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            color: #fff;
-            font-size: 24px;
-            cursor: pointer;
-            display: grid;
-            place-items: center;
-            transition: background 0.2s;
-            margin-bottom: 14px;
-        }
-        .play-main-btn:hover {
-            background: rgba(255, 255, 255, 0.35);
-        }
-        .mode-buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .mode-btn {
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.06);
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .mode-btn.active {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-            color: #fff;
-        }
-        .playlist-title {
-            font-size: 18px;
-            font-weight: 500;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .song-item {
-            padding: 12px 14px;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-bottom: 4px;
-            transition: background 0.2s, transform 0.15s;
-        }
-        .song-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-        .song-item.active {
-            background: rgba(255, 255, 255, 0.16);
-        }
-        .song-name {
-            font-size: 15px;
-            font-weight: 450;
-        }
-        .song-artist {
-            font-size: 12px;
-            opacity: 0.6;
-            margin-top: 3px;
-        }
-
-        /* ===== 唱片机主体 ===== */
-        .turntable-wrap {
-            position: relative;
-            display: flex;
-            align-items: center;
-            transform: translateX(-4vw);
-            scale: clamp(0.5, 1.2vw, 1);
-        }
-        .album-cover {
-            width: 540px;
-            height: 540px;
-            border-radius: 16px;
-            z-index: 2;
-            background: var(--cover-img) center / cover no-repeat;
-            box-shadow:
-                0 12px 40px rgba(0, 0, 0, 0.5),
-                0 4px 12px rgba(0, 0, 0, 0.2),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-            position: relative;
-            transition: background-image 0.5s ease;
-        }
-        .vinyl-record {
-            width: 520px;
-            height: 520px;
-            border-radius: 50%;
-            position: absolute;
-            left: 340px;
-            top: 50%;
-            transform: translateY(-50%);
-            box-shadow:
-                0 10px 35px rgba(0, 0, 0, 0.5),
-                inset 0 0 20px rgba(0, 0, 0, 0.6);
-            animation: vinylSpin 9s linear infinite;
-            animation-play-state: paused;
-            cursor: pointer;
-            background-image:
-                repeating-radial-gradient(
-                    circle at center,
-                    transparent 0 170px,
-                    #222 170px 173px,
-                    transparent 173px 260px
-                ),
-                radial-gradient(circle at center, transparent 0 180px, #111 180px 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .vinyl-center-img {
-            width: 360px;
-            height: 360px;
-            border-radius: 50%;
-            background: var(--cover-img) center / cover no-repeat;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-            transition: background-image 0.5s ease;
-        }
-        .vinyl-record::after {
-            content: "";
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            background: #0a0a0a;
-            z-index: 3;
-            position: absolute;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
-        }
-        @keyframes vinylSpin {
-            from { transform: translateY(-50%) rotate(0deg); }
-            to   { transform: translateY(-50%) rotate(360deg); }
-        }
-
-        /* ===== 加载状态提示 ===== */
-        .loading-tip {
-            color: rgba(255,255,255,0.3);
-            font-size: 14px;
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 5;
-            pointer-events: none;
-            background: rgba(0,0,0,0.3);
-            padding: 6px 18px;
-            border-radius: 30px;
-            backdrop-filter: blur(4px);
-        }
-        /* ===== 响应式微调 ===== */
-        @media (max-width: 600px) {
-            .top-toolbar { top: 16px; left: 16px; right: 16px; }
-            .hamburger-btn { width: 38px; height: 38px; }
-            .fullscreen-btn { padding: 6px 14px; font-size: 12px; }
-            .playlist-drawer { width: 280px; }
-        }
+        /* ===== 所有样式与之前相同，此处省略以节省篇幅 ===== */
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { width:100vw; height:100vh; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; font-family:system-ui, sans-serif; background:#1a1a1a; }
+        html:fullscreen .top-toolbar, html:fullscreen .playlist-drawer { display:none !important; }
+        .bg-blur-layer { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-2; background-image:var(--cover-img); background-size:cover; background-position:center; filter:blur(45px) brightness(0.82); transform:scale(1.25); transition:background-image 0.6s ease; }
+        .bg-color-overlay { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; background-color:#7c6852; transition:background-color 0.6s ease; }
+        .top-toolbar { position:absolute; top:24px; left:24px; right:24px; display:flex; justify-content:space-between; align-items:center; z-index:10; }
+        .hamburger-btn { width:44px; height:44px; background:rgba(255,255,255,0.15); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.25); border-radius:12px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; transition:background 0.2s; }
+        .hamburger-btn:hover { background:rgba(255,255,255,0.25); }
+        .hamburger-line { width:22px; height:2px; background:#fff; border-radius:1px; }
+        .btn-group { display:flex; gap:12px; align-items:center; }
+        .fullscreen-btn { padding:10px 20px; background:rgba(255,255,255,0.18); backdrop-filter:blur(8px); color:#fff; border:1px solid rgba(255,255,255,0.3); border-radius:99px; cursor:pointer; font-size:14px; transition:all 0.25s ease; }
+        .fullscreen-btn:hover { background:rgba(255,255,255,0.3); }
+        .playlist-drawer { position:fixed; top:0; left:0; width:340px; height:100vh; background:rgba(0,0,0,0.7); backdrop-filter:blur(16px); z-index:15; transform:translateX(-100%); transition:transform 0.35s cubic-bezier(0.4,0,0.2,1); padding:20px 18px; color:#fff; overflow-y:auto; }
+        .playlist-drawer.open { transform:translateX(0); }
+        .sidebar-control-card { background:rgba(255,255,255,0.08); border-radius:14px; padding:18px 16px; box-shadow:0 8px 24px rgba(0,0,0,0.4); margin-bottom:20px; border:1px solid rgba(255,255,255,0.08); }
+        .play-main-btn { width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,0.18); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.25); color:#fff; font-size:24px; cursor:pointer; display:grid; place-items:center; transition:background 0.2s; margin-bottom:14px; }
+        .play-main-btn:hover { background:rgba(255,255,255,0.35); }
+        .mode-buttons { display:flex; gap:8px; flex-wrap:wrap; }
+        .mode-btn { padding:6px 14px; border-radius:20px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.7); font-size:13px; cursor:pointer; transition:all 0.2s; }
+        .mode-btn.active { background:rgba(255,255,255,0.2); border-color:rgba(255,255,255,0.5); color:#fff; }
+        .playlist-title { font-size:18px; font-weight:500; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.1); }
+        .song-item { padding:12px 14px; border-radius:10px; cursor:pointer; margin-bottom:4px; transition:background 0.2s, transform 0.15s; }
+        .song-item:hover { background:rgba(255,255,255,0.08); }
+        .song-item.active { background:rgba(255,255,255,0.16); }
+        .song-name { font-size:15px; font-weight:450; }
+        .song-artist { font-size:12px; opacity:0.6; margin-top:3px; }
+        .turntable-wrap { position:relative; display:flex; align-items:center; transform:translateX(-4vw); scale:clamp(0.5, 1.2vw, 1); }
+        .album-cover { width:540px; height:540px; border-radius:16px; z-index:2; background:var(--cover-img) center/cover no-repeat; box-shadow:0 12px 40px rgba(0,0,0,0.5),0 4px 12px rgba(0,0,0,0.2),inset 0 0 0 1px rgba(255,255,255,0.06); position:relative; transition:background-image 0.5s ease; }
+        .vinyl-record { width:520px; height:520px; border-radius:50%; position:absolute; left:340px; top:50%; transform:translateY(-50%); box-shadow:0 10px 35px rgba(0,0,0,0.5),inset 0 0 20px rgba(0,0,0,0.6); animation:vinylSpin 9s linear infinite; animation-play-state:paused; cursor:pointer; background-image:repeating-radial-gradient(circle at center,transparent 0 170px,#222 170px 173px,transparent 173px 260px),radial-gradient(circle at center,transparent 0 180px,#111 180px 100%); display:flex; align-items:center; justify-content:center; }
+        .vinyl-center-img { width:360px; height:360px; border-radius:50%; background:var(--cover-img) center/cover no-repeat; box-shadow:0 0 8px rgba(0,0,0,0.3); transition:background-image 0.5s ease; }
+        .vinyl-record::after { content:""; width:22px; height:22px; border-radius:50%; background:#0a0a0a; z-index:3; position:absolute; box-shadow:inset 0 2px 4px rgba(0,0,0,0.8); }
+        @keyframes vinylSpin { from { transform:translateY(-50%) rotate(0deg); } to { transform:translateY(-50%) rotate(360deg); } }
+        .loading-tip { color:rgba(255,255,255,0.3); font-size:14px; position:absolute; bottom:30px; left:50%; transform:translateX(-50%); z-index:5; pointer-events:none; background:rgba(0,0,0,0.3); padding:6px 18px; border-radius:30px; backdrop-filter:blur(4px); }
+        @media (max-width:600px) { .top-toolbar { top:16px; left:16px; right:16px; } .hamburger-btn { width:38px; height:38px; } .fullscreen-btn { padding:6px 14px; font-size:12px; } .playlist-drawer { width:280px; } }
     </style>
 </head>
 <body>
@@ -324,9 +67,7 @@
             </div>
         </div>
         <div class="playlist-title">🎵 播放列表</div>
-        <div id="songListContainer">
-            <!-- 动态由 JavaScript 生成 -->
-        </div>
+        <div id="songListContainer"><!-- 动态生成 --></div>
     </div>
 
     <!-- 背景 -->
@@ -341,25 +82,24 @@
         </div>
     </div>
 
-    <!-- 底部提示 -->
     <div class="loading-tip" id="statusTip">加载播放列表...</div>
 
-    <!-- ====== 使用 CDN 加载 SpessaSynth ====== -->
+    <!-- ====== 使用 importmap 加载 SpessaSynth ====== -->
     <script type="importmap">
     {
         "imports": {
-            "spessasynth_lib": "https://cdn.jsdelivr.net/npm/spessasynth_lib@4.3.0/dist/spessasynth_lib.js"
+            "spessasynth_lib": "https://unpkg.com/spessasynth_lib@4.3.0/dist/spessasynth_lib.js"
         }
     }
     </script>
 
     <script type="module">
-        // ----- 导入 SpessaSynth -----
+        // 导入 SpessaSynth
         import { Synthetizer, Sequencer, SoundFont2 } from 'spessasynth_lib';
-        const WORKLET_URL = 'https://cdn.jsdelivr.net/npm/spessasynth_lib@4.3.0/dist/worklet.js';
+        const WORKLET_URL = 'https://unpkg.com/spessasynth_lib@4.3.0/dist/worklet.js';
 
         // ============================================================
-        //  1. DOM 引用
+        //  DOM 引用
         // ============================================================
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const playlistDrawer = document.getElementById('playlistDrawer');
@@ -373,20 +113,18 @@
         const songListContainer = document.getElementById('songListContainer');
         const statusTip = document.getElementById('statusTip');
 
-        // ============================================================
-        //  2. 状态
-        // ============================================================
+        // 状态
         let isPlaying = false;
-        let playMode = 'loop';        // loop, random, list
+        let playMode = 'loop';
         let currentSongIndex = 0;
-        let songData = [];            // [{ name, artist, picture, midiFile }]
+        let songData = [];
         let isSynthReady = false;
         let synth = null;
         let sequencer = null;
         let audioCtx = null;
 
         // ============================================================
-        //  3. 加载 index.txt 并初始化
+        //  加载 index.txt
         // ============================================================
         async function loadPlaylist() {
             try {
@@ -401,42 +139,27 @@
 
                 songData = lines.map(line => {
                     const parts = line.split('/').map(s => s.trim());
-                    // 格式: 歌曲.mid / 作者 / 图片名(无后缀)
                     const midiName = parts[0] || '';
                     const artist = parts[1] || '未知艺术家';
                     const pictureName = parts[2] || '';
-                    // 显示名去掉 .mid
                     const displayName = midiName.replace(/\.mid$/i, '');
-                    return {
-                        name: displayName,
-                        artist: artist,
-                        picture: pictureName,
-                        midiFile: midiName
-                    };
-                }).filter(item => item.midiFile); // 过滤掉无效行
+                    return { name: displayName, artist, picture: pictureName, midiFile: midiName };
+                }).filter(item => item.midiFile);
 
                 if (songData.length === 0) throw new Error('没有有效的歌曲条目');
 
-                // 渲染列表
                 renderSongList();
-                // 加载第一首封面
                 await loadSongCover(0);
-                // 显示就绪
                 statusTip.textContent = `✅ 已加载 ${songData.length} 首歌曲`;
-                // 默认选中第一首
                 setActiveSong(0);
-                // 初始化音色库
                 await initSynth();
             } catch (err) {
-                console.error('加载播放列表失败:', err);
+                console.error('加载失败:', err);
                 statusTip.textContent = `❌ 加载失败: ${err.message}`;
                 songListContainer.innerHTML = `<div style="color:#f88;padding:20px;">加载失败: ${err.message}</div>`;
             }
         }
 
-        // ============================================================
-        //  4. 渲染播放列表
-        // ============================================================
         function renderSongList() {
             songListContainer.innerHTML = songData.map((item, idx) => `
                 <div class="song-item" data-index="${idx}">
@@ -445,19 +168,17 @@
                 </div>
             `).join('');
 
-            // 绑定点击事件
             document.querySelectorAll('.song-item').forEach(el => {
                 el.addEventListener('click', () => {
                     const idx = parseInt(el.dataset.index, 10);
                     if (idx === currentSongIndex && isPlaying) {
-                        // 重新播放
                         stopMusic();
                         setTimeout(() => playMusic(idx), 200);
                     } else {
                         stopMusic();
                         playMusic(idx);
                     }
-                    playlistDrawer.classList.remove('open'); // 点击后关闭抽屉
+                    playlistDrawer.classList.remove('open');
                 });
             });
         }
@@ -470,12 +191,12 @@
         }
 
         // ============================================================
-        //  5. 加载歌曲封面（尝试 .webp）
+        //  加载封面（只尝试 .webp）
         // ============================================================
         async function loadSongCover(index) {
             const item = songData[index];
             if (!item) return;
-            const picName = item.picture || item.name; // 如果未指定图片名，用歌曲名
+            const picName = item.picture || item.name;
             const url = `pictures/${picName}.webp`;
             const img = new Image();
             img.crossOrigin = 'anonymous';
@@ -485,19 +206,15 @@
                     img.onerror = reject;
                     img.src = url;
                 });
-                // 应用封面
                 const coverUrl = `url(${url})`;
                 albumCover.style.backgroundImage = coverUrl;
                 vinylCenterImg.style.backgroundImage = coverUrl;
                 bgBlurLayer.style.backgroundImage = coverUrl;
-                // 提取平均色
                 getImageAverageColor(url, (avgColor) => {
                     colorOverlay.style.backgroundColor = avgColor;
                 });
                 statusTip.textContent = `🎵 ${item.name} - ${item.artist}`;
-            } catch (err) {
-                console.warn(`封面加载失败: ${url}`, err);
-                // 使用默认占位色
+            } catch {
                 albumCover.style.backgroundImage = 'linear-gradient(145deg, #2a2a2a, #1a1a1a)';
                 vinylCenterImg.style.backgroundImage = 'linear-gradient(145deg, #2a2a2a, #1a1a1a)';
                 bgBlurLayer.style.backgroundImage = 'none';
@@ -507,7 +224,6 @@
             }
         }
 
-        // ----- 提取平均色 (Canvas) -----
         function getImageAverageColor(imgSrc, callback) {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
@@ -518,12 +234,12 @@
                 canvas.width = img.width;
                 canvas.height = img.height;
                 ctx.drawImage(img, 0, 0);
-                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                let r = 0, g = 0, b = 0, total = imgData.data.length / 4;
-                for (let i = 0; i < imgData.data.length; i += 4) {
-                    r += imgData.data[i];
-                    g += imgData.data[i + 1];
-                    b += imgData.data[i + 2];
+                const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+                let r = 0, g = 0, b = 0, total = data.length / 4;
+                for (let i = 0; i < data.length; i += 4) {
+                    r += data[i];
+                    g += data[i+1];
+                    b += data[i+2];
                 }
                 r = Math.floor(r / total);
                 g = Math.floor(g / total);
@@ -534,12 +250,11 @@
         }
 
         // ============================================================
-        //  6. 初始化 SpessaSynth (音色库)
+        //  初始化 SpessaSynth
         // ============================================================
         async function initSynth() {
             try {
                 statusTip.textContent = '🎹 加载音色库...';
-                // 使用 jsDelivr 加速你的音色库（请确保已上传）
                 const SF2_URL = 'https://cdn.jsdelivr.net/gh/eternallight-debug/life_blog@main/life_blog/12/sound_bank/TimGM6mb.sf2';
                 const sf2Resp = await fetch(SF2_URL);
                 if (!sf2Resp.ok) throw new Error(`音色库 HTTP ${sf2Resp.status}`);
@@ -552,14 +267,14 @@
                 const outputNode = audioCtx.createGain();
                 outputNode.connect(audioCtx.destination);
                 synth = new Synthetizer(outputNode, soundFont);
-                synth.setVolume(0.75); // 默认音量
+                synth.setVolume(0.75);
 
                 sequencer = new Sequencer(synth);
                 sequencer.setLoop(true);
 
                 isSynthReady = true;
                 console.log('✅ 音色库初始化成功');
-                statusTip.textContent = `🎵 就绪，点击唱片或播放按钮开始`;
+                statusTip.textContent = `🎵 就绪，点击唱片播放`;
             } catch (err) {
                 console.error('音色库初始化失败:', err);
                 statusTip.textContent = `❌ 音色库加载失败: ${err.message}`;
@@ -568,20 +283,15 @@
         }
 
         // ============================================================
-        //  7. 播放 / 暂停 / 停止 / 切换
+        //  播放控制
         // ============================================================
         async function playMusic(index) {
-            if (!isSynthReady || !sequencer) {
-                console.warn('合成器未就绪');
-                return;
-            }
+            if (!isSynthReady || !sequencer) return;
             if (index < 0 || index >= songData.length) return;
 
             try {
-                if (isPlaying) {
-                    await sequencer.stop();
-                    isPlaying = false;
-                }
+                if (isPlaying) await sequencer.stop();
+                isPlaying = false;
 
                 const item = songData[index];
                 setActiveSong(index);
@@ -597,15 +307,13 @@
                 isPlaying = true;
                 updatePlayStateUI(true);
 
-                // 歌曲结束回调（根据模式处理下一首）
                 sequencer.onFinish = () => {
                     if (playMode === 'loop') {
-                        // 单曲循环：重新播放同一首
                         playMusic(currentSongIndex);
                     } else if (playMode === 'random') {
                         const next = Math.floor(Math.random() * songData.length);
                         playMusic(next);
-                    } else { // list
+                    } else {
                         const next = (currentSongIndex + 1) % songData.length;
                         playMusic(next);
                     }
@@ -641,37 +349,30 @@
                 updatePlayStateUI(false);
                 statusTip.textContent = `⏸ 已暂停 - ${songData[currentSongIndex].name}`;
             } else {
-                // 如果当前有歌曲且暂停，恢复；否则播放当前选中或第一首
                 if (sequencer && sequencer.isPaused) {
                     await sequencer.play();
                     isPlaying = true;
                     updatePlayStateUI(true);
                     statusTip.textContent = `▶️ ${songData[currentSongIndex].name}`;
                 } else {
-                    // 如果没有加载任何歌曲，播放当前选中的索引
                     const idx = currentSongIndex >= 0 ? currentSongIndex : 0;
                     await playMusic(idx);
                 }
             }
         }
 
-        // ============================================================
-        //  8. UI 同步
-        // ============================================================
         function updatePlayStateUI(playing) {
             isPlaying = playing;
             vinylDisk.style.animationPlayState = playing ? 'running' : 'paused';
             playMainBtn.textContent = playing ? '⏸' : '▶';
-            // 更新侧边栏歌曲高亮（播放中的状态）
             document.querySelectorAll('.song-item').forEach((el, i) => {
                 el.classList.toggle('active', i === currentSongIndex);
             });
         }
 
         // ============================================================
-        //  9. 事件绑定
+        //  事件绑定
         // ============================================================
-        // 汉堡菜单
         hamburgerBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             playlistDrawer.classList.toggle('open');
@@ -681,8 +382,43 @@
                 playlistDrawer.classList.remove('open');
             }
         });
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>复古黑胶唱片机 · MIDI 播放器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #1a1a1a;
+        }
+        /* 全屏状态下隐藏所有UI控件 */
+        html:fullscreen .top-toolbar,
+        html:fullscreen .playlist-drawer {
+            display: none !important;
+        }
 
-        // 全屏
+        /* 模糊纹理背景层 */
+        .bg-blur-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+
         fullscreenBtn.addEventListener('click', () => {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => console.log(err));
@@ -691,19 +427,14 @@
             }
         });
 
-        // 唱片点击切换播放/暂停
         vinylDisk.addEventListener('click', togglePlayPause);
-
-        // 侧边栏播放按钮
         playMainBtn.addEventListener('click', togglePlayPause);
 
-        // 播放模式切换
         document.querySelectorAll('.mode-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 playMode = btn.dataset.mode;
-                // 如果当前正在播放，更新循环设置
                 if (sequencer && isPlaying) {
                     sequencer.setLoop(playMode === 'loop' || playMode === 'list');
                 }
@@ -711,19 +442,14 @@
         });
 
         // ============================================================
-        //  10. 初始化启动
+        //  启动
         // ============================================================
         await loadPlaylist();
-
-        // 默认选中第一首（但不播放）
         if (songData.length > 0) {
             currentSongIndex = 0;
             setActiveSong(0);
-            // 加载第一首封面（已经由 loadSongCover(0) 在 loadPlaylist 中调用）
-            // 现在预加载音色库完成，等待用户点击
             statusTip.textContent = `🎵 ${songData[0].name} - ${songData[0].artist}  点击唱片播放`;
         }
-
         console.log('🎵 黑胶唱片播放器已启动');
     </script>
 </body>
