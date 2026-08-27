@@ -1716,7 +1716,7 @@
 
             let html = '';
             for (const entry of entries) {
-                const icon = entry.isFolder ? '📁' : '📄';
+                const icon = entry.isFolder ? '📕' : '📄';
                 const isActive = !entry.isFolder && currentReading && currentReading.name === entry.name &&
                     currentReading.path === joinPath(pathStack);
                 const cached = !entry.isFolder && getCached(pathStack, entry.name) !== null;
