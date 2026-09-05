@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="pageTitle">电影讲解</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
+    </script>
+    <style>
+        /* 样式与之前完全相同，为了节省篇幅此处省略，您可以直接复用之前的 show.html 样式 */
+        /* 但需要在下方的 JavaScript 中加入图片懒加载逻辑 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            background: #0d0c0a;
+            color: #e8e0d5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 30px 18px;
+            transition: background 0.6s ease;
+        }
+        .card {
+            max-width: 820px;
+            width: 100%;
+            border-radius: 16px;
+            padding: 30px 44px 34px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+            transition: background 0.6s ease, border-color 0.6s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+            background: #1a1714;
+        }
+        .card .bg-overlay {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            border-radius: 16px;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .card .bg-overlay.active {
+            opacity: 1;
+        }
+        .card>*:not(.bg-overlay) {
+            position: relative;
+            z-index: 1;
+        }
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7a6a5a;
+            font-size: 0.95rem;
+            letter-spacing: 3px;
+        }
+        .loading .dot {
+            display: inline-block;
+            animation: pulse 1.4s ease-in-out infinite both;
+        }
+        .loading .dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+        .loading .dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+        @keyframes pulse {
+            0%,
+            80%,
+            100% {
+                opacity: 0.2;
+            }
+            40% {
+                opacity: 1;
+            }
+        }
+        .error-msg {
+            text-align: center;
+            padding: 40px 20px;
+            color: #b8a694;
+            font-size: 0.9rem;
+            line-height: 2;
+            background: rgba(19, 17, 14, 0.85);
+            border-radius: 10px;
+            border: 1px solid #2f2924;
+        }
+        .error-msg .err-title {
+            color: #d4b68a;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+        .detail-loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(122, 106, 90, 0.8);
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #b8a694;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+            letter-spacing: 1px;
+            backdrop-filter: blur(4px);
+            text-decoration: none;
+            display: inline-flex;
+        }
+        .back-link:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #e8e0d5;
+            background: rgba(0, 0, 0, 0.6);
+        }
+        .hamburger-wrap {
+            position: relative;
+        }
+        .hamburger-btn {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #b8a694;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+            backdrop-filter: blur(4px);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            min-width: 40px;
+        }
+        .hamburger-btn:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #e8e0d5;
+            background: rgba(0, 0, 0, 0.6);
+        }
+        .hamburger-btn .icon {
+            font-size: 1.3rem;
+            line-height: 1;
+        }
+        .hamburger-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: rgba(20, 18, 16, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 8px 0;
+            min-width: 180px;
+            max-height: 360px;
+            overflow-y: auto;
+            display: none;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+            z-index: 100;
+        }
+        .hamburger-dropdown.open {
+            display: block;
+        }
+        .hamburger-dropdown a {
+            display: block;
+            padding: 8px 20px;
+            color: #c8beb2;
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: background 0.2s, color 0.2s;
+            border-left: 2px solid transparent;
+        }
+        .hamburger-dropdown a:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: #f0d5b0;
+            border-left-color: #d4b68a;
+        }
+        .poster {
+            text-align: center;
+            padding: 28px 20px 18px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        .poster img {
+            max-width: 100%;
+            max-height: 340px;
+            border-radius: 8px;
+            object-fit: contain;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .poster img.show {
+            display: block;
+        }
+        .poster img.loaded {
+            opacity: 1;
+        }
+        .poster .poster-text {
+            width: 100%;
+        }
+        .poster .poster-text.hidden {
+            display: none;
+        }
+        .poster .title-cn {
+            font-size: 3.2rem;
+            font-weight: 600;
+            letter-spacing: 14px;
+            color: #f0d5b0;
+            line-height: 1.2;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+        }
+        .poster .title-en {
+            font-size: 1rem;
+            letter-spacing: 6px;
+            color: rgba(160, 138, 120, 0.8);
+            margin-top: 6px;
+            font-weight: 300;
+        }
+        .poster .line {
+            width: 36px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 14px auto;
+        }
+        .poster .poster-footer {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+        }
+        .poster .poster-footer .meta-item {
+            font-size: 0.85rem;
+            color: rgba(184, 166, 148, 0.85);
+            letter-spacing: 1px;
+        }
+        .poster .poster-footer .meta-item .sep {
+            margin: 0 4px;
+            color: rgba(74, 63, 54, 0.5);
+        }
+        .poster .no-image-hint {
+            font-size: 0.7rem;
+            color: rgba(74, 64, 56, 0.7);
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+        .block {
+            margin-bottom: 28px;
+            background: rgba(0, 0, 0, 0.28);
+            border-radius: 12px;
+            padding: 20px 26px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(4px);
+        }
+        .block:last-of-type {
+            margin-bottom: 0;
+        }
+        .block .block-title {
+            font-size: 1.15rem;
+            font-weight: 500;
+            letter-spacing: 3px;
+            color: #f0d5b0;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .md-content p {
+            font-weight: 300;
+            color: #d6cec4;
+            line-height: 2;
+            font-size: 0.96rem;
+            text-indent: 2em;
+            margin-bottom: 12px;
+        }
+        .md-content p:last-child {
+            margin-bottom: 0;
+        }
+        .md-content blockquote {
+            color: rgba(184, 166, 148, 0.9);
+            font-style: italic;
+            padding-left: 16px;
+            border-left: 2px solid rgba(212, 182, 138, 0.3);
+            margin: 12px 0;
+            text-indent: 0;
+        }
+        .md-content blockquote p {
+            text-indent: 0;
+            color: inherit;
+        }
+        .md-content h1 {
+            color: #f0d5b0;
+            font-weight: 500;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            margin: 20px 0 12px 0;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .md-content h1:first-child {
+            margin-top: 0;
+        }
+        .md-content h2 {
+            color: #e0d0c0;
+            font-weight: 400;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            margin: 18px 0 10px 0;
+        }
+        .md-content h3 {
+            color: #d0c0b0;
+            font-weight: 400;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            margin: 14px 0 8px 0;
+        }
+        .md-content ul,
+        .md-content ol {
+            padding-left: 24px;
+            margin: 8px 0 12px 0;
+            color: #d6cec4;
+            line-height: 2;
+        }
+        .md-content li {
+            margin-bottom: 4px;
+        }
+        .md-content strong {
+            color: #e8e0d5;
+        }
+        .md-content em {
+            color: #c8beb2;
+        }
+        .md-content code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85em;
+            color: #d4b68a;
+        }
+        .md-content pre {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 14px 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 12px 0;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .md-content pre code {
+            background: transparent;
+            padding: 0;
+            color: #c8beb2;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 20px 16px 24px;
+            }
+            .poster .title-cn {
+                font-size: 2.4rem;
+                letter-spacing: 8px;
+            }
+            .poster .title-en {
+                font-size: 0.8rem;
+                letter-spacing: 4px;
+            }
+            .md-content p {
+                font-size: 0.88rem;
+                text-indent: 1.6em;
+            }
+            .poster {
+                padding: 18px 12px 14px;
+            }
+            .block {
+                padding: 16px 16px;
+            }
+            .block .block-title {
+                font-size: 1rem;
+            }
+            .poster .poster-footer {
+                gap: 6px 12px;
+            }
+            .poster .poster-footer .meta-item {
+                font-size: 0.75rem;
+            }
+            .top-bar {
+                gap: 8px;
+            }
+            .hamburger-dropdown {
+                min-width: 150px;
+                right: 0;
+                left: auto;
+            }
+            .hamburger-btn {
+                font-size: 1rem;
+                padding: 4px 12px;
+                min-width: 34px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .card {
+                padding: 12px 10px 18px;
+            }
+            .poster .title-cn {
+                font-size: 1.8rem;
+                letter-spacing: 4px;
+            }
+            .poster .title-en {
+                font-size: 0.7rem;
+                letter-spacing: 2px;
+            }
+            .md-content p {
+                font-size: 0.84rem;
+                text-indent: 1.4em;
+            }
+            .back-link {
+                font-size: 0.7rem;
+                padding: 4px 12px;
+            }
+            .hamburger-btn {
+                font-size: 0.9rem;
+                padding: 4px 10px;
+                min-width: 30px;
+            }
+            .block {
+                padding: 12px 12px;
+            }
+            .block .block-title {
+                font-size: 0.95rem;
+            }
+            .hamburger-dropdown {
+                min-width: 130px;
+            }
+            .hamburger-dropdown a {
+                font-size: 0.75rem;
+                padding: 6px 14px;
+            }
+            .poster .poster-footer .meta-item {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="app">
+        <div class="bg-overlay" id="bgOverlay"></div>
+        <div id="mainContent">
+            <div class="loading">
+                <span>加载中</span>
+                <span class="dot">.</span>
+                <span class="dot">.</span>
+                <span class="dot">.</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            const main = document.getElementById('mainContent');
+            const bgOverlay = document.getElementById('bgOverlay');
+            const card = document.querySelector('.card');
+            const pageTitle = document.getElementById('pageTitle');
+
+            function getParam(name) {
+                const url = new URL(window.location.href);
+                return url.searchParams.get(name);
+            }
+
+            // ============================================================
+            // 1. 缓存（复用首页的缓存逻辑）
+            // ============================================================
+            const CACHE_KEY = 'movie_info_cache';
+            const memoryCache = new Map();
+
+            function loadPersistentCache() {
+                try {
+                    const raw = localStorage.getItem(CACHE_KEY);
+                    if (!raw) return;
+                    const data = JSON.parse(raw);
+                    for (const [key, value] of Object.entries(data.data)) {
+                        memoryCache.set(key, value);
+                    }
+                } catch (_) {}
+            }
+
+            function getCached(name) {
+                return memoryCache.get(name) || null;
+            }
+
+            function parseInfoText(content) {
+                const data = {};
+                const lines = content.split('\n');
+                for (const raw of lines) {
+                    const line = raw.trim();
+                    if (!line) continue;
+                    const idx = line.search(/[：:]/);
+                    if (idx === -1) continue;
+                    const key = line.slice(0, idx).trim();
+                    const value = line.slice(idx + 1).trim();
+                    if (key === '片名') data.title = value;
+                    else if (key === '其他名字' || key === '英文名') data.other = value;
+                    else if (key === '导演') data.director = value;
+                    else if (key === '上映时间' || key === '年份') data.year = value;
+                    else if (key === '类型' || key === '标签') data.genre = value;
+                    else if (key === '片长' || key === '时长') data.duration = value;
+                    else data[key] = value;
+                }
+                return data;
+            }
+
+            // ============================================================
+            // 2. 提取平均色
+            // ============================================================
+            function extractAverageColor(imageUrl) {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = function() {
+                        try {
+                            const canvas = document.createElement('canvas');
+                            const ctx = canvas.getContext('2d');
+                            const size = 80;
+                            canvas.width = size;
+                            canvas.height = size;
+                            ctx.drawImage(img, 0, 0, size, size);
+                            const imageData = ctx.getImageData(0, 0, size, size);
+                            const data = imageData.data;
+                            let r = 0,
+                                g = 0,
+                                b = 0,
+                                count = 0;
+                            for (let i = 0; i < data.length; i += 4) {
+                                r += data[i];
+                                g += data[i + 1];
+                                b += data[i + 2];
+                                count++;
+                            }
+                            r = Math.round(r / count);
+                            g = Math.round(g / count);
+                            b = Math.round(b / count);
+                            resolve({ r, g, b });
+                        } catch (e) {
+                            resolve(null);
+                        }
+                    };
+                    img.onerror = function() {
+                        resolve(null);
+                    };
+                    img.src = imageUrl;
+                });
+            }
+
+            function applyAverageColor(r, g, b) {
+                const color = `rgb(${r}, ${g}, ${b})`;
+                bgOverlay.style.background = color;
+                bgOverlay.style.opacity = '1';
+                card.style.background = color;
+                card.style.borderColor = `rgba(${r}, ${g}, ${b}, 0.3)`;
+            }
+
+            function resetBackground() {
+                bgOverlay.style.opacity = '0';
+                card.style.background = '#1a1714';
+                card.style.borderColor = '#2a2520';
+            }
+
+            // ============================================================
+            // 3. 加载图片（带缓存和懒加载）
+            // ============================================================
+            function tryLoadImage(basePath) {
+                const exts = ['jpg', 'jpeg', 'png', 'webp'];
+                return new Promise((resolve) => {
+                    let tried = 0,
+                        found = false;
+                    for (const ext of exts) {
+                        const url = basePath + '.' + ext;
+                        const img = new Image();
+                        img.onload = function() {
+                            if (!found) { found = true;
+                                resolve(url); }
+                        };
+                        img.onerror = function() {
+                            tried++;
+                            if (tried === exts.length && !found) resolve(null);
+                        };
+                        img.src = url;
+                    }
+                    setTimeout(() => { if (!found) resolve(null); }, 4000);
+                });
+            }
+
+            // ============================================================
+            // 4. 解析正文（与之前相同）
+            // ============================================================
+            function parseTextContent(content) {
+                const lines = content.split('\n');
+                const sections = [];
+                let currentSection = null;
+                let currentContent = [];
+                let started = false;
+
+                for (const raw of lines) {
+                    const trimmed = raw.trim();
+                    if (!trimmed) {
+                        if (currentSection !== null) currentContent.push(raw);
+                        continue;
+                    }
+                    if (trimmed.startsWith('#')) {
+                        started = true;
+                        if (currentSection !== null && currentContent.length > 0) {
+                            sections.push({
+                                title: currentSection,
+                                content: currentContent.join('\n').trim()
+                            });
+                        }
+                        currentSection = trimmed.replace(/^#+\s*/, '').trim();
+                        currentContent = [];
+                        continue;
+                    }
+                    if (!started && !trimmed.includes('导演') && !trimmed.includes('上映')) {
+                        started = true;
+                        currentSection = '故事简介';
+                        currentContent = [];
+                    }
+                    if (currentSection !== null) {
+                        currentContent.push(raw);
+                    }
+                }
+
+                if (currentSection !== null && currentContent.length > 0) {
+                    sections.push({
+                        title: currentSection,
+                        content: currentContent.join('\n').trim()
+                    });
+                }
+
+                if (sections.length === 0) {
+                    const clean = lines.filter(l => {
+                        const t = l.trim();
+                        return t && !t.includes('导演') && !t.includes('上映');
+                    }).join('\n').trim();
+                    if (clean) {
+                        sections.push({ title: '故事简介', content: clean });
+                    } else {
+                        sections.push({ title: '故事简介', content: '（暂无正文）' });
+                    }
+                }
+                return sections;
+            }
+
+            // ============================================================
+            // 5. 渲染详情（图片懒加载）
+            // ============================================================
+            function renderDetail(movieName, info, sections, imageUrl) {
+                pageTitle.textContent = movieName;
+
+                // 图片懒加载：使用 loading="lazy" + 渐进显示
+                const posterImgHtml = imageUrl ?
+                    `<img src="${imageUrl}" alt="${movieName} 海报" loading="lazy" class="show" onload="this.classList.add('loaded')" />` :
+                    '';
+
+                const posterTextClass = imageUrl ? 'poster-text hidden' : 'poster-text';
+
+                const titleEnHtml = info.other ? `<div class="title-en">${info.other}</div>` : '';
+
+                const metaParts = [];
+                if (info.director) metaParts.push(info.director);
+                if (info.year) metaParts.push(info.year);
+                if (info.genre) metaParts.push(info.genre);
+                if (info.duration) metaParts.push(info.duration);
+                let footerMetaHtml = '';
+                if (metaParts.length > 0) {
+                    footerMetaHtml = metaParts.map((p, i) =>
+                        `<span class="meta-item">${p}${i < metaParts.length - 1 ? ' <span class="sep">|</span>' : ''}</span>`
+                    ).join('');
+                }
+                const footerHtml = `<div class="poster-footer">${footerMetaHtml}</div>`;
+
+                // 生成区块
+                let blocksHtml = '';
+                let navItems = [];
+                for (const section of sections) {
+                    const anchorId = 'sec-' + encodeURIComponent(section.title.replace(/\s+/g, '-'));
+                    navItems.push({ title: section.title, anchor: anchorId });
+                    let contentHtml = '';
+                    try {
+                        contentHtml = typeof marked !== 'undefined' ? marked.parse(section.content) :
+                            `<p>${section.content.replace(/\n/g, '</p><p>')}</p>`;
+                    } catch (e) {
+                        contentHtml = `<p>${section.content}</p>`;
+                    }
+                    blocksHtml += `
+                        <div class="block" id="${anchorId}">
+                            <div class="block-title">${section.title}</div>
+                            <div class="md-content">${contentHtml}</div>
+                        </div>
+                    `;
+                }
+
+                // 汉堡菜单
+                let navHtml = '';
+                if (navItems.length > 1) {
+                    navHtml = `
+                        <div class="hamburger-wrap">
+                            <button class="hamburger-btn" id="hamburgerToggle"><span class="icon">☰</span></button>
+                            <div class="hamburger-dropdown" id="hamburgerDropdown">
+                                ${navItems.map(item => `<a href="#${item.anchor}">${item.title}</a>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                const topBarHtml = `
+                    <div class="top-bar">
+                        <a href="index.html" class="back-link">← 返回目录</a>
+                        ${navHtml}
+                    </div>
+                `;
+
+                const html = `
+                    ${topBarHtml}
+                    <div class="poster">
+                        ${posterImgHtml}
+                        <div class="${posterTextClass}">
+                            <div class="title-cn">${movieName}</div>
+                            ${titleEnHtml}
+                            <div class="line"></div>
+                        </div>
+                        ${footerHtml}
+                        ${!imageUrl ? '<div class="no-image-hint">（未找到海报图片）</div>' : ''}
+                    </div>
+                    ${blocksHtml}
+                `;
+
+                main.innerHTML = html;
+
+                // 汉堡交互
+                const toggle = document.getElementById('hamburgerToggle');
+                const dropdown = document.getElementById('hamburgerDropdown');
+                if (toggle && dropdown) {
+                    toggle.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        dropdown.classList.toggle('open');
+                    });
+                    dropdown.querySelectorAll('a').forEach(link => {
+                        link.addEventListener('click', () => dropdown.classList.remove('open'));
+                    });
+                    document.addEventListener('click', function(e) {
+                        if (!toggle.contains(e.target) && !dropdown.contains(e.target)) {
+                            dropdown.classList.remove('open');
+                        }
+                    });
+                }
+
+                // 背景色（图片加载完成后提取平均色）
+                if (imageUrl) {
+                    // 如果图片已经加载完成（缓存），直接提取
+                    const img = document.querySelector('.poster img');
+                    if (img && img.complete && img.naturalWidth > 0) {
+                        extractAverageColor(imageUrl).then(color => {
+                            if (color) applyAverageColor(color.r, color.g, color.b);
+                            else resetBackground();
+                        });
+                    } else {
+                        // 否则等待图片加载完成
+                        if (img) {
+                            img.addEventListener('load', function() {
+                                extractAverageColor(imageUrl).then(color => {
+                                    if (color) applyAverageColor(color.r, color.g, color.b);
+                                    else resetBackground();
+                                });
+                            });
+                            img.addEventListener('error', resetBackground);
+                        } else {
+                            resetBackground();
+                        }
+                    }
+                } else {
+                    resetBackground();
+                }
+            }
+
+            function showError(title, detail) {
+                main.innerHTML = `
+                    <div class="error-msg">
+                        <div class="err-title">${title}</div>
+                        <div>${detail}</div>
+                        <div style="margin-top:12px;font-size:0.75rem;color:#4a4038;">
+                            <a href="index.html" style="color:#d4b68a;">← 返回目录</a>
+                        </div>
+                        <div style="margin-top:12px;font-size:0.7rem;color:#3d342c;letter-spacing:1px;">
+                            information/电影名.txt → 元数据 | text/电影名.txt → 正文
+                        </div>
+                    </div>
+                `;
+                resetBackground();
+            }
+
+            // ============================================================
+            // 6. 主加载流程
+            // ============================================================
+            async function loadMovie(movieName) {
+                main.innerHTML = `
+                    <div class="detail-loading">
+                        <span>加载中</span>
+                        <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+                    </div>
+                `;
+
+                // 1. 加载元数据（优先从缓存读取）
+                let info = {};
+                const cached = getCached(movieName);
+                if (cached) {
+                    info = cached;
+                } else {
+                    try {
+                        const res = await fetch(`./information/${movieName}.txt`);
+                        if (res.ok) {
+                            const text = await res.text();
+                            info = parseInfoText(text);
+                            if (!info.title) info.title = movieName;
+                            // 存入内存缓存
+                            memoryCache.set(movieName, info);
+                        } else {
+                            // 尝试从 text/ 读取旧格式
+                            const res2 = await fetch(`./text/${movieName}.txt`);
+                            if (res2.ok) {
+                                const text2 = await res2.text();
+                                const lines = text2.split('\n');
+                                for (const line of lines) {
+                                    const trimmed = line.trim();
+                                    if (trimmed.includes('导演')) {
+                                        const parts = trimmed.split(/[：:]/);
+                                        if (parts.length > 1) info.director = parts[1].trim();
+                                    } else if (trimmed.includes('上映时间')) {
+                                        const parts = trimmed.split(/[：:]/);
+                                        if (parts.length > 1) info.year = parts[1].trim();
+                                    } else if (trimmed.includes('类型')) {
+                                        const parts = trimmed.split(/[：:]/);
+                                        if (parts.length > 1) info.genre = parts[1].trim();
+                                    } else if (trimmed.includes('片长')) {
+                                        const parts = trimmed.split(/[：:]/);
+                                        if (parts.length > 1) info.duration = parts[1].trim();
+                                    }
+                                }
+                                memoryCache.set(movieName, info);
+                            }
+                        }
+                    } catch (e) { /* 忽略 */ }
+                }
+
+                // 2. 加载正文
+                let sections = [];
+                try {
+                    const res = await fetch(`./text/${movieName}.txt`);
+                    if (res.ok) {
+                        const text = await res.text();
+                        sections = parseTextContent(text);
+                    } else {
+                        sections = [{ title: '故事简介', content: '（未找到正文文件，请确保 text/' + movieName + '.txt 存在）' }];
+                    }
+                } catch (e) {
+                    sections = [{ title: '故事简介', content: '（加载正文失败）' }];
+                }
+
+                // 3. 加载图片（浏览器原生懒加载）
+                let imageUrl = null;
+                try {
+                    imageUrl = await tryLoadImage(`./pictures/${movieName}`);
+                } catch (e) { /* 忽略 */ }
+
+                renderDetail(movieName, info, sections, imageUrl);
+            }
+
+            async function init() {
+                // 从 localStorage 恢复缓存
+                loadPersistentCache();
+
+                const movieName = getParam('movie');
+                if (!movieName) {
+                    showError('缺少电影名', '请在 URL 中传递 movie 参数，例如 show.html?movie=一一');
+                    return;
+                }
+                await loadMovie(movieName);
+            }
+
+            if (typeof marked !== 'undefined') {
+                init();
+            } else {
+                const checkMarked = setInterval(() => {
+                    if (typeof marked !== 'undefined') {
+                        clearInterval(checkMarked);
+                        init();
+                    }
+                }, 100);
+                setTimeout(() => {
+                    if (typeof marked === 'undefined') {
+                        console.warn('marked.js 未加载，使用纯文本渲染');
+                        init();
+                    }
+                }, 5000);
+            }
+
+        })();
+    </script>
+
+</body>
+</html>

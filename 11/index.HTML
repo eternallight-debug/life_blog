@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>电影目录</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            background: #f2f4f8;
+            color: #212529;
+            min-height: 100vh;
+            padding: 24px 28px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+            font-size: 0.95rem;
+            letter-spacing: 3px;
+        }
+        .loading .dot {
+            display: inline-block;
+            animation: pulse 1.4s ease-in-out infinite both;
+        }
+        .loading .dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+        .loading .dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes pulse {
+            0%,
+            80%,
+            100% {
+                opacity: 0.2;
+            }
+            40% {
+                opacity: 1;
+            }
+        }
+
+        .error-msg {
+            text-align: center;
+            padding: 40px 20px;
+            color: #495057;
+            font-size: 0.9rem;
+            line-height: 2;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e9ecef;
+        }
+        .error-msg .err-title {
+            color: #343a40;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        /* ===== 工具栏 — 居中限制 ===== */
+        .toolbar-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 28px;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+            width: 100%;
+            max-width: 560px;
+        }
+
+        .search-wrap {
+            flex: 1;
+            min-width: 180px;
+            position: relative;
+        }
+        .search-wrap input {
+            width: 100%;
+            padding: 12px 20px;
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 40px;
+            color: #212529;
+            font-size: 0.9rem;
+            font-family: inherit;
+            letter-spacing: 1px;
+            outline: none;
+            transition: border-color 0.25s, box-shadow 0.25s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+        .search-wrap input::placeholder {
+            color: #adb5bd;
+            letter-spacing: 2px;
+        }
+        .search-wrap input:focus {
+            border-color: #adb5bd;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+        }
+        .search-wrap .clear-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #adb5bd;
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 0 4px;
+            display: none;
+            font-family: inherit;
+        }
+        .search-wrap .clear-btn.visible {
+            display: block;
+        }
+        .search-wrap .clear-btn:hover {
+            color: #495057;
+        }
+
+        .random-btn {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            color: #495057;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .random-btn:hover {
+            background: #f8f9fa;
+            border-color: #ced4da;
+            color: #212529;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+            transform: translateY(-1px);
+        }
+
+        /* ===== 卡片网格 — 全宽靠左 ===== */
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 24px;
+            width: 100%;
+        }
+
+        /* ===== 立体卡片 ===== */
+        .movie-card {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 18px;
+            padding: 32px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 130px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow:
+                0 2px 4px rgba(0, 0, 0, 0.02),
+                0 8px 24px rgba(0, 0, 0, 0.04),
+                0 0 0 1px rgba(0, 0, 0, 0.01);
+            transform: translateY(0);
+            position: relative;
+        }
+
+        .movie-card::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 10%;
+            width: 80%;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.04);
+            border-radius: 50%;
+            filter: blur(4px);
+            transition: all 0.3s;
+            opacity: 0.6;
+        }
+
+        .movie-card:hover {
+            border-color: #d0d7dd;
+            background: #fcfcfd;
+            transform: translateY(-6px);
+            box-shadow:
+                0 4px 8px rgba(0, 0, 0, 0.02),
+                0 16px 48px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(0, 0, 0, 0.02);
+        }
+        .movie-card:hover::after {
+            opacity: 0.9;
+            bottom: -4px;
+            width: 70%;
+            left: 15%;
+        }
+
+        .movie-card:active {
+            transform: scale(0.97);
+            transition-duration: 0.1s;
+        }
+
+        .movie-card .name {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #212529;
+            letter-spacing: 3px;
+            line-height: 1.4;
+            position: relative;
+            z-index: 1;
+        }
+
+        .movie-card.hidden {
+            display: none;
+        }
+
+        /* ===== 全局 Tooltip — 独立于卡片，确保不被遮挡 ===== */
+        #global-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: fixed;
+            background: rgba(33, 37, 41, 0.82);
+            backdrop-filter: blur(6px);
+            color: #f8f9fa;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            white-space: nowrap;
+            transition: opacity 0.08s ease;
+            pointer-events: none;
+            z-index: 99999;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            min-width: 120px;
+            text-align: left;
+            will-change: top, left;
+        }
+
+        #global-tooltip .line {
+            display: flex;
+            gap: 8px;
+            padding: 2px 0;
+        }
+        #global-tooltip .label {
+            color: #adb5bd;
+            min-width: 44px;
+        }
+        #global-tooltip .value {
+            color: #f8f9fa;
+            font-weight: 400;
+        }
+        #global-tooltip .loading-tip {
+            color: #adb5bd;
+            font-style: italic;
+        }
+
+        /* ===== 无结果 ===== */
+        .no-result {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: 18px 16px;
+            }
+            .toolbar {
+                max-width: 100%;
+            }
+            .catalog-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 18px;
+            }
+            .movie-card {
+                padding: 24px 12px;
+                min-height: 100px;
+                border-radius: 14px;
+            }
+            .movie-card .name {
+                font-size: 1rem;
+                letter-spacing: 2px;
+            }
+            .search-wrap {
+                min-width: 140px;
+            }
+            .search-wrap input {
+                font-size: 0.8rem;
+                padding: 10px 16px;
+            }
+            .random-btn {
+                font-size: 0.75rem;
+                padding: 10px 18px;
+            }
+            #global-tooltip {
+                font-size: 0.7rem;
+                padding: 6px 10px;
+                min-width: 100px;
+                white-space: normal;
+                max-width: 260px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px 10px;
+            }
+            .catalog-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 14px;
+            }
+            .movie-card {
+                padding: 18px 10px;
+                min-height: 80px;
+                border-radius: 12px;
+            }
+            .movie-card .name {
+                font-size: 0.85rem;
+                letter-spacing: 1px;
+            }
+            .search-wrap input {
+                font-size: 0.75rem;
+                padding: 8px 14px;
+            }
+            .random-btn {
+                font-size: 0.7rem;
+                padding: 8px 14px;
+                letter-spacing: 1px;
+            }
+            .toolbar {
+                gap: 10px;
+            }
+            #global-tooltip {
+                font-size: 0.65rem;
+                padding: 4px 8px;
+                min-width: 80px;
+                max-width: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 全局 Tooltip 元素 -->
+    <div id="global-tooltip"></div>
+
+    <div id="app">
+        <div id="mainContent">
+            <div class="loading">
+                <span>加载中</span>
+                <span class="dot">.</span>
+                <span class="dot">.</span>
+                <span class="dot">.</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            const main = document.getElementById('mainContent');
+            const tooltipEl = document.getElementById('global-tooltip');
+
+            // ============================================================
+            // 1. 缓存管理（内存 + localStorage）
+            // ============================================================
+            const CACHE_KEY = 'movie_info_cache';
+            const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 小时
+            const memoryCache = new Map();
+
+            function loadPersistentCache() {
+                try {
+                    const raw = localStorage.getItem(CACHE_KEY);
+                    if (!raw) return;
+                    const data = JSON.parse(raw);
+                    if (Date.now() - data.timestamp > CACHE_TTL) {
+                        localStorage.removeItem(CACHE_KEY);
+                        return;
+                    }
+                    for (const [key, value] of Object.entries(data.data)) {
+                        memoryCache.set(key, value);
+                    }
+                } catch (_) { /* 忽略 */ }
+            }
+
+            function savePersistentCache() {
+                try {
+                    const obj = {};
+                    for (const [key, value] of memoryCache) {
+                        obj[key] = value;
+                    }
+                    localStorage.setItem(CACHE_KEY, JSON.stringify({
+                        timestamp: Date.now(),
+                        data: obj
+                    }));
+                } catch (_) { /* 忽略 */ }
+            }
+
+            function getCached(name) {
+                return memoryCache.get(name) || null;
+            }
+
+            function setCached(name, info) {
+                memoryCache.set(name, info);
+                if (!window._savePending) {
+                    window._savePending = true;
+                    requestAnimationFrame(() => {
+                        window._savePending = false;
+                        savePersistentCache();
+                    });
+                }
+            }
+
+            // ============================================================
+            // 2. 解析 information 文件
+            // ============================================================
+            function parseInfoText(content) {
+                const data = {};
+                const lines = content.split('\n');
+                for (const raw of lines) {
+                    const line = raw.trim();
+                    if (!line) continue;
+                    const idx = line.search(/[：:]/);
+                    if (idx === -1) continue;
+                    const key = line.slice(0, idx).trim();
+                    const value = line.slice(idx + 1).trim();
+                    if (key === '片名') data.title = value;
+                    else if (key === '其他名字' || key === '英文名') data.other = value;
+                    else if (key === '导演') data.director = value;
+                    else if (key === '上映时间' || key === '年份') data.year = value;
+                    else if (key === '类型' || key === '标签') data.genre = value;
+                    else if (key === '片长' || key === '时长') data.duration = value;
+                    else data[key] = value;
+                }
+                return data;
+            }
+
+            // ============================================================
+            // 3. 按需加载单部电影元数据（带缓存）
+            // ============================================================
+            async function fetchMovieInfo(name) {
+                const cached = getCached(name);
+                if (cached) return cached;
+
+                try {
+                    const res = await fetch(`./information/${name}.txt`);
+                    if (!res.ok) throw new Error('Not found');
+                    const text = await res.text();
+                    const info = parseInfoText(text);
+                    if (!info.title) info.title = name;
+                    setCached(name, info);
+                    return info;
+                } catch (_) {
+                    const info = { title: name };
+                    setCached(name, info);
+                    return info;
+                }
+            }
+
+            // ============================================================
+            // 4. 防抖工具
+            // ============================================================
+            function debounce(fn, delay) {
+                let timer = null;
+                return function(...args) {
+                    clearTimeout(timer);
+                    timer = setTimeout(() => fn.apply(this, args), delay);
+                };
+            }
+
+            // ============================================================
+            // 5. 全局 Tooltip 控制
+            // ============================================================
+            function updateTooltipPosition(cursorX, cursorY) {
+                const offsetX = 4;
+                const offsetY = 6;
+
+                const wasHidden = tooltipEl.style.visibility === 'hidden';
+                if (wasHidden) {
+                    tooltipEl.style.visibility = 'visible';
+                    tooltipEl.style.opacity = '0';
+                }
+                void tooltipEl.offsetHeight;
+                const rect = tooltipEl.getBoundingClientRect();
+                const tw = rect.width;
+                const th = rect.height;
+
+                let left = cursorX + offsetX;
+                let top = cursorY + offsetY;
+
+                if (left + tw > window.innerWidth - 8) {
+                    left = cursorX - tw - offsetX;
+                }
+                if (left < 8) left = 8;
+
+                if (top + th > window.innerHeight - 8) {
+                    top = cursorY - th - offsetY;
+                }
+                if (top < 8) top = 8;
+
+                tooltipEl.style.left = left + 'px';
+                tooltipEl.style.top = top + 'px';
+
+                if (wasHidden) {
+                    tooltipEl.style.visibility = 'hidden';
+                    tooltipEl.style.opacity = '0';
+                }
+            }
+
+            function showTooltip(cursorX, cursorY, contentHtml) {
+                tooltipEl.innerHTML = contentHtml;
+                tooltipEl.style.visibility = 'visible';
+                tooltipEl.style.opacity = '1';
+                updateTooltipPosition(cursorX, cursorY);
+            }
+
+            function hideTooltip() {
+                tooltipEl.style.visibility = 'hidden';
+                tooltipEl.style.opacity = '0';
+            }
+
+            // ============================================================
+            // 6. 构建 tooltip 内容
+            // ============================================================
+            function buildTooltipContent(info) {
+                const lines = [];
+                const fields = [
+                    { label: '导演', key: 'director' },
+                    { label: '年份', key: 'year' },
+                    { label: '类型', key: 'genre' },
+                    { label: '片长', key: 'duration' },
+                    { label: '其他', key: 'other' }
+                ];
+                for (const f of fields) {
+                    const val = info[f.key];
+                    if (val) {
+                        lines.push(`<div class="line"><span class="label">${f.label}</span><span class="value">${val}</span></div>`);
+                    }
+                }
+                if (lines.length === 0) {
+                    return `<div class="line"><span class="value" style="color:#adb5bd;">暂无详情</span></div>`;
+                }
+                return lines.join('');
+            }
+
+            // ============================================================
+            // 7. 主逻辑
+            // ============================================================
+            let allMovies = [];
+            let filteredMovies = [];
+            let searchInput = null;
+            let clearBtn = null;
+            let gridEl = null;
+
+            // ===== 渲染目录 =====
+            function renderCatalog(movies) {
+                allMovies = movies.slice();
+                filteredMovies = movies.slice();
+
+                let gridHtml = '';
+                if (movies.length === 0) {
+                    gridHtml = `<div class="no-result">暂无电影</div>`;
+                } else {
+                    gridHtml = movies.map(name => `
+                        <a href="show.html?movie=${encodeURIComponent(name)}" class="movie-card" data-name="${name}">
+                            <span class="name">${name}</span>
+                        </a>
+                    `).join('');
+                }
+
+                main.innerHTML = `
+                    <div class="toolbar-wrapper">
+                        <div class="toolbar">
+                            <div class="search-wrap">
+                                <input type="text" id="searchInput" placeholder="搜索电影、导演、年份…" autocomplete="off" />
+                                <button class="clear-btn" id="clearBtn">✕</button>
+                            </div>
+                            <button class="random-btn" id="randomBtn">随机</button>
+                        </div>
+                    </div>
+                    <div class="catalog-grid" id="catalogGrid">
+                        ${gridHtml}
+                    </div>
+                `;
+
+                searchInput = document.getElementById('searchInput');
+                clearBtn = document.getElementById('clearBtn');
+                gridEl = document.getElementById('catalogGrid');
+
+                // ----- 搜索（防抖 200ms） -----
+                const debouncedFilter = debounce(function(keyword) {
+                    filterMovies(keyword);
+                }, 200);
+
+                searchInput.addEventListener('input', function() {
+                    debouncedFilter(this.value.trim());
+                });
+
+                // ----- 清除 -----
+                clearBtn.addEventListener('click', function() {
+                    searchInput.value = '';
+                    searchInput.focus();
+                    filterMovies('');
+                });
+
+                // ----- 随机 -----
+                document.getElementById('randomBtn').addEventListener('click', function() {
+                    if (filteredMovies.length === 0) return;
+                    const randomIndex = Math.floor(Math.random() * filteredMovies.length);
+                    const randomMovie = filteredMovies[randomIndex];
+                    window.location.href = `show.html?movie=${encodeURIComponent(randomMovie)}`;
+                });
+
+                // ============================================================
+                // 8. 绑定卡片事件（按需加载 + 全局 tooltip）
+                // ============================================================
+                document.querySelectorAll('.movie-card').forEach(card => {
+                    let loaded = false;
+                    let infoData = null;
+                    let contentCache = null;
+
+                    // 鼠标进入
+                    card.addEventListener('mouseenter', function(e) {
+                        const name = this.dataset.name;
+
+                        // 如果尚未加载，异步获取
+                        if (!loaded) {
+                            // 显示加载状态
+                            showTooltip(e.clientX, e.clientY,
+                                `<div class="line"><span class="loading-tip">加载中...</span></div>`);
+
+                            fetchMovieInfo(name).then(info => {
+                                infoData = info;
+                                loaded = true;
+                                contentCache = buildTooltipContent(info);
+                                // 内容更新后刷新显示（如果鼠标仍在卡片上）
+                                if (tooltipEl.style.visibility === 'visible') {
+                                    showTooltip(e.clientX, e.clientY, contentCache);
+                                }
+                            });
+                        } else {
+                            // 已加载，直接显示
+                            if (contentCache) {
+                                showTooltip(e.clientX, e.clientY, contentCache);
+                            }
+                        }
+                    });
+
+                    // 鼠标移动：实时跟随
+                    card.addEventListener('mousemove', function(e) {
+                        if (!this._rafPending) {
+                            this._rafPending = true;
+                            requestAnimationFrame(() => {
+                                this._rafPending = false;
+                                if (tooltipEl.style.visibility === 'visible') {
+                                    updateTooltipPosition(e.clientX, e.clientY);
+                                }
+                            });
+                        }
+                    });
+
+                    // 鼠标离开
+                    card.addEventListener('mouseleave', function() {
+                        hideTooltip();
+                        this._rafPending = false;
+                    });
+                });
+            }
+
+            // ===== 过滤电影（支持多字段，利用缓存数据） =====
+            function filterMovies(keyword) {
+                const kw = keyword.toLowerCase().trim();
+                const cards = gridEl.querySelectorAll('.movie-card');
+
+                let visibleCount = 0;
+                const filtered = [];
+
+                if (!kw) {
+                    cards.forEach(card => card.classList.remove('hidden'));
+                    visibleCount = allMovies.length;
+                    clearBtn.classList.remove('visible');
+                    filteredMovies = allMovies.slice();
+                } else {
+                    clearBtn.classList.add('visible');
+                    cards.forEach((card) => {
+                        const name = card.dataset.name || '';
+                        // 尝试从缓存获取元数据以支持多字段搜索
+                        const cached = getCached(name);
+                        let match = name.toLowerCase().includes(kw);
+                        if (cached) {
+                            const director = (cached.director || '').toLowerCase();
+                            const year = (cached.year || '').toLowerCase();
+                            const genre = (cached.genre || '').toLowerCase();
+                            const duration = (cached.duration || '').toLowerCase();
+                            const other = (cached.other || '').toLowerCase();
+                            match = match || director.includes(kw) || year.includes(kw) ||
+                                genre.includes(kw) || duration.includes(kw) || other.includes(kw);
+                        }
+                        if (match) {
+                            card.classList.remove('hidden');
+                            filtered.push(name);
+                            visibleCount++;
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    });
+                    filteredMovies = filtered;
+                }
+
+                // 无结果提示
+                let noResult = gridEl.querySelector('.no-result');
+                if (visibleCount === 0 && kw) {
+                    if (!noResult) {
+                        const el = document.createElement('div');
+                        el.className = 'no-result';
+                        el.textContent = '没有找到匹配的电影';
+                        gridEl.appendChild(el);
+                    }
+                } else {
+                    if (noResult) noResult.remove();
+                }
+            }
+
+            // ===== 显示错误 =====
+            function showError(title, detail) {
+                main.innerHTML = `
+                    <div class="error-msg">
+                        <div class="err-title">${title}</div>
+                        <div>${detail}</div>
+                        <div style="margin-top:12px;font-size:0.75rem;color:#6c757d;">
+                            请确认文件结构正确，并部署到 GitHub Pages 或本地服务器
+                        </div>
+                        <div style="margin-top:8px;font-size:0.7rem;color:#adb5bd;letter-spacing:1px;">
+                            index.txt → 每行一个电影名 | information/电影名.txt → 元数据 | text/电影名.txt → 正文
+                        </div>
+                    </div>
+                `;
+            }
+
+            // ============================================================
+            // 9. 初始化
+            // ============================================================
+            async function init() {
+                try {
+                    // 从 localStorage 恢复缓存
+                    loadPersistentCache();
+
+                    let movies = [];
+                    try {
+                        const res = await fetch('./index.txt');
+                        if (!res.ok) throw new Error('HTTP ' + res.status);
+                        const text = await res.text();
+                        movies = text.split('\n')
+                            .map(line => line.trim())
+                            .filter(name => name.length > 0);
+                    } catch (err) {
+                        showError('无法读取 index.txt', '请确保 index.txt 文件存在，且每行一个电影名。');
+                        return;
+                    }
+
+                    if (movies.length === 0) {
+                        showError('index.txt 为空', '请在 index.txt 中每行写入一个电影名。');
+                        return;
+                    }
+
+                    renderCatalog(movies);
+
+                } catch (err) {
+                    showError('初始化失败', err.message || '未知错误');
+                }
+            }
+
+            // 页面加载完成后初始化
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                init();
+            } else {
+                document.addEventListener('DOMContentLoaded', init);
+            }
+
+        })();
+    </script>
+
+</body>
+</html>
