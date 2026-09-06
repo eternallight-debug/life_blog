@@ -1156,6 +1156,131 @@
                 padding: 2px 6px;
             }
         }
+
+        /* ===== 自动加载下一章相关样式 ===== */
+        .chapter-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin: 40px 0 32px;
+            color: #bbb;
+            font-size: 13px;
+            user-select: none;
+        }
+        .chapter-divider::before,
+        .chapter-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e4ea;
+            transition: background 0.3s;
+        }
+        body.night-mode .chapter-divider::before,
+        body.night-mode .chapter-divider::after {
+            background: #2a2a32;
+        }
+        body.night-mode .chapter-divider {
+            color: #666;
+        }
+
+        .next-chapter-loading {
+            text-align: center;
+            padding: 30px 0 40px;
+            color: #999;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .next-chapter-loading .spinner-small {
+            width: 28px;
+            height: 28px;
+            border: 2.5px solid #e4e7ed;
+            border-top-color: #1890ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        body.night-mode .next-chapter-loading .spinner-small {
+            border-color: #2a2a32;
+            border-top-color: #69c0ff;
+        }
+        body.night-mode .next-chapter-loading {
+            color: #777;
+        }
+
+        .next-chapter-error {
+            text-align: center;
+            padding: 20px 0 30px;
+            color: #cf3a3a;
+            font-size: 14px;
+        }
+        .next-chapter-error .retry-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 4px 18px;
+            border: 1px solid #cf3a3a;
+            border-radius: 6px;
+            background: transparent;
+            color: #cf3a3a;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.15s;
+        }
+        .next-chapter-error .retry-btn:hover {
+            background: #cf3a3a;
+            color: #fff;
+        }
+        body.night-mode .next-chapter-error {
+            color: #f87171;
+        }
+        body.night-mode .next-chapter-error .retry-btn {
+            border-color: #f87171;
+            color: #f87171;
+        }
+        body.night-mode .next-chapter-error .retry-btn:hover {
+            background: #f87171;
+            color: #1a1a22;
+        }
+
+        .next-chapter-end {
+            text-align: center;
+            padding: 40px 0 20px;
+            color: #bbb;
+            font-size: 14px;
+            user-select: none;
+        }
+        body.night-mode .next-chapter-end {
+            color: #555;
+        }
+
+        /* 章节容器中的章节块 */
+        .chapter-block {
+            margin-bottom: 8px;
+        }
+        .chapter-block:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 章节内标题自动编号的辅助样式 */
+        .chapter-block .article-title .chapter-num {
+            font-weight: 400;
+            color: #999;
+            font-size: 0.7em;
+            margin-right: 10px;
+        }
+        body.night-mode .chapter-block .article-title .chapter-num {
+            color: #666;
+        }
+
+        /* 加载触发锚点（不可见） */
+        .load-trigger {
+            height: 1px;
+            margin-top: -1px;
+            visibility: hidden;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -1270,6 +1395,15 @@
         let bgColor = '#f0f2f5';
         let nightMode = false;
 
+        // ---- 自动加载下一章的状态 ----
+        let isLoadingNext = false;
+        let allChapters = []; // 当前目录下所有章节（文件）列表
+        let loadedChapterIndices = []; // 已加载的章节索引列表（有序）
+        let hasLoadedAllChapters = false;
+        let autoLoadEnabled = true;
+        let scrollHandlerBound = null;
+        let loadTriggerObserver = null;
+
         // DOM 引用
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('sidebar');
@@ -1383,6 +1517,10 @@
             const bodyEl = document.querySelector('.article-body');
             if (bodyEl) bodyEl.style.fontSize = fontSize + 'px';
             fontSizeDisplay.textContent = fontSize;
+            // 也应用到所有章节的 body
+            document.querySelectorAll('.article-body').forEach(el => {
+                el.style.fontSize = fontSize + 'px';
+            });
         }
 
         // ================================================================
@@ -1468,8 +1606,9 @@
             if (newSize === fontSize) return;
             fontSize = newSize;
             saveFontSize();
-            const bodyEl = document.querySelector('.article-body');
-            if (bodyEl) bodyEl.style.fontSize = fontSize + 'px';
+            document.querySelectorAll('.article-body').forEach(el => {
+                el.style.fontSize = fontSize + 'px';
+            });
             fontSizeDisplay.textContent = fontSize;
         }
         fontDecBtn.addEventListener('click', e => { e.stopPropagation();
@@ -1554,6 +1693,8 @@
                 pathStack = segments;
                 renderDirectory();
                 updateSidebar();
+                // 重置自动加载状态（因为目录变了）
+                resetAutoLoadState();
                 if (currentReading && currentReading.path !== joinPath(segments)) {
                     currentReading = null;
                 }
@@ -1568,6 +1709,25 @@
                 `;
                 tocList.innerHTML = `<li class="toc-empty">加载失败</li>`;
                 isLoading = false;
+            }
+        }
+
+        // ================================================================
+        //  重置自动加载状态
+        // ================================================================
+        function resetAutoLoadState() {
+            isLoadingNext = false;
+            allChapters = [];
+            loadedChapterIndices = [];
+            hasLoadedAllChapters = false;
+            autoLoadEnabled = true;
+            if (loadTriggerObserver) {
+                loadTriggerObserver.disconnect();
+                loadTriggerObserver = null;
+            }
+            if (scrollHandlerBound) {
+                window.removeEventListener('scroll', scrollHandlerBound);
+                scrollHandlerBound = null;
             }
         }
 
@@ -1597,7 +1757,6 @@
                 html += `<div style="font-size:15px;font-weight:500;color:#666;margin:4px 0 12px;">分册</div>`;
                 html += `<div class="cards-grid">`;
                 for (const f of folders) {
-                    // 构建当前路径前缀（相对于书籍根目录）
                     const basePath = pathStack.length ? `${BOOK}/${pathStack.join('/')}` : `${BOOK}`;
                     const coverPath = `${basePath}/picture/${encodeURIComponent(f.name)}.webp`;
                     html += `
@@ -1657,26 +1816,434 @@
         }
 
         // ================================================================
-        //  渲染文章
+        //  渲染文章（支持多章节连续阅读）
         // ================================================================
         function renderArticle(item) {
-            if (!item || !item.content) {
+            if (!item) {
                 mainContent.innerHTML = `<div class="error-wrap"><span class="icon">📭</span><div class="msg">内容为空</div></div>`;
                 return;
             }
-            let bodyHtml = marked.parse(item.content);
+
+            // 如果 item 是单章对象，但可能包含 loadedChapters 数组
+            let chaptersToRender = [];
+            if (item.loadedChapters && item.loadedChapters.length > 0) {
+                chaptersToRender = item.loadedChapters;
+            } else if (item.content) {
+                chaptersToRender = [{ name: item.name, content: item.content, filename: item.filename }];
+            } else {
+                mainContent.innerHTML = `<div class="error-wrap"><span class="icon">📭</span><div class="msg">内容为空</div></div>`;
+                return;
+            }
+
             let html = '';
             html += renderBreadcrumbHTML();
-            html += `
-                <div class="article-title">${escapeHtml(item.name)}</div>
-                <div class="article-body">${bodyHtml}</div>
-            `;
+
+            // 渲染所有已加载的章节
+            for (let i = 0; i < chaptersToRender.length; i++) {
+                const ch = chaptersToRender[i];
+                const isFirst = (i === 0);
+                const bodyHtml = marked.parse(ch.content);
+                // 添加章节分隔线（除了第一章节）
+                if (!isFirst) {
+                    html += `<div class="chapter-divider">✦ 第 ${i + 1} 章 · ${escapeHtml(ch.name)} ✦</div>`;
+                }
+                html += `
+                    <div class="chapter-block" data-chapter-index="${i}" data-chapter-name="${escapeHtml(ch.name)}">
+                        <div class="article-title">
+                            ${!isFirst ? `<span class="chapter-num">第 ${i + 1} 章</span>` : ''}
+                            ${escapeHtml(ch.name)}
+                        </div>
+                        <div class="article-body">${bodyHtml}</div>
+                    </div>
+                `;
+            }
+
+            // 底部：加载状态 / 下一章触发区
+            const currentPath = joinPath(pathStack);
+            const fileEntries = entries.filter(e => !e.isFolder);
+            const lastLoadedIdx = loadedChapterIndices.length > 0 ? loadedChapterIndices[loadedChapterIndices.length - 1] : -1;
+            const isLastChapter = (lastLoadedIdx >= fileEntries.length - 1);
+
+            if (isLastChapter && loadedChapterIndices.length > 0) {
+                // 已经是最后一章
+                html += `<div class="next-chapter-end">— 全书完 —</div>`;
+                hasLoadedAllChapters = true;
+            } else if (!isLastChapter && loadedChapterIndices.length > 0) {
+                // 还有下一章：添加触发锚点
+                html += `<div class="load-trigger" id="loadTrigger"></div>`;
+                html += `
+                    <div class="next-chapter-loading" id="nextChapterLoading" style="display:none;">
+                        <div class="spinner-small"></div>
+                        <span>正在加载下一章…</span>
+                    </div>
+                `;
+            } else {
+                // 单章且未加载完：也添加触发锚点
+                html += `<div class="load-trigger" id="loadTrigger"></div>`;
+                html += `
+                    <div class="next-chapter-loading" id="nextChapterLoading" style="display:none;">
+                        <div class="spinner-small"></div>
+                        <span>正在加载下一章…</span>
+                    </div>
+                `;
+            }
+
             mainContent.innerHTML = html;
             applyPreferencesToContent();
-            const bodyEl = document.querySelector('.article-body');
-            if (bodyEl) bodyEl.style.fontSize = fontSize + 'px';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // 设置字号
+            document.querySelectorAll('.article-body').forEach(el => {
+                el.style.fontSize = fontSize + 'px';
+            });
+
+            // 滚动到顶部（如果是首次加载）
+            if (!item._keepScroll) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // 设置自动加载下一章的监听
+            if (autoLoadEnabled && !hasLoadedAllChapters) {
+                setupAutoLoad();
+            } else {
+                // 如果已经全部加载完，确保没有残留的监听
+                if (loadTriggerObserver) {
+                    loadTriggerObserver.disconnect();
+                    loadTriggerObserver = null;
+                }
+                if (scrollHandlerBound) {
+                    window.removeEventListener('scroll', scrollHandlerBound);
+                    scrollHandlerBound = null;
+                }
+            }
+
             updateSidebar();
+        }
+
+        // ================================================================
+        //  设置自动加载（使用 Intersection Observer）
+        // ================================================================
+        function setupAutoLoad() {
+            // 清除旧的监听
+            if (loadTriggerObserver) {
+                loadTriggerObserver.disconnect();
+                loadTriggerObserver = null;
+            }
+            if (scrollHandlerBound) {
+                window.removeEventListener('scroll', scrollHandlerBound);
+                scrollHandlerBound = null;
+            }
+
+            // 等待 DOM 渲染完成
+            requestAnimationFrame(() => {
+                const trigger = document.getElementById('loadTrigger');
+                if (!trigger) {
+                    // 如果没有触发锚点，可能已经全部加载完或没有下一章
+                    return;
+                }
+
+                // 使用 Intersection Observer
+                loadTriggerObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting) {
+                            // 触发加载下一章
+                            loadNextChapter();
+                            break;
+                        }
+                    }
+                }, {
+                    rootMargin: '0px 0px 300px 0px', // 提前 300px 触发
+                    threshold: 0
+                });
+
+                loadTriggerObserver.observe(trigger);
+
+                // 同时保留 scroll 事件作为 fallback（防抖）
+                let scrollTimeout = null;
+                const handleScroll = () => {
+                    if (scrollTimeout) return;
+                    scrollTimeout = setTimeout(() => {
+                        scrollTimeout = null;
+                        // 检查是否接近底部
+                        const scrollTop = window.scrollY || window.pageYOffset || 0;
+                        const windowHeight = window.innerHeight;
+                        const documentHeight = document.documentElement.scrollHeight;
+                        const scrollPercentage = (scrollTop + windowHeight) / documentHeight;
+                        if (scrollPercentage >= 0.70) {
+                            // 如果 observer 没触发，用 scroll 事件补刀
+                            const triggerEl = document.getElementById('loadTrigger');
+                            if (triggerEl) {
+                                const rect = triggerEl.getBoundingClientRect();
+                                if (rect.top < window.innerHeight + 300) {
+                                    loadNextChapter();
+                                }
+                            }
+                        }
+                    }, 200);
+                };
+                scrollHandlerBound = handleScroll;
+                window.addEventListener('scroll', handleScroll);
+            });
+        }
+
+        // ================================================================
+        //  加载下一章
+        // ================================================================
+        async function loadNextChapter() {
+            // 防止重复加载
+            if (isLoadingNext) return;
+            if (!autoLoadEnabled) return;
+            if (hasLoadedAllChapters) return;
+
+            const fileEntries = entries.filter(e => !e.isFolder);
+            if (fileEntries.length === 0) return;
+
+            // 确定下一个要加载的章节索引
+            let nextIdx = -1;
+            if (loadedChapterIndices.length === 0) {
+                // 如果没有加载任何章节，从第一个开始
+                nextIdx = 0;
+            } else {
+                const lastIdx = loadedChapterIndices[loadedChapterIndices.length - 1];
+                if (lastIdx >= fileEntries.length - 1) {
+                    hasLoadedAllChapters = true;
+                    // 移除触发锚点，显示"全书完"
+                    const trigger = document.getElementById('loadTrigger');
+                    if (trigger) trigger.remove();
+                    const loadingEl = document.getElementById('nextChapterLoading');
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    const endEl = document.querySelector('.next-chapter-end');
+                    if (!endEl) {
+                        const endDiv = document.createElement('div');
+                        endDiv.className = 'next-chapter-end';
+                        endDiv.textContent = '— 全书完 —';
+                        mainContent.appendChild(endDiv);
+                    }
+                    return;
+                }
+                nextIdx = lastIdx + 1;
+            }
+
+            // 检查是否已经加载过
+            if (loadedChapterIndices.includes(nextIdx)) {
+                // 跳过已加载的
+                const nextUnloaded = fileEntries.findIndex((_, idx) => !loadedChapterIndices.includes(idx));
+                if (nextUnloaded === -1) {
+                    hasLoadedAllChapters = true;
+                    return;
+                }
+                nextIdx = nextUnloaded;
+            }
+
+            const chapter = fileEntries[nextIdx];
+            if (!chapter) {
+                hasLoadedAllChapters = true;
+                return;
+            }
+
+            // 显示加载中
+            const loadingEl = document.getElementById('nextChapterLoading');
+            if (loadingEl) loadingEl.style.display = 'flex';
+
+            isLoadingNext = true;
+
+            try {
+                // 加载章节内容
+                const currentPath = joinPath(pathStack);
+                let content = getCached(pathStack, chapter.name);
+                if (content === null) {
+                    const filePath = currentPath ? `${BOOK}/${currentPath}/${encodeURIComponent(chapter.filename)}` :
+                        `${BOOK}/${encodeURIComponent(chapter.filename)}`;
+                    const response = await fetch(filePath, { cache: 'no-cache' });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    content = await response.text();
+                    setCache(pathStack, chapter.name, content);
+                }
+
+                // 添加到已加载列表
+                if (!loadedChapterIndices.includes(nextIdx)) {
+                    loadedChapterIndices.push(nextIdx);
+                    loadedChapterIndices.sort((a, b) => a - b);
+                }
+
+                // 更新 currentReading 中的 loadedChapters
+                if (currentReading) {
+                    if (!currentReading.loadedChapters) {
+                        currentReading.loadedChapters = [];
+                    }
+                    // 检查是否已经存在
+                    const exists = currentReading.loadedChapters.some(ch => ch.name === chapter.name);
+                    if (!exists) {
+                        currentReading.loadedChapters.push({
+                            name: chapter.name,
+                            content: content,
+                            filename: chapter.filename
+                        });
+                        // 按顺序排序
+                        currentReading.loadedChapters.sort((a, b) => {
+                            const idxA = fileEntries.findIndex(f => f.name === a.name);
+                            const idxB = fileEntries.findIndex(f => f.name === b.name);
+                            return idxA - idxB;
+                        });
+                    }
+                }
+
+                // 隐藏加载提示
+                if (loadingEl) loadingEl.style.display = 'none';
+
+                // 追加新章节到页面
+                appendChapterToPage(chapter.name, content, nextIdx, fileEntries.length);
+
+                // 检查是否全部加载完
+                if (loadedChapterIndices.length >= fileEntries.length) {
+                    hasLoadedAllChapters = true;
+                    const trigger = document.getElementById('loadTrigger');
+                    if (trigger) trigger.remove();
+                    const endDiv = document.createElement('div');
+                    endDiv.className = 'next-chapter-end';
+                    endDiv.textContent = '— 全书完 —';
+                    mainContent.appendChild(endDiv);
+                } else {
+                    // 重新设置触发锚点（在追加内容后，需要重新创建触发锚点）
+                    // 因为 appendChapterToPage 会处理触发锚点的重建
+                }
+
+                isLoadingNext = false;
+
+                // 更新侧边栏的缓存标记
+                updateSidebar();
+
+            } catch (err) {
+                console.error('加载下一章失败:', err);
+                isLoadingNext = false;
+                if (loadingEl) loadingEl.style.display = 'none';
+
+                // 显示错误信息
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'next-chapter-error';
+                errorDiv.innerHTML = `
+                    ⚠️ 加载下一章失败：${escapeHtml(err.message)}
+                    <button class="retry-btn" onclick="loadNextChapter()">重试</button>
+                `;
+                // 移除旧的错误信息
+                const oldError = document.querySelector('.next-chapter-error');
+                if (oldError) oldError.remove();
+                // 插入到触发锚点之前
+                const trigger = document.getElementById('loadTrigger');
+                if (trigger) {
+                    trigger.parentNode.insertBefore(errorDiv, trigger);
+                } else {
+                    mainContent.appendChild(errorDiv);
+                }
+            }
+        }
+
+        // ================================================================
+        //  追加章节到页面（DOM 操作，不重新渲染整个页面）
+        // ================================================================
+        function appendChapterToPage(name, content, index, total) {
+            // 找到触发锚点
+            const trigger = document.getElementById('loadTrigger');
+            if (!trigger) {
+                // 如果没有触发锚点，可能已经全部加载完了，或者页面结构不对
+                // 尝试直接追加到 mainContent 末尾
+                const bodyHtml = marked.parse(content);
+                const div = document.createElement('div');
+                div.className = 'chapter-block';
+                div.dataset.chapterIndex = index;
+                div.dataset.chapterName = name;
+                div.innerHTML = `
+                    <div class="chapter-divider">✦ 第 ${index + 1} 章 · ${escapeHtml(name)} ✦</div>
+                    <div class="article-title">
+                        <span class="chapter-num">第 ${index + 1} 章</span>
+                        ${escapeHtml(name)}
+                    </div>
+                    <div class="article-body">${bodyHtml}</div>
+                `;
+                // 应用字号
+                const bodyEl = div.querySelector('.article-body');
+                if (bodyEl) bodyEl.style.fontSize = fontSize + 'px';
+                mainContent.appendChild(div);
+                // 重新创建触发锚点
+                recreateTrigger();
+                return;
+            }
+
+            // 在触发锚点之前插入新章节
+            const bodyHtml = marked.parse(content);
+            const div = document.createElement('div');
+            div.className = 'chapter-block';
+            div.dataset.chapterIndex = index;
+            div.dataset.chapterName = name;
+            div.innerHTML = `
+                <div class="chapter-divider">✦ 第 ${index + 1} 章 · ${escapeHtml(name)} ✦</div>
+                <div class="article-title">
+                    <span class="chapter-num">第 ${index + 1} 章</span>
+                    ${escapeHtml(name)}
+                </div>
+                <div class="article-body">${bodyHtml}</div>
+            `;
+            // 应用字号
+            const bodyEl = div.querySelector('.article-body');
+            if (bodyEl) bodyEl.style.fontSize = fontSize + 'px';
+
+            // 插入到 trigger 之前
+            trigger.parentNode.insertBefore(div, trigger);
+
+            // 移除触发锚点，然后重新创建（在底部）
+            trigger.remove();
+
+            // 重新创建触发锚点（如果还有下一章）
+            const fileEntries = entries.filter(e => !e.isFolder);
+            if (loadedChapterIndices.length < fileEntries.length) {
+                recreateTrigger();
+            } else {
+                // 全部加载完，显示"全书完"
+                const endDiv = document.createElement('div');
+                endDiv.className = 'next-chapter-end';
+                endDiv.textContent = '— 全书完 —';
+                mainContent.appendChild(endDiv);
+                hasLoadedAllChapters = true;
+                // 移除加载中的提示
+                const loadingEl = document.getElementById('nextChapterLoading');
+                if (loadingEl) loadingEl.remove();
+            }
+        }
+
+        // ================================================================
+        //  重新创建触发锚点
+        // ================================================================
+        function recreateTrigger() {
+            // 移除旧的 trigger
+            const oldTrigger = document.getElementById('loadTrigger');
+            if (oldTrigger) oldTrigger.remove();
+
+            // 移除旧的 loading 元素
+            const oldLoading = document.getElementById('nextChapterLoading');
+            if (oldLoading) oldLoading.remove();
+
+            // 创建新的 trigger
+            const trigger = document.createElement('div');
+            trigger.className = 'load-trigger';
+            trigger.id = 'loadTrigger';
+            mainContent.appendChild(trigger);
+
+            // 创建 loading 元素
+            const loading = document.createElement('div');
+            loading.className = 'next-chapter-loading';
+            loading.id = 'nextChapterLoading';
+            loading.style.display = 'none';
+            loading.innerHTML = `
+                <div class="spinner-small"></div>
+                <span>正在加载下一章…</span>
+            `;
+            mainContent.appendChild(loading);
+
+            // 重新设置观察
+            if (loadTriggerObserver) {
+                loadTriggerObserver.disconnect();
+                loadTriggerObserver = null;
+            }
+            setupAutoLoad();
         }
 
         // ================================================================
@@ -1720,12 +2287,16 @@
                 const isActive = !entry.isFolder && currentReading && currentReading.name === entry.name &&
                     currentReading.path === joinPath(pathStack);
                 const cached = !entry.isFolder && getCached(pathStack, entry.name) !== null;
+                // 检查是否已加载（在自动加载列表中）
+                const isLoaded = !entry.isFolder && loadedChapterIndices.length > 0 &&
+                    entries.filter(e => !e.isFolder).findIndex(f => f.name === entry.name) !== -1 &&
+                    loadedChapterIndices.includes(entries.filter(e => !e.isFolder).findIndex(f => f.name === entry.name));
                 html += `
                     <li class="toc-item">
                         <span class="toc-link ${isActive ? 'active' : ''}" data-name="${escapeHtml(entry.name)}" data-folder="${entry.isFolder ? 'true' : 'false'}" data-filename="${escapeHtml(entry.filename)}">
                             <span class="toc-icon">${icon}</span>
                             <span class="toc-name">${escapeHtml(entry.name)}</span>
-                            ${cached ? `<span class="toc-badge">✓</span>` : ''}
+                            ${cached || isLoaded ? `<span class="toc-badge">✓</span>` : ''}
                         </span>
                     </li>
                 `;
@@ -1788,16 +2359,19 @@
         function navigateToFolder(folderName) {
             const newPath = [...pathStack, folderName];
             currentReading = null;
+            resetAutoLoadState();
             loadDirectory(newPath);
         }
 
         function navigateToPath(segments) {
             currentReading = null;
+            resetAutoLoadState();
             loadDirectory(segments);
         }
 
         function navigateToRoot() {
             currentReading = null;
+            resetAutoLoadState();
             loadDirectory([]);
         }
 
@@ -1805,6 +2379,7 @@
             if (pathStack.length === 0) return;
             const newPath = pathStack.slice(0, -1);
             currentReading = null;
+            resetAutoLoadState();
             loadDirectory(newPath);
         }
 
@@ -1815,6 +2390,7 @@
                     e.preventDefault();
                 } else if (pathStack.length > 0 && currentReading) {
                     currentReading = null;
+                    resetAutoLoadState();
                     loadDirectory(pathStack);
                     e.preventDefault();
                 }
@@ -1822,7 +2398,7 @@
         });
 
         // ================================================================
-        //  加载文章
+        //  加载文章（支持自动加载下一章）
         // ================================================================
         async function loadArticle(name, filename) {
             if (isLoading) return;
@@ -1832,13 +2408,22 @@
                 return;
             }
 
-            if (currentReading && currentReading.name === name && currentReading.path === joinPath(pathStack)) {
+            const currentPath = joinPath(pathStack);
+            const fileEntries = entries.filter(e => !e.isFolder);
+            const chapterIndex = fileEntries.findIndex(e => e.name === name && e.filename === filename);
+
+            // 如果已经在阅读同一章节（并且是在同一路径），滚动到顶部
+            if (currentReading && currentReading.name === name && currentReading.path === currentPath) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 return;
             }
 
+            // 如果当前正在阅读其他文章，重置状态
+            if (currentReading) {
+                resetAutoLoadState();
+            }
+
             isLoading = true;
-            const currentPath = joinPath(pathStack);
 
             mainContent.innerHTML = `
                 <div class="loading-wrap">
@@ -1849,23 +2434,55 @@
 
             try {
                 let content = getCached(pathStack, name);
-                if (content !== null) {
-                    currentReading = { name, content, filename, path: currentPath };
-                    renderArticle(currentReading);
-                    updateSidebar();
-                    isLoading = false;
-                    refreshInBackground(name, filename);
-                    return;
+                if (content === null) {
+                    const filePath = currentPath ? `${BOOK}/${currentPath}/${encodeURIComponent(filename)}` :
+                        `${BOOK}/${encodeURIComponent(filename)}`;
+                    const response = await fetch(filePath, { cache: 'no-cache' });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    content = await response.text();
+                    setCache(pathStack, name, content);
                 }
 
-                const filePath = currentPath ? `${BOOK}/${currentPath}/${encodeURIComponent(filename)}` : `${BOOK}/${encodeURIComponent(filename)}`;
-                const response = await fetch(filePath, { cache: 'no-cache' });
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                content = await response.text();
-                setCache(pathStack, name, content);
-                currentReading = { name, content, filename, path: currentPath };
+                // 初始化自动加载状态
+                allChapters = fileEntries;
+                loadedChapterIndices = [];
+                hasLoadedAllChapters = false;
+                autoLoadEnabled = true;
+
+                // 加载当前章节
+                if (chapterIndex >= 0 && !loadedChapterIndices.includes(chapterIndex)) {
+                    loadedChapterIndices.push(chapterIndex);
+                    loadedChapterIndices.sort((a, b) => a - b);
+                } else if (chapterIndex === -1) {
+                    // 如果找不到索引，直接加载
+                    loadedChapterIndices = [0];
+                }
+
+                // 创建 currentReading 对象
+                currentReading = {
+                    name: name,
+                    content: content,
+                    filename: filename,
+                    path: currentPath,
+                    loadedChapters: [{ name: name, content: content, filename: filename }],
+                    _keepScroll: false
+                };
+
+                // 渲染
                 renderArticle(currentReading);
-                updateSidebar();
+
+                // 预加载下一章（后台静默）
+                if (fileEntries.length > 1) {
+                    const nextIdx = chapterIndex + 1;
+                    if (nextIdx < fileEntries.length) {
+                        const nextChapter = fileEntries[nextIdx];
+                        if (nextChapter) {
+                            // 后台预加载，但不阻塞
+                            preloadChapter(nextChapter);
+                        }
+                    }
+                }
+
             } catch (err) {
                 console.error('加载文章失败:', err);
                 mainContent.innerHTML = `
@@ -1878,22 +2495,23 @@
             isLoading = false;
         }
 
-        async function refreshInBackground(name, filename) {
+        // ================================================================
+        //  预加载下一章（后台静默）
+        // ================================================================
+        async function preloadChapter(chapter) {
             try {
                 const currentPath = joinPath(pathStack);
-                const filePath = currentPath ? `${BOOK}/${currentPath}/${encodeURIComponent(filename)}?_t=${Date.now()}` : `${BOOK}/${encodeURIComponent(filename)}?_t=${Date.now()}`;
-                const response = await fetch(filePath, { cache: 'no-cache' });
-                if (!response.ok) return;
-                const newContent = await response.text();
-                if (newContent !== currentReading?.content) {
-                    setCache(pathStack, name, newContent);
-                    if (currentReading && currentReading.name === name && currentReading.path === joinPath(pathStack)) {
-                        currentReading.content = newContent;
-                        renderArticle(currentReading);
-                        updateSidebar();
-                    }
+                let content = getCached(pathStack, chapter.name);
+                if (content === null) {
+                    const filePath = currentPath ? `${BOOK}/${currentPath}/${encodeURIComponent(chapter.filename)}` :
+                        `${BOOK}/${encodeURIComponent(chapter.filename)}`;
+                    const response = await fetch(filePath, { cache: 'no-cache' });
+                    if (!response.ok) return;
+                    content = await response.text();
+                    setCache(pathStack, chapter.name, content);
                 }
-            } catch (_) { /* 静默 */ }
+                // 缓存已经保存，不进行其他操作
+            } catch (_) { /* 静默失败 */ }
         }
 
         // ================================================================
@@ -1906,8 +2524,9 @@
                 document.body.classList.remove('night-mode');
                 document.body.style.background = bgColor;
             }
-            const bodyEl = document.querySelector('.article-body');
-            if (bodyEl) bodyEl.style.fontSize = fontSize + 'px';
+            document.querySelectorAll('.article-body').forEach(el => {
+                el.style.fontSize = fontSize + 'px';
+            });
         }
 
         // ================================================================
@@ -1930,8 +2549,11 @@
             }
         }
 
+        // 暴露 loadNextChapter 给全局（用于重试按钮）
+        window.loadNextChapter = loadNextChapter;
+
         init();
-        console.log(`📖 阅读器已启动，书籍：${BOOK}`);
+        console.log(`📖 阅读器已启动，书籍：${BOOK}，自动加载下一章已启用`);
     </script>
 </body>
 </html>
