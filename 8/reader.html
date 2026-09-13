@@ -1838,21 +1838,13 @@
             let html = '';
             html += renderBreadcrumbHTML();
 
-            // 渲染所有已加载的章节
+            // 渲染所有已加载的章节（自然衔接，无分隔线、无编号）
             for (let i = 0; i < chaptersToRender.length; i++) {
                 const ch = chaptersToRender[i];
-                const isFirst = (i === 0);
                 const bodyHtml = marked.parse(ch.content);
-                // 添加章节分隔线（除了第一章节）
-                if (!isFirst) {
-                    html += `<div class="chapter-divider">✦ 第 ${i + 1} 章 · ${escapeHtml(ch.name)} ✦</div>`;
-                }
                 html += `
                     <div class="chapter-block" data-chapter-index="${i}" data-chapter-name="${escapeHtml(ch.name)}">
-                        <div class="article-title">
-                            ${!isFirst ? `<span class="chapter-num">第 ${i + 1} 章</span>` : ''}
-                            ${escapeHtml(ch.name)}
-                        </div>
+                        <div class="article-title">${escapeHtml(ch.name)}</div>
                         <div class="article-body">${bodyHtml}</div>
                     </div>
                 `;
@@ -2152,11 +2144,7 @@
                 div.dataset.chapterIndex = index;
                 div.dataset.chapterName = name;
                 div.innerHTML = `
-                    <div class="chapter-divider">✦ 第 ${index + 1} 章 · ${escapeHtml(name)} ✦</div>
-                    <div class="article-title">
-                        <span class="chapter-num">第 ${index + 1} 章</span>
-                        ${escapeHtml(name)}
-                    </div>
+                    <div class="article-title">${escapeHtml(name)}</div>
                     <div class="article-body">${bodyHtml}</div>
                 `;
                 // 应用字号
@@ -2175,11 +2163,7 @@
             div.dataset.chapterIndex = index;
             div.dataset.chapterName = name;
             div.innerHTML = `
-                <div class="chapter-divider">✦ 第 ${index + 1} 章 · ${escapeHtml(name)} ✦</div>
-                <div class="article-title">
-                    <span class="chapter-num">第 ${index + 1} 章</span>
-                    ${escapeHtml(name)}
-                </div>
+                <div class="article-title">${escapeHtml(name)}</div>
                 <div class="article-body">${bodyHtml}</div>
             `;
             // 应用字号
