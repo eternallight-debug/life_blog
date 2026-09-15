@@ -1,0 +1,20 @@
+profession: /prəˈfeʃn/ n. 职业，专业；声明，宣布，表白
+professional: /prəˈfeʃənl/ adj. 专业的；职业的；职业性的n. 专业人员；职业运动员
+professor: /prəˈfesər/ n. 教授；教师；公开表示信仰的人
+proficiency: /prəˈfɪʃnsi/ n. 精通，熟练
+profile: /ˈproʊfaɪl/ n. 侧面；轮廓；外形；剖面；简况vt. 描…的轮廓；扼要描述vi. 给出轮廓
+profit: /ˈprɑːfɪt/ n. 利润；利益vi. 获利；有益vt. 有益于n. （Profit）（法）普罗菲（人名）
+profitable: /ˈprɑːfɪtəbl/ adj. 有利可图的；赚钱的；有益的
+profound: /prəˈfaʊnd/ adj. 深厚的；意义深远的；渊博的
+program: /ˈproʊɡræm/ n. 程序；计划；大纲vt. 用程序指令；为…制订计划；为…安排节目vi. 编程序；安排节目；设计电脑程式
+progress: /ˈprɑːɡres,ˈprɑːɡrəs/ n. 进步，发展；前进vi. 前进，进步；进行n. (Progress)人名；(赞)普罗格雷斯
+progressive: /prəˈɡresɪv/ adj. 进步的；先进的n. 改革论者；进步分子
+prohibit: /prəˈhɪbɪt,proʊˈhɪbɪt/ vt. 阻止，禁止
+project: /ˈprɑːdʒekt/ n.计划,方案,事业,企业,工程v.设计,计划,投射,放映,射出,发射(导弹等),凸出
+prolong: /prəˈlɔːŋ/ vt. 延长；拖延
+prominent: /ˈprɑːmɪnənt/ adj. 突出的，显著的；杰出的；卓越的
+promise: /ˈprɑːmɪs/ n. 许诺，允诺；希望vt. 允诺，许诺；给人以……的指望或希望vi. 许诺；有指望，有前途
+promising: /ˈprɑːmɪsɪŋ/ adj. 有希望的，有前途的v. 许诺，答应（promise的现在分词形式）
+promote: /prəˈmoʊt/ vt. 促进；提升；推销；发扬vi. 成为王后或其他大于卒的子
+prompt: /prɑːmpt/ n.提示,付款期限vt.提示,鼓动,促使,(给演员)提白adj.敏捷的,迅速的,即时的adv.准时地
+prone: /proʊn/ adj. 俯卧的；有…倾向的，易于…的n. (Prone)人名；(意、法)普罗内

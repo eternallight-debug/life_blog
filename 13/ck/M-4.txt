@@ -1,0 +1,20 @@
+mat: /mæt/ n.席子,垫子v.铺席子
+match: /mætʃ/ n.火柴,比赛,竞赛,匹配,(足球,捧球,蓝球)比赛v.相配,相称,比赛,相比,匹配
+mate: /meɪt/ n.配偶,对手,助手vt.使配对,使一致,结伴vi.成配偶,紧密配合
+material: /məˈtɪriəl/ n.材料,原料,物资,素材,布料adj.物质的,肉体的,具体的,重要的,实质性的
+materialism: /məˈtɪriəlɪzəm/ n. 唯物主义；唯物论；物质主义
+mathematical: /ˌmæθəˈmætɪkl/ adj. 数学的，数学上的；精确的
+mathematics: /ˌmæθəˈmætɪks/ n. 数学；数学运算
+maths: /mæθs/ n. 数学（等于mathematics）n. (Maths)人名；(瑞典)马茨
+matter: /ˈmætər/ n. 物质；事件vi. 有关系；要紧n. (Matter)人名；(英、法)马特；(西)马特尔
+mature: /məˈtʃʊr,məˈtʊr/ adj. 成熟的；充分考虑的；到期的；成年人的vi. 成熟；到期vt. 使…成熟；使…长成；慎重作出
+maximum: /ˈmæksɪməm/ n. [数] 极大，最大限度；最大量adj. 最高的；最多的；最大极限的
+may: /meɪ/ aux. 可以，能够；可能，也许；祝，愿；会，能
+maybe: /ˈmeɪbi/ adv. 也许；可能；大概n. 可能性；不确定性
+mayor: /ˈmeɪər/ n. 市长n. (Mayor)人名；(英)梅厄；(法、西、俄)马约尔
+me: /mi; miː/ pron. 我（宾格）n. 自我；极端自私的人；自我的一部分n. (Me)人名；(日)马(姓)；(朝)袂；(阿拉伯、柬、老)梅
+meadow: /ˈmedoʊ/ n. 草地；牧场n. (Meadow)人名；(英)梅多
+meal: /miːl/ n. 一餐，一顿饭；膳食vi. 进餐
+mean: /miːn/ adj.低劣的,卑鄙的,普通的,吝啬的,简陋的,平均的,惭愧的,不舒服的vt.意谓,想要,预定vi.用意,有意义n.平均数,中间,中庸
+meaning: /ˈmiːnɪŋ/ n. 意义；含义；意图adj. 意味深长的v. 意味；意思是（mean的ing形式）
+means: /miːnz/ n. 手段；方法；财产vt. 用意；意味着；预示；意义重大（mean 的第三人称单数）vi. 意欲（mean 的第三人称单数）

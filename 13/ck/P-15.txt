@@ -1,0 +1,20 @@
+pronoun: /ˈproʊnaʊn/ n. 代词
+pronounce: /prəˈnaʊns/ vt. 发音；宣判；断言vi. 发音；作出判断
+pronunciation: /prəˌnʌnsiˈeɪʃn/ n. 发音；读法
+proof: /pruːf/ n. 证明；证据；校样；考验；验证；试验adj. 防…的；不能透入的；证明用的；耐…的vt. 试验；校对；使不被穿透
+propaganda: /ˌprɑːpəˈɡændə/ n. 宣传；传道总会
+propagate: /ˈprɑːpəɡeɪt/ vt. 传播；传送；繁殖；宣传vi. 繁殖；增殖
+propel: /prəˈpel/ vt. 推进；驱使；激励；驱策
+proper: /ˈprɑːpər/ adj. 适当的；本身的；特有的；正派的adv. 完全地n. (Proper)人名；(英、德)普罗珀
+properly: /ˈprɑːpərli/ adv. 适当地；正确地；恰当地
+property: /ˈprɑːpərti/ n. 性质，性能；财产；所有权
+prophet: /ˈprɑːfɪt/ n. 先知；预言者；提倡者
+proportion: /prəˈpɔːrʃn/ n. 比例，占比；部分；面积；均衡vt. 使成比例；使均衡；分摊
+proportional: /prəˈpɔːrʃənl/ adj. 比例的，成比例的；相称的，均衡的n. [数] 比例项
+proposal: /prəˈpoʊzl/ n. 提议，建议；求婚
+propose: /prəˈpoʊz/ vt. 建议；打算，计划；求婚vi. 建议；求婚；打算
+proposition: /ˌprɑːpəˈzɪʃn/ n. 命题；提议；主题；议题vt. 向……提议；向……求欢
+prose: /proʊz/ n. 散文；单调adj. 散文的；平凡的；乏味的vi. 写散文；乏味地讲话vt. 把…写成散文
+prospect: /ˈprɑːspekt/ n. 前途；预期；景色vi. 勘探，找矿vt. 勘探，勘察
+prospective: /prəˈspektɪv/ adj. 未来的；预期的
+prosperity: /prɑːˈsperəti/ n. 繁荣，成功

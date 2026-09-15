@@ -1,0 +1,20 @@
+prevent: /prɪˈvent/ vt. 预防，防止；阻止vi. 妨碍，阻止
+previous: /ˈpriːviəs/ adj. 以前的；早先的；过早的adv. 在先；在…以前
+previously: /ˈpriːviəsli/ adv. 以前；预先；仓促地
+prey: /preɪ/ n. 猎物；受害者，牺牲品；（情绪易受伤的）脆弱的人；掠夺品v. 捕食；伤害；折磨，困扰n. (Prey) （美、德、爱）普赖（人名）
+price: /praɪs/ n. 价格；价值；代价vt. 给……定价；问……的价格n. (Price)人名；(英)普赖斯；(法)普里斯；(葡、瑞典)普里塞
+pride: /praɪd/ n. 自豪；骄傲；自尊心；狮群vt. 使得意，以...自豪vi. 自豪n. （Pride）人名；（英）普赖德
+priest: /priːst/ n. 牧师；神父；教士vt. 使成为神职人员；任命…为祭司n. (Priest)人名；(英、德)普里斯特
+primarily: /praɪˈmerəli/ adv. 首先；主要地，根本上
+primary: /ˈpraɪmeri/ adj. 主要的；初级的；基本的n. 原色；最主要者
+prime: /praɪm/ adj. 主要的；最好的；基本的adv. 极好地n. 初期；青年；精华；全盛时期vt. 使准备好；填装vi. 作准备n. (Prime)人名；(英)普赖姆；(德)普里梅
+primitive: /ˈprɪmətɪv/ adj. 原始的，远古的；简单的，粗糙的n. 原始人
+prince: /prɪns/ n. 王子，国君；亲王；贵族n. (Prince)人名；(英、葡)普林斯；(法)普兰斯；
+princess: /ˈprɪnses/ n. 公主；王妃；女巨头n. (Princess)人名；(英)普琳西丝；
+principal: /ˈprɪnsəpl/ adj. 主要的；资本的n. 首长；校长；资本；当事人
+principle: /ˈprɪnsəpl/ n. 原理，原则；主义，道义；本质，本义；根源，源泉
+print: /prɪnt/ n. 印刷业；印花布；印刷字体；印章；印记vt. 印刷；打印；刊载；用印刷体写；在…印花样vi. 印刷；出版；用印刷体写
+prior: /ˈpraɪər/ adj.优先的,在前的n.预先adv.在
+priority: /praɪˈɔːrəti/ n. 优先；优先权；[数] 优先次序；优先考虑的事
+prison: /ˈprɪzn/ n. 监狱；监禁；拘留所vt. 监禁，关押n. (Prison)人名；(德)普里松
+prisoner: /ˈprɪznər/ n. 囚犯，犯人；俘虏；刑事被告

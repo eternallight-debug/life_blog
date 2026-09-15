@@ -1,0 +1,20 @@
+migrate: /ˈmaɪɡreɪt/ vi. 移动；随季节而移居；移往vt. 使移居；使移植
+mild: /maɪld/ adj. 温和的；轻微的；淡味的；文雅的；不含有害物质的n. （英国的一种）淡味麦芽啤酒n. （Mild）（瑞典、德、捷、芬）米尔德（人名）
+mile: /maɪl/ n. 英里；一英里赛跑；较大的距离n. (Mile)人名；(塞、匈、法)米莱
+militant: /ˈmɪlɪtənt/ adj. 好战的n. 富有战斗性的人；好斗者；激进分子
+military: /ˈmɪləteri/ adj. 军事的；军人的；适于战争的n. 军队；军人
+milk: /mɪlk/ n. 牛奶；乳状物vt. 榨取；挤…的奶vi. 挤奶n. (Milk)人名；(英)米尔克
+mill: /mɪl/ n.压榨机,磨坊,磨粉机,工厂,制造厂vt.碾磨,磨细,搅拌,使乱转,打vi.乱转,被碾磨
+millimetre: /ˈmɪlimiːtər/ n. 毫米；千分之一米
+million: /ˈmɪljən/ n. 百万；无数adj. 百万的；无数的num. 百万n. (Million) （美、法）米利翁（人名）
+mind: /maɪnd/ n. 理智，精神；意见；智力；记忆力vt. 介意；专心于；照料vi. 介意；注意
+mine: /maɪn/ n. 矿，矿藏；矿山，矿井；地雷，水雷vt. 开采，采掘；在…布雷vi. 开矿，采矿；埋设地雷pron. 我的n. (Mine)人名；(德、塞、土、毛里塔)米内
+miner: /ˈmaɪnər/ n. 矿工；开矿机n. (Miner)人名；(英)迈纳；(西)米内尔
+mineral: /ˈmɪnərəl/ n. 矿物；（英）矿泉水；无机物；苏打水（常用复数表示）adj. 矿物的；矿质的
+mingle: /ˈmɪŋɡl/ vi. 混合；交往vt. 使混合；使相混n. (Mingle)人名；(加纳、英)明格尔
+miniature: /ˈmɪnətʃər,ˈmɪnətʃʊr/ adj. 微型的，小规模的n. 缩图；微型画；微型图画绘画术vt. 是…的缩影
+minimal: /ˈmɪnɪml/ adj. 最低的；最小限度的
+minimize: /ˈmɪnɪmaɪz/ vt. 使减到最少；小看，极度轻视vi. 最小化
+minimum: /ˈmɪnɪməm/ n. 最小值；最低限度；最小化；最小量adj. 最小的；最低的
+minister: /ˈmɪnɪstər/ n. 部长；大臣；牧师vi. 执行牧师职务；辅助或伺候某人
+ministry: /ˈmɪnɪstri/ n. （政府的）部门；宗教团体的领袖；（尤其是新教）牧师

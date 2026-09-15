@@ -1,0 +1,20 @@
+operate: /ˈɑːpəreɪt/ vi. 运转；动手术；起作用vt. 操作；经营；引起；对…开刀；行动
+operation: /ˌɑːpəˈreɪʃn/ n. 操作；经营；[外科] 手术；[数][计] 运算
+operational: /ˌɑːpəˈreɪʃənl/ adj. 操作的；运作的
+operator: /ˈɑːpəreɪtər/ n. 经营者；操作员；运营商；话务员；行家；接线员
+opinion: /əˈpɪnjən/ n. 意见；主张
+opponent: /əˈpoʊnənt/ n. 对手；反对者；敌手adj. 对立的；敌对的
+opportunity: /ˌɑːpərˈtuːnəti/ n. 时机，机会
+oppose: /əˈpoʊz/ vt. 反对；对抗，抗争vi. 反对
+opposite: /ˈɑːpəzɪt/ adj. 相反的；对面的；对立的n. 对立面；反义词prep. 在…的对面adv. 在对面
+oppress: /əˈpres/ vt. 压迫，压抑；使……烦恼；使……感到沉重
+optical: /ˈɑːptɪkl/ adj. 光学的；眼睛的，视觉的
+optimism: /ˈɑːptɪmɪzəm/ n. 乐观；乐观主义
+optimistic: /ˌɑːptɪˈmɪstɪk/ adj. 乐观的；乐观主义的
+optimum: /ˈɑːptɪməm/ adj. 最适宜的n. 最佳效果；最适宜条件
+option: /ˈɑːpʃn/ n. [计] 选项；选择权；买卖的特权
+optional: /ˈɑːpʃənl/ adj. 可选择的，随意的
+or: /ɔːr/ conj. 或，或者；还是；要不然n. (Or)人名；(中)柯(广东话·威妥玛)；(柬)奥；(土、匈、土库、阿塞、瑞典)奥尔
+oral: /ˈɔːrəl/ adj. 口头的，口述的n. 口试n. (Oral)人名；(土)奥拉尔
+orange: /'ɔrɪndʒ/ n.柑,桔,橙,橙色
+orbit: /ˈɔːrbɪt/ n. 轨道；眼眶；势力范围；生活常规vi. 盘旋；绕轨道运行vt. 绕…轨道而行

@@ -1,0 +1,20 @@
+northeast: /ˌnɔːrθˈiːst/ n. 东北方，东北部adj. 东北的；向东北的；（风等）来自东北的adv. 在东北；向东北；（风等）来自东北
+northern: /ˈnɔːrðərn/ adj. 北部的；北方的n. 北部方言
+northwest: /ˌnɔːrθˈwest/ n. 西北方；西北部adj. （风）来自西北的；在西北部的adv. 在西北，向西北，来自西北地
+nose: /noʊz/ n. 鼻子；嗅觉；突出的部分；探问；（飞机、太空船等的）头部，头锥；特有的气味vt. 嗅；用鼻子触vi. 小心探索着前进；探问
+not: /nɑːt/ adv. 表示否定，不n. “非”（计算机中逻辑运算的一种）
+notable: /ˈnoʊtəbl/ adj. 值得注意的，显著的；著名的n. 名人，显要人物
+note: /noʊt/ n. 笔记；音符；票据；注解；纸币；便笺；照会；调子vt. 注意；记录；注解n. (Note) （美、法）诺特（人名）
+notebook: /ˈnoʊtbʊk/ n. 笔记本，笔记簿；手册
+nothing: /ˈnʌθɪŋ/ pron. 没有什么；无关紧要的东西；（计算机数量上的）零；不值钱adv. 毫不；绝不n. 无；零；无关紧要的事adj. 没前途的；没价值的
+notice: /ˈnəʊtɪs/ n. 通知，布告；注意；公告vt. 通知；注意到；留心vi. 引起注意
+noticeable: /ˈnoʊtɪsəbl/ adj. 显而易见的，显著的；值得注意的
+notify: /ˈnoʊtɪfaɪ/ vt. 通告，通知；公布
+notion: /ˈnoʊʃn/ n. 概念；见解；打算
+notorious: /noʊˈtɔːriəs/ adj. 声名狼藉的，臭名昭著的
+notwithstanding: /ˌnɒtwɪθˈstændɪŋ/ prep. 尽管，虽然adv. 尽管，仍然conj. 虽然，尽管
+noun: /naʊn/ n. 名词n. (Noun)人名；(以)努恩
+nourish: /ˈnɜːrɪʃ/ vt. 滋养；怀有；使健壮
+novel: /ˈnɑːvl/ adj. 新奇的；异常的n. 小说n. (Novel)人名；(法、西、英)诺韦尔
+novelty: /ˈnɑːvlti/ n. 新奇；新奇的事物；新颖小巧而廉价的物品
+November: /noʊˈvembər/ n. 十一月

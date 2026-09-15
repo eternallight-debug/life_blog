@@ -1,0 +1,20 @@
+merit: /ˈmerɪt/ n. 优点，价值；功绩；功过vt. 值得vi. 应受报答
+merry: /ˈmeri/ adj. 愉快的；微醉的；嬉戏作乐的n. 甜樱桃n. (Merry)人名；(英、法、西)梅里
+mess: /mes/ n. 混乱；食堂，伙食团；困境；脏乱的东西vt. 弄乱，弄脏；毁坏；使就餐vi. 把事情弄糟；制造脏乱；玩弄n. (Mess)人名；(德、罗)梅斯
+message: /ˈmesɪdʒ/ n. 消息；差使；启示；预言；广告词vi. 报信，报告；[通信] 报文vt. 通知
+messenger: /ˈmesɪndʒər/ n. 报信者，送信者；先驱n. (Messenger)人名；(德)梅森格；(英)梅辛杰
+metal: /ˈmetl/ n. 金属；合金vt. 以金属覆盖adj. 金属制的n. （Metal）（捷、瑞典）梅塔尔（人名）
+metallic: /məˈtælɪk/ adj. 金属的，含金属的
+meter: /ˈmiːtər/ n. 米；仪表；[计量] 公尺；韵律vt. 用仪表测量vi. 用表计量n. (Meter)人名；(英)米特；(塞)梅特
+method: /ˈmeθəd/ n. 方法；条理；类函数
+metre: /ˈmiːtər/ n. 米；公尺；韵律n. (Metre)人名；(英)米特
+metric: /ˈmetrɪk/ adj. 公制的；米制的；公尺的n. 度量标准
+metropolitan: /ˌmetrəˈpɑːlɪtən/ adj. 大都市的；大主教辖区的；宗主国的n. 大城市人；大主教；宗主国的公民
+microcomputer: /ˈmaɪkroʊkəmpjuːtər/ n. 微电脑；[计] 微型计算机
+microphone: /ˈmaɪkrəfoʊn/ n. 扩音器，麦克风
+microscope: /ˈmaɪkrəskoʊp/ n. 显微镜
+midday: /ˌmɪdˈdeɪ/ n. 中午；正午adj. 正午的
+middle: /ˈmɪdl/ adj. 中间的，中部的；中级的，中等的n. 中间，中央；腰部
+midnight: /ˈmɪdnaɪt/ n. 午夜，半夜12点钟adj. 半夜的；漆黑的
+midst: /mɪdst/ n. 当中，中间prep. 在…中间（等于amidst）
+might: /maɪt/ aux. 可能，也许，可以（may 的过去式）n. 强大力量，威力，势力n. (Might) （美）迈特（人名）

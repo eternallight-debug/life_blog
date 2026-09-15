@@ -1,0 +1,20 @@
+let: /let/ vt. 允许，让；出租；假设；妨碍vi. 出租；被承包n. 障碍；出租屋n. (Let)人名；(缅)莱；(俄)莱特
+letter: /ˈletər/ n. 信；字母，文字；证书；文学，学问；字面意义vt. 写字母于vi. 写印刷体字母n. （Letter）（美、英、巴西）莱特（人名）
+level: /ˈlevl/ n. 水平；标准；水平面adj. 水平的；平坦的；同高的vi. 瞄准；拉平；变得平坦vt. 使同等；对准；弄平n. (Level)人名；(法)勒韦尔
+lever: /ˈlevər/ n. 杠杆；控制杆vt. 用杠杆撬动；把…作为杠杆vi. 用杠杆撬n. (Lever)人名；(法)勒韦；(英)利弗；(德)莱韦尔
+liability: /ˌlaɪəˈbɪləti/ n. 责任；债务；倾向；可能性；不利因素
+liable: /ˈlaɪəbl/ adj. 有责任的，有义务的；应受罚的；有…倾向的；易…的
+liar: /ˈlaɪər/ n. 说谎的人n. (Liar) （俄、美、德）莉娅尔（人名）
+liberal: /ˈlɪbərəl/ adj. 自由主义的；慷慨的；不拘泥的；宽大的n. 自由主义者n. (Liberal)人名；(葡)利贝拉尔
+liberate: /ˈlɪbəreɪt/ vt. 解放；放出；释放
+liberation: /ˌlɪbəˈreɪʃn/ n. 释放，解放
+liberty: /ˈlɪbərti/ n. 自由；许可；冒失n. (Liberty)人名；(英)利伯蒂
+librarian: /laɪˈbreriən/ n. 图书馆员；图书管理员
+library: /ˈlaɪbreri/ n. 图书馆，藏书室；文库
+license: /ˈlaɪsns/ n. 执照，许可证；特许（同 licence）vt. 许可；特许；发许可证给
+lick: /lɪk/ vt. 舔；卷过；鞭打vt. （非正式）战胜vi. 舔；轻轻拍打n. 舔；打；少许n. (Lick)人名；(英、匈)利克
+lid: /lɪd/ n. 盖子；眼睑；限制vt. 给…盖盖子n. (Lid)人名；(捷、挪)利德
+lie: /laɪ/ vi. 躺；说谎；位于；展现vt. 谎骗n. 谎言；位置n. (Lie)人名；(罗、挪、瑞典)利；(中)李(普通话·威妥玛)
+lieutenant: /luːˈtenənt/ n. 中尉；副官；助理人员
+life: /laɪf/ n. 生活，生存；寿命
+lifetime: /ˈlaɪftaɪm/ n. 一生；寿命；终生；使用期adj. 一生的；终身的

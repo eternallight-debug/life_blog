@@ -1,0 +1,20 @@
+lease: /liːs/ n. 租约；租期；租赁物；租赁权vt. 出租；租得vi. 出租
+least: /liːst/ adj. 最小的；最少的（little的最高级）adv. 最小；最少n. 最小；最少
+leather: /ˈleðər/ n. 皮革；皮革制品vt. 用皮革包盖；抽打adj. 皮的；皮革制的n. (Leather)人名；(英)莱瑟
+leave: /liːv/ vt. 离开；留下；遗忘；委托vi. 离开，出发；留下n. 许可，同意；休假
+lecture: /ˈlektʃər/ n. 演讲；讲稿；教训vt. 演讲；训诫vi. 讲课；讲演
+left: /left/ adj. 左边的；左派的；剩下的adv. 在左面n. 左边；左派；激进分子v. 离开（leave的过去式）
+leg: /leɡ/ n. 腿；支柱
+legal: /ˈliːɡl/ adj. 法律的；合法的；法定的；依照法律的n. （Legal）（法）勒加尔（人名）
+legend: /ˈledʒənd/ n. 传奇；说明；图例；刻印文字n. (Legend)人名；(西)莱亨德；(英)莱金德
+legislation: /ˌledʒɪsˈleɪʃn/ n. 立法；法律
+legitimate: /lɪˈdʒɪtɪmət/ adj. 合法的；正当的；合理的；正统的vt. 使合法；认为正当（等于legitimize）
+leisure: /ˈliːʒər/ n. 闲暇；空闲；安逸adj. 空闲的；有闲的；业余的n. (Leisure)人名；(英)莱热
+lemon: /ˈlemən/ n. 柠檬；柠檬汁；柠檬树；柠檬色；废物；蠢人adj. 浅黄色的，柠檬色的n. (Lemon) （美）莱蒙 （人名）
+lend: /lend/ vt. 贷；增添，提供；把……借给vi. 贷款n. (Lend)人名；(德)伦德
+length: /leŋkθ/ n. 长度，长；时间的长短；语音长
+lens: /lenz/ n. 透镜，镜头；眼睛中的水晶体；晶状体；隐形眼镜；汽车的灯玻璃vt. 给……摄影
+less: /les/ n.较少,较小adj.少的,小的adv.较少地,更小地,不及 prep.减去
+lessen: /ˈlesn/ vt. 使…变小；使…减轻；使…变少vi. 减少；减轻；变小n. (Lessen)人名；(德、罗)莱森
+lesson: /ˈlesn/ n. 教训；课vt. 教训；上课
+lest: /lest/ conj. 唯恐，以免；（引出产生某种情感的原因）唯恐，担心

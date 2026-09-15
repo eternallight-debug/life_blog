@@ -1,0 +1,20 @@
+orchestra: /ˈɔːrkɪstrə/ n. 管弦乐队；乐队演奏处
+order: /ˈɔːrdər/ n. 命令；顺序；规则；订单；（生物学）目vt. 命令；整理；订购vi. 命令；订货
+orderly: /ˈɔːrdərli/ adj. 有秩序的；整齐的；值班的n. 勤务兵；传令兵；护理员adv. 有秩序地
+ordinary: /ˈɔːrdneri/ adj. 普通的；平凡的；平常的n. 普通；平常的人（或事）
+ore: /ɔːr/ n. 矿；矿石n. (Ore)人名；(意、瑞典)奥雷；(英)奥尔
+organ: /ˈɔːrɡən/ n. 器官；机构；风琴；管风琴；嗓音；阴茎n. （Organ）人名；（英）奥根
+organic: /ɔːrˈɡænɪk/ adj. [有化] 有机的；组织的；器官的；根本的
+organism: /ˈɔːrɡənɪzəm/ n. 有机体；生物体；微生物
+organization: /ˌɔːrɡənəˈzeɪʃn/ n. 组织；机构；体制；团体
+organize: /ˈɔːrɡənaɪz/ vt. 组织；使有系统化；给予生机；组织成立工会等vi. 组织起来；成立组织
+orient: /ˈɔːrient/ n.东方,东方诸国(指地中海以东各国)adj.东方的,上升的,灿烂的vi.适应形势,向东vt.使朝东,使适应,确定方向
+oriental: /ˌɔːriˈentl/ adj. 东方的；东方人的n. 东方人
+orientation: /ˌɔːriənˈteɪʃn/ n. 方向；定向；适应；情况介绍
+origin: /ˈɔːrɪdʒɪn/ n. 起源；原点；出身；开端
+original: /əˈrɪdʒənl/ adj.最初的,原始的,独创的,新颖的n.原物,原作
+originate: /əˈrɪdʒɪneɪt/ vt. 引起；创作vi. 发源；发生；起航
+ornament: /ˈɔːrnəmənt/ n. 装饰；[建][服装] 装饰物；教堂用品vt. 装饰，修饰
+orphan: /ˈɔːrfn/ n. 孤儿；孤行v. 使成为孤儿adj. 孤儿的；无双亲的
+Orthodox: /ˈɔːrθədɑːks/ adj. 东正教派的；正教的n. 东正教徒；正教徒adj. (orthodax) 正统的；传统的；惯常的；普通的n. (orthodax) 正统的人；正统的事物
+other: /ˈʌðər/ adj. 其他的，另外的pron. 另外一个

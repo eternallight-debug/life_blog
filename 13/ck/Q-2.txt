@@ -1,0 +1,10 @@
+quicken: /ˈkwɪkən/ vi. 加快；变活跃；进入胎动期vt. 加快；鼓舞；使复活
+quickly: /ˈkwɪkli/ adv. 迅速地；很快地
+quiet: /ˈkwaɪət/ adj. 安静的；安定的；不动的；温顺的n. 安静；和平vt. 使平息；安慰vi. 平静下来
+quilt: /kwɪlt/ n. 被子；棉被vt. 东拼西凑地编；加软衬料后缝制vi. 缝被子
+quit: /kwɪt/ vt. 离开；放弃；停止；使…解除vi. 离开；辞职；停止n. 离开；[计] 退出adj. 摆脱了…的；已经了结的n. (Quit)人名；(英)奎特
+quite: /kwaɪt/ adv. 很；相当；完全
+quiver: /ˈkwɪvər/ n. 颤抖；箭袋；震动vi. 颤抖；振动vt. 使…颤动；抖动
+quiz: /kwɪz/ n. 考查；恶作剧；课堂测验vt. 挖苦；张望；对…进行测验
+quotation: /kwoʊˈteɪʃn/ n. [贸易] 报价单；引用语；引证
+quote: /kwoʊt/ vt.引用,引证,提供,提出,报(价)

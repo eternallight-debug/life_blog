@@ -1,0 +1,20 @@
+pamphlet: /ˈpæmflət/ n. 小册子
+panic: /ˈpænɪk/ n. 恐慌，惊慌；大恐慌adj. 恐慌的；没有理由的vt. 使恐慌vi. 十分惊慌n. (Panic)人名；(罗)帕尼克
+paradise: /ˈpærədaɪs/ n. 天堂至福境地
+paradox: /ˈpærədɑːks/ n. 悖论，反论；似是而非的论点；自相矛盾的人或事n. （Paradox）《杀破狼：贪狼》（一部剧情动作电影）
+paralyze: /ˈpærəˌlaɪz/ vt. 使麻痹；使瘫痪
+parameter: /pəˈræmɪtər/ n. 参数；系数；参量
+participant: /pɑːrˈtɪsɪpənt/ n. 参与者，参加者adj. 参与的
+partition: /pɑːrˈtɪʃn/ n. 划分，分开；[数] 分割；隔墙；隔离物vt. [数] 分割；分隔；区分
+pastime: /ˈpæstaɪm/ n. 娱乐，消遣
+pasture: /ˈpæstʃər/ n. 草地；牧场；牧草vt. 放牧；吃草n. (Pasture)人名；(英)帕斯彻；(法)帕斯蒂尔
+patent: /ˈpeɪt(ə)nt/ n. 专利权；专利证；专利品adj. 专利的；特许生产或销售的；显著的；公开的；（脉管等）开放的v. 取得……的专利权；授予专利
+pathetic: /pəˈθetɪk/ adj. 可怜的，悲哀的；感伤的；乏味的
+patriotic: /ˌpeɪtriˈɑːtɪk/ adj. 爱国的
+patrol: /pəˈtroʊl/ n. 巡逻；巡逻队；侦察队vt. 巡逻；巡查vi. 巡逻；巡查
+pave: /peɪv/ v. （用石板或砖）铺（路），铺砌，铺设；为某事物铺平道路，创造条件n. (Pave) （法、塞尔维亚、克罗地亚）帕韦（人名）
+pearl: /pɜːrl/ n. 珍珠；珍珠色；杰出者；珍品adj. 镶珍珠的；珍珠状的vi. 采珍珠；成珍珠状vt. 使成珠状；用珍珠装饰；使呈珍珠色
+pedal: /ˈpedl/ n. （车辆，乐器的）踏板v. 骑（自行车）；踩踏板adj. 脚的；脚踏的
+pedestrian: /pəˈdestriən/ adj. 徒步的；缺乏想像力的n. 行人；步行者
+peel: /piːl/ v. 剥，剥落；削；（槌球中）击（他人的球）穿过铁环门n. 皮n. (Peel)人名；(英)皮尔
+peer: /pɪr/ n. 同等地位的人，同龄人；贵族v. 凝视，盯着看；隐现；看见；匹配n. (Peer) （美、爱、英）皮尔（人名）

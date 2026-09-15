@@ -1,0 +1,20 @@
+privacy: /ˈpraɪvəsi/ n. 隐私；秘密；隐居；隐居处
+private: /ˈpraɪvət/ adj.私人的,私有的,私营的,秘密的n.士兵
+privilege: /ˈprɪvəlɪdʒ/ n. 特权；优待vt. 给予…特权；特免
+prize: /praɪz/ n. 奖品；奖赏；战利品vt. 珍视；捕获；估价adj. 获奖的
+probability: /ˌprɑːbəˈbɪləti/ n. 可能性；机率；[数] 或然率
+probable: /ˈprɑːbəbl/ adj. 很可能的；可信的n. 很可能的事；大有希望的候选者
+probably: /ˈprɑːbəbli/ adv. 大概；或许；很可能
+probe: /proʊb/ n. 探针；调查vi. 调查；探测vt. 探查；用探针探测n. (Probe)人名；(法)普罗布
+problem: /ˈprɑːbləm/ n. 难题；引起麻烦的人adj. 成问题的；难处理的
+procedure: /prəˈsiːdʒər/ n. 程序，手续；步骤
+proceed: /proʊˈsiːd/ vi. 开始；继续进行；发生；行进n. 收入，获利
+proceeding: /prəˈsiːdɪŋ/ n. 进行；程序；诉讼；事项v. 开始；继续做；行进（proceed的ing形式）
+process: /'prɑses/ n.过程,作用,方法,程序,步骤,进行,推移vt.加工,处理
+procession: /prəˈseʃn/ n. 队伍，行列；一列，一排；列队行进vi. 列队行进vt. 沿著……行进
+proclaim: /prəˈkleɪm/ vt. 宣告，公布；声明；表明；赞扬
+produce: /prəˈduːs/ vt. 生产；引起；创作；生育，繁殖n. 农产品，产品vi. 生产，创作
+product: /ˈprɑːdʌkt/ n. 产品；结果；[数] 乘积；作品
+production: /prəˈdʌkʃn/ n. 成果；产品；生产；作品
+productive: /prəˈdʌktɪv/ adj. 能生产的；生产的，生产性的；多产的；富有成效的
+productivity: /ˌproʊdʌkˈtɪvəti,ˌprɑːdʌkˈtɪvəti/ n. 生产力；生产率；生产能力
