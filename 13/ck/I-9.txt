@@ -1,0 +1,20 @@
+instruction: /ɪnˈstrʌkʃn/ n. 指令，命令；指示；教导；用法说明
+instrument: /ˈɪnstrəmənt/ n. 仪器；工具；乐器；手段；器械vt. 给……装测量仪器
+instrumental: /ˌɪnstrəˈmentl/ adj. 乐器的；有帮助的；仪器的，器械的n. 器乐曲；工具字，工具格
+insufficient: /ˌɪnsəˈfɪʃnt/ adj. 不足的；不能胜任的，缺乏能力的
+insulate: /ˈɪnsəleɪt/ vt. 隔离，使孤立；使绝缘，使隔热
+insult: /ɪnˈsʌlt; ˈɪnsʌlt / v. 侮辱；辱骂；损害n. 侮辱；凌辱；无礼
+insurance: /ɪnˈʃʊrəns/ n. 保险；保险费；保险契约；赔偿金
+insure: /ɪnˈʃʊr/ vt. 给……保险；北美确保，保证vi. 投保；北美确保
+intact: /ɪnˈtækt/ adj. 完整的；原封不动的；未受损伤的
+integral: /ˈɪntɪɡrəl/ adj. 积分的；完整的，整体的；构成整体所必须的n. 积分；部分；完整
+integrate: /ˈɪntɪɡreɪt/ vt. 使…完整；使…成整体；求…的积分；表示…的总和vi. 求积分；取消隔离；成为一体adj. 整合的；完全的n. 一体化；集成体
+integrity: /ɪnˈteɡrəti/ n. 完整；正直；诚实；廉正
+intellect: /ˈɪntəlekt/ n. 智力，理解力；思维逻辑领悟力；智力高的人
+intellectual: /ˌɪntəˈlektʃuəl/ adj. 智力的；聪明的；理智的n. 知识分子；凭理智做事者
+intelligence: /ɪnˈtelɪdʒəns/ n. 智力；情报工作；情报机关；理解力；才智，智慧；天分
+intelligent: /ɪnˈtelɪdʒənt/ adj. 智能的；聪明的；理解力强的
+intelligible: /ɪnˈtelɪdʒəbl/ adj. 可理解的；明了的；仅能用智力了解的
+intend: /ɪnˈtend/ vt. 打算；想要；意指vi. 有打算
+intense: /ɪnˈtens/ adj. 强烈的；紧张的；非常的；热情的
+intensify: /ɪnˈtensɪfaɪ/ vi. 增强，强化；变激烈vt. 使加强，使强化；使变激烈

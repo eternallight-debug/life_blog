@@ -1,0 +1,20 @@
+entity: /ˈentəti/ n. 实体；存在
+entrance: /ɪnˈtrɑ:ns;ˈentrəns/ n. 入口；进入vt. 使出神，使入迷
+entrepreneur: /ˌɑːntrəprəˈnɜːr/ n. 企业家；承包人；主办者
+entry: /ˈentri/ n. 进入；入口；条目；登记；报关手续；对土地的侵占
+envelope: /ˈenvələʊp/ n. 信封，封皮；包膜；[天] 包层；包迹
+environment: /ɪnˈvaɪrənmənt/ n. 环境，外界
+envisage: /ɪnˈvɪzɪdʒ/ v. 设想，想像；正视，面对
+envy: /ˈenvi/ n. 嫉妒，妒忌；羡慕vt. 嫉妒，妒忌；羡慕vi. 感到妒忌；显示出妒忌
+episode: /ˈepɪsoʊd/ n. 一段经历；插曲；一段情节；（电视连续剧或广播的）一集；插话；有趣的事件
+epoch: /ˈepək/ n. [地质] 世；新纪元；新时代；时间上的一点
+equal: /ˈiːkwəl/ adj. 平等的；相等的；胜任的vt. 等于；比得上n. 对手；匹敌；同辈；相等的事物
+equality: /iˈkwɑːləti/ n. 平等；相等；[数] 等式
+equation: /ɪˈkweɪʒn/ n. 方程式，等式；相等；[化学] 反应式
+equator: /ɪˈkweɪtər/ n. 赤道
+equilibrium: /ˌiːkwɪˈlɪbriəm/ n. 均衡；平静；保持平衡的能力
+equip: /ɪˈkwɪp/ vt. 装备，配备
+equipment: /ɪˈkwɪpmənt/ n. 设备，装备；器材
+equivalent: /ɪˈkwɪvələnt/ adj. （在价值、数量等方面）相等的；等价的；等效的；等量的；同意义的n. 对等的人（或事物）；当量
+era: /ˈɪrə,ˈerə/ n. 时代；年代；纪元n. (Era)人名；(意、芬、印)埃拉
+erect: /ɪˈrekt/ adj. 竖立的，笔直的；因性刺激而勃起的；（毛发）竖起的v. （使）竖立；建造；创立；安装；勃起

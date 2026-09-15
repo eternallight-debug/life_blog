@@ -1,0 +1,20 @@
+interrupt: /ˌɪntəˈrʌpt/ vt. 中断；打断；插嘴；妨碍vi. 打断；打扰n. 中断
+interruption: /ˌɪntəˈrʌpʃn/ n. 中断；干扰；中断之事
+intersection: /ˌɪntərˈsekʃn/ n. 交叉；十字路口；交集；交叉点
+interval: /ˈɪntərvl/ n. 间隔；间距；幕间休息
+intervene: /ˌɪntərˈviːn/ vi. 干涉；调停；插入
+interview: /ˈɪntərvjuː/ n. 接见，采访；面试，面谈vt. 采访；接见；对…进行面谈；对某人进行面试
+intimate: /ˈɪntɪmət/ adj. 亲密的；私人的；精通的；有性关系的n. 知己；至交vt. 暗示；通知；宣布
+intimidate: /ɪnˈtɪmɪdeɪt/ vt. 恐吓，威胁；胁迫
+into: /ˈɪntuː/ prep. 到……里面；触及，碰撞；朝，向；转向；关于；转变成；造成（某种结果）；除；对……很有兴趣n. (Into) （美）因托（人名）
+intricate: /ˈɪntrɪkət/ adj. 复杂的；错综的，缠结的
+intrigue: /ɪnˈtriːɡ/ n. 阴谋；诡计；复杂的事；私通vt. 用诡计取得；激起...的兴趣vi. 私通；密谋
+intrinsic: /ɪnˈtrɪnzɪk/ adj. 本质的，固有的
+introduce: /ˌɪntrəˈduːs/ vt. 介绍；引进；提出；采用
+introduction: /ˌɪntrəˈdʌkʃn/ n. 介绍；引进；采用；入门；传入
+intuition: /ˌɪntuˈɪʃn/ n. 直觉；直觉力；直觉的知识
+invade: /ɪnˈveɪd/ vt. 侵略；侵袭；侵扰；涌入vi. 侵略；侵入；侵袭；侵犯
+invalid: /ɪnˈvælɪd/ adj. 无效的；有病的；残疾的n. 病人；残疾者vt. 使伤残；使退役vi. 变得病弱；因病而奉命退役
+invaluable: /ɪnˈvæljuəbl/ adj. 无价的；非常贵重的
+invariably: /ɪnˈveriəbli/ adv. 总是；不变地；一定地
+invasion: /ɪnˈveɪʒn/ n. 入侵，侵略；侵袭；侵犯

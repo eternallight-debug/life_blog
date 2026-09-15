@@ -1,0 +1,20 @@
+enclosure: /ɪnˈkloʊʒər/ n. 附件；围墙；围场
+encounter: /ɪnˈkaʊntər/ v. 遭遇；邂逅；遇到n. 遭遇；偶然碰见
+encourage: /ɪnˈkɜːrɪdʒ/ vt. 鼓励，怂恿；激励；支持
+end: /end/ n. 结束；目标；尽头；末端；死亡vi. 结束，终止；终结vt. 结束，终止；终结n. (End)人名；(英、德)恩德
+endeavor: /ɪnˈdevər/ n. 努力；尽力（等于 endeavour）vi. 努力；尽力（等于 endeavour）vt. 努力；尽力（等于 endeavour）
+ending: /ˈendɪŋ/ n. 结局；结尾；末梢；词尾v. 结束；终止（end 的现在分词）
+endless: /ˈendləs/ adj. 无止境的；连续的；环状的；漫无目的的
+endow: /ɪnˈdaʊ/ vt. 赋予；捐赠；天生具有
+endurance: /ɪnˈdʊrəns/ n. 忍耐力；耐久性；持续时间
+endure: /ɪnˈdʊr/ vt. 忍耐；容忍vi. 忍耐；持续
+enemy: /ˈenəmi/ n. 敌人，仇敌；敌军adj. 敌人的，敌方的
+energetic: /ˌenərˈdʒetɪk/ adj. 精力充沛的；积极的；有力的
+energy: /ˈenərdʒi/ n. [物] 能量；精力；活力；精神
+enforce: /ɪnˈfɔːrs/ vt. 实施，执行；强迫，强制
+engage: /ɪnˈɡeɪdʒ/ vt. 吸引，占用；使参加；雇佣；使订婚；预定；攻击，与……开战；使啮合vi. 从事；参与；答应，保证
+engagement: /ɪnˈɡeɪdʒmənt/ n. 婚约；约会；交战；诺言；进场（游戏术语）n. 参与度（指用户点赞、转发、评论、下载文档、观看视频、咨询等交互行为）
+engine: /ˈendʒɪn/ n. 引擎，发动机；机车，火车头；工具
+engineer: /ˌendʒɪˈnɪr/ n. 工程师；工兵；火车司机vt. 设计；策划；精明地处理vi. 设计；建造
+engineering: /ˌendʒɪˈnɪrɪŋ/ n. 工程，工程学v. 设计；管理（engineer的ing形式）；建造
+England: /ˈɪŋɡlənd/ n. 英格兰

@@ -1,0 +1,20 @@
+intensity: /ɪnˈtensəti/ n. 强度；强烈；[电子] 亮度；紧张
+intensive: /ɪnˈtensɪv/ adj. 加强的；集中的；透彻的；加强语气的n. 加强器
+intent: /ɪnˈtent/ n. 意图；目的；含义adj. 专心的；急切的；坚决的
+intention: /ɪnˈtenʃn/ n. 意图；目的；意向；愈合
+intentional: /ɪnˈtenʃənl/ adj. 故意的；蓄意的；策划的
+interact: /ˌɪntərˈækt/ vt. 互相影响；互相作用vi. 互相影响；互相作用n. 幕间剧；幕间休息
+interaction: /ˌɪntərˈækʃn/ n. 相互作用，相互影响；交流；[数] 交互作用；互动
+interest: /ˈɪntrəst/ n. 兴趣，爱好；利息；利益；趣味；同行vt. 使……感兴趣；引起……的关心；使……参与
+interesting: /ˈɪntrəstɪŋ/ adj. 有趣的；引起兴趣的，令人关注的
+interfere: /ˌɪntərˈfɪr/ vi. 干涉；妨碍；打扰vt. 冲突；介入
+interference: /ˌɪntərˈfɪrəns/ n. 干扰，冲突；干涉
+interim: /ˈɪntərɪm/ adj. 临时的，暂时的；中间的；间歇的n. 过渡时期，中间时期；暂定
+interior: /ɪnˈtɪriər/ n. 内部，里面；内景；内陆，腹地；内政，内务；本质adj. 内部的，里面的；内位的；内陆的，腹地的；内务的，内政的；心灵的，精神的；本质的
+intermediate: /ˌɪntərˈmiːdiət/ adj. 中间的，过渡的；中级的，中等的n. 中级生；（化合物）中间体，中间物；中介，媒介v. 充当调解人，起媒介作用
+intermittent: /ˌɪntərˈmɪtənt/ adj. 间歇的；断断续续的；间歇性
+internal: /ɪnˈtɜːrnl/ adj. 内部的；体内的；（机构）内部的；国内的；本身的；内心的；（大学生）本校生的n. 内脏；内部特征
+international: /ˌɪntərˈnæʃnəl/ adj. 国际的；国际通用的n. 国际体育比赛（选手）；外国人n. (International) 共产国际（组织）
+interpret: /ɪnˈtɜːrprət/ vt. 说明；口译vi. 解释；翻译
+interpretation: /ɪnˌtɜːrprəˈteɪʃn/ n. 解释；翻译；演出
+interpreter: /ɪnˈtɜːrprətər/ n. 解释者；口译者；注释器

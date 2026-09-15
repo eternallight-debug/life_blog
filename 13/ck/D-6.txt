@@ -1,0 +1,20 @@
+derive: /dɪˈraɪv/ vt. 源于；得自；获得vi. 起源n. （Derive）（法）德里夫（人名）
+descend: /dɪˈsend/ vi. 下降；下去；下来；遗传；屈尊vt. 下去；沿…向下
+descendant: /dɪˈsendənt/ n. 后裔，子孙；（由过去类似物发展来的）派生物；（机器等）后继型产品adj. 下降的；祖传的
+descent: /dɪˈsent/ n. 下降；血统；袭击vt. 除去…的气味；使…失去香味
+describe: /dɪˈskraɪb/ vt. 描述，形容；描绘
+description: /dɪˈskrɪpʃn/ n. 描述，描写；类型；说明书
+desert: /dɪ'zɜːt; 'dezət/ n.沙漠,应得的赏罚,功过adj.沙漠的,不毛的,荒凉的vt.放弃,遗弃,逃跑vi.逃掉,逃亡,开小差
+deserve: /dɪˈzɜːrv/ vi. 应受，应得vt. 应受，应得
+design: /dɪˈzaɪn/ n. 设计；构思；设计图样；装饰图案；打算v. 设计，构思；计划；制造，意欲n. (Design) （巴、印、俄）迪赛（人名）
+designate: /ˈdezɪɡneɪt/ vt. 指定；指派；标出；把…定名为adj. 指定的；选定的
+desirable: /dɪˈzaɪərəbl/ adj. 可取的，值得拥有的，令人向往的；引起性欲的，性感的n. 称心如意的东西，合意的人，好的品质
+desire: /dɪˈzaɪər/ n. 欲望；要求，心愿；性欲vt. 想要；要求；希望得到……vi. 渴望n. （Desire）（刚（布）、英）德西雷（人名）
+desk: /desk/ n. 办公桌；服务台；编辑部；（美）讲道台；乐谱架adj. 书桌的；桌上用的；伏案做的
+despair: /dɪˈsper/ n. 绝望；令人绝望的人或事vi. 绝望，丧失信心
+despatch: /dɪˈspætʃ/ v. 派遣；发送；迅速处理；杀死；匆匆吃下，匆匆离开（等于 dispatch）n. 派遣；发送；急件；报道；杀死（等于 dispatch）
+desperate: /ˈdespərət/ adj. 不顾一切的；令人绝望的；极度渴望的
+despise: /dɪˈspaɪz/ vt. 轻视，鄙视
+despite: /dɪˈspaɪt/ prep. 即使，尽管n. （诗/文）侮辱，伤害；轻视，鄙视；憎恨vt. 废语故意使烦恼，故意伤害；古蔑视，轻蔑
+destination: /ˌdestɪˈneɪʃn/ n. 目的地，终点
+destined: /ˈdestɪnd/ adj. 注定的；命定的；去往…的v. 注定（destine的过去式和过去分词）

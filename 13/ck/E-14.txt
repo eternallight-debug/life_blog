@@ -1,0 +1,20 @@
+exploit: /ɪkˈsplɔɪt/ vt. 开发，开拓；剥削；开采n. 英雄事迹；英勇行为；奇遇
+explore: /ɪkˈsplɔːr/ vt. 探索；探测；探险vi. 探索；探测；探险
+explosion: /ɪkˈsploʊʒn/ n. 爆炸；爆发；激增n. （Explosion）《引爆者》（一部中国动作、犯罪电影）。
+explosive: /ɪkˈspləʊsɪv/ adj. 爆炸的；爆炸性的；爆发性的n. 炸药；爆炸物
+export: /ˈekspɔːrt/ n. 输出，出口；出口商品vi. 输出物资vt. 输出，出口
+expose: /ɪkˈspoʊz/ vt. 揭露，揭发；使曝光；显示
+exposition: /ˌekspəˈzɪʃn/ n. 博览会；阐述；展览会
+exposure: /ɪkˈspoʊʒər/ n. 暴露；曝光；揭露；陈列
+express: /ɪkˈspres/ vt. 表达；快递adj. 明确的；迅速的；专门的n. 快车，快递，专使；捷运公司
+expression: /ɪkˈspreʃn/ n. 表现，表示，表达；表情，脸色，态度，腔调，声调；式，符号；词句，语句，措辞，说法
+exquisite: /ɪkˈskwɪzɪt/ adj. 精致的；细腻的；优美的，高雅的；异常的；剧烈的n. 服饰过于讲究的男子
+extend: /ɪkˈstend/ vt. 延伸；扩大；推广；伸出；给予；使竭尽全力；对…估价vi. 延伸；扩大；伸展；使疏开
+extension: /ɪkˈstenʃn/ n. 拓展；延伸；接发；（医学）牵引；（计算机）拓展名；（逻辑）外延
+extensive: /ɪkˈstensɪv/ adj. 广泛的；大量的；广阔的
+extent: /ɪkˈstent/ n. 程度；范围；长度
+exterior: /ɪkˈstɪriər/ adj. 外部的，外面的，外在的；（电影场景）室外的；外界的n. （建筑）外部，表面；（人的）外型，外貌；（摄影）外景
+external: /ɪkˈstɜːrnl/ adj. 外部的；表面的；[药] 外用的；外国的；外面的n. 外部；外观；外面
+extinct: /ɪkˈstɪŋkt/ adj. 灭绝的，绝种的；熄灭的vt. 使熄灭
+extinguish: /ɪkˈstɪŋɡwɪʃ/ vt. 熄灭；压制；偿清
+extra: /ˈekstrə/ adj.额外的,不包括在价目内的,特大的,特佳的adv.特别地,非常,另外n.额外的人(或物),(报纸)号外,上等产品,(电影)临时演员

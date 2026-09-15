@@ -1,0 +1,20 @@
+exclude: /ɪkˈskluːd/ vt. 排除；排斥；拒绝接纳；逐出
+exclusive: /ɪkˈskluːsɪv/ adj. 独有的；排外的；专一的n. 独家新闻；独家经营的项目；排外者
+exclusively: /ɪkˈskluːsɪvli/ adv. 唯一地，专有地，排外地；作为唯一的（消息）来源
+excursion: /ɪkˈskɜːrʒn/ n. 偏移；远足；短程旅行；离题；游览，游览团
+excuse: /ɪkˈskjuːs/ n. 借口；理由；拙劣样品；假条v. 原谅；为……申辩；准许……离开；给……免去；作为借口；请求宽恕
+execute: /ˈeksɪkjuːt/ vt. 实行；执行；处死
+execution: /ˌeksɪˈkjuːʃn/ n. 执行，实行；完成；死刑
+executive: /ɪɡˈzekjətɪv/ adj. 经营管理的；有执行权的；高级的；供重要人物使用的n. 主管；行政领导；（政府的）行政部门；执行委员会
+exemplify: /ɪɡˈzemplɪfaɪ/ vt. 例证；例示
+exempt: /ɪɡˈzempt/ adj. 被免除（责任或义务）的，获豁免的v. 免除，豁免n. 被免除义务者（尤指被免税者）
+exercise: /ˈeksərsaɪz/ n. 运动；练习；运用；操练；礼拜；典礼vt. 锻炼；练习；使用；使忙碌；使惊恐vi. 运动；练习
+exert: /ɪɡˈzɜːrt/ vt. 运用，发挥；施以影响
+exhaust: /ɪɡˈzɔːst/ v. 使精疲力尽；耗尽；彻底探讨；排出（气体）n. 废气；排气管
+exhibit: /ɪɡˈzɪbɪt/ vt. 展览；显示；提出（证据等）n. 展览品；证据；展示会vi. 展出；开展览会
+exhibition: /ˌeksɪˈbɪʃn/ n. 展览，显示；展览会；展览品
+exile: /ˈeksaɪl,ˈeɡzaɪl/ n. 流放，充军；放逐，被放逐者；流犯vt. 放逐，流放；使背井离乡
+exist: /ɪɡˈzɪst/ vi. 存在；生存；生活；继续存在
+existence: /ɪɡˈzɪstəns/ n. 存在，实在；生存，生活；存在物，实在物
+exit: /ˈeksɪt,ˈeɡzɪt/ n. 出口，通道；退场vi. 退出；离去
+exotic: /ɪɡˈzɑːtɪk/ adj. 异国的；外来的；异国情调的

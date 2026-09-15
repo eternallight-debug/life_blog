@@ -1,0 +1,20 @@
+forbid: /fərˈbɪd/ vt. 禁止；不准；不允许；〈正式〉严禁
+forbidden: /fərˈbɪdn/ adj.禁止的,严禁的 vbl.forbid的过去分词
+force: /fɔːrs/ n. 力量；武力；军队；魄力vt. 促使，推动；强迫；强加n. (Force)人名；(意)福尔切；(英、法)福斯
+forecast: /ˈfɔːrkæst/ n. （天气、财经等的）预测，预报；预想v. 预报，预测；预示；预言；进行预报，作预测
+forehead: /ˈfɔːrhed,ˈfɔːrəd/ n. 额，前额
+foreign: /ˈfɔːrən/ adj. 外国的；外交的；异质的；不相关的
+foreigner: /ˈfɔːrənər/ n. 外地人，外国人
+foremost: /ˈfɔːrmoʊst/ adj. 最重要的；最先的adv. 首先；居于首位地
+foresee: /fɔːrˈsiː/ vt. 预见；预知
+forest: /ˈfɔːrɪst/ n. 森林，林区；（森林似的）一丛；皇家林地，御猎场v. 植林于；被森林覆盖n. (Forest) 福雷斯特（人名）
+forever: /fərˈevər/ adv. 永远；不断地；常常
+forget: /fərˈɡet/ vt. 忘记；忽略vi. 忘记n. (Forget)人名；(法)福尔热
+forgive: /fərˈɡɪv/ vt. 原谅；免除（债务、义务等）vi. 表示原谅
+fork: /fɔːrk/ n. 叉；餐叉；耙vt. 叉起；使成叉状vi. 分叉；分歧n. (Fork)人名；(英、德)福克
+form: /fɔːrm/ n. 形式，形状；形态，外形；方式；表格vt. 构成，组成；排列，组织；产生，塑造vi. 形成，构成；排列n. (Form)人名；(英)福姆；(法、德)福尔姆
+formal: /ˈfɔːrml/ adj. 正式的；拘谨的；有条理的n. 正式的社交活动；夜礼服n. (Formal)人名；(法)福马尔
+format: /ˈfɔːrmæt/ n. 格式；版式；开本vt. 使格式化；规定…的格式vi. 设计版式
+formation: /fɔːrˈmeɪʃn/ n. 形成；构造；编队
+former: /ˈfɔːrmər/ adj. 从前的，前者的；前任的n. 模型，样板；起形成作用的人n. (Former)人名；(法)福尔梅；(德、捷)福尔默
+formidable: /fəˈmɪdəbl/ adj. 强大的；可怕的；令人敬畏的；艰难的

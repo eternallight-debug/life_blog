@@ -1,0 +1,20 @@
+habit: /ˈhæbɪt/ n. 习惯，习性；嗜好vt. 使穿衣
+habitual: /həˈbɪtʃuəl/ adj. 习惯的；惯常的；习以为常的
+hair: /her/ n. 头发；毛发；些微
+haircut: /ˈherkʌt/ n. 理发；发型
+half: /hæf/ n. 一半；半场；半学年adv. 一半地；部分地adj. 一半的；不完全的；半途的n. (Half)人名；(阿拉伯)哈勒夫；(德)哈尔夫；(英)哈夫
+hall: /hɔːl/ n. 过道，走廊；门厅；会堂，大厅；学生宿舍n. （Hall）（土）哈勒；（德、波、丹、芬、瑞典）哈尔；（英）霍尔；（法）阿尔（人名）
+halt: /hɔːlt/ n.停止,暂停,中断vt.使停止,使立定vi.立定,停止,踌躇,有缺点
+hamburger: /ˈhæmbɜːrɡər/ n. 汉堡包，火腿汉堡；牛肉饼，肉饼；碎牛肉n. (Hamburger)人名；(英)汉堡；(瑞典)汉布里耶；(德)汉布格尔
+hammer: /ˈhæmər/ n.铁锤,槌,锤子v.锤击,锤打
+hamper: /ˈhæmpər/ vt. 妨碍；束缚；使困累n. 食盒，食篮；阻碍物
+hand: /hænd/ n. 手，手艺；帮助；指针；插手vt. 传递，交给；支持；搀扶n. (Hand)人名；(英、瑞典)汉德
+handbook: /ˈhændbʊk/ n. 手册；指南
+handful: /ˈhændfʊl/ n. 少数；一把；棘手事
+handicap: /ˈhændikæp/ n. 障碍；不利条件，不利的因素vt. 妨碍，阻碍；使不利
+handkerchief: /ˈhæŋkətʃɪf/ n. 手帕；头巾，围巾
+handle: /ˈhændl/ n.柄,把手,把柄,口实,手感vt.触摸,运用,买卖,处理,操作vi.搬运,易于操纵n.[计]句柄
+handsome: /ˈhænsəm/ adj. （男子）英俊的；可观的；大方的，慷慨的；健美而端庄的
+handwriting: /ˈhændraɪtɪŋ/ n. 笔迹；书法；书写；手稿v. 亲手写（handwrite的ing形式）
+handy: /ˈhændi/ adj. 有用的；便利的；手边的；手巧的，灵活的n. (Handy) （美、印、加）汉迪（人名）
+hang: /hæŋ/ n.悬挂的方式,(动作的)暂停,中止vt.悬挂,附着,装饰,绞死,踌躇,使悬而未决,垂下vi.悬着,垂下,被绞死,悬而不决

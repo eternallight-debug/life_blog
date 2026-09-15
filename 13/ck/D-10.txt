@@ -1,0 +1,20 @@
+dirt: /dɜːrt/ n. 污垢，泥土；灰尘，尘土；下流话
+dirty: /ˈdɜːrti/ adj. 下流的，卑鄙的；肮脏的；恶劣的；暗淡的vt. 弄脏vi. 变脏
+disable: /dɪsˈeɪbl/ vt. 使失去能力；使残废；使无资格
+disadvantage: /ˌdɪsədˈvæntɪdʒ/ n. 缺点；不利条件；损失
+disagree: /ˌdɪsəˈɡriː/ vi. 不同意；不一致；争执；不适宜
+disappear: /ˌdɪsəˈpɪr/ vi. 消失；失踪；不复存在vt. 使…不存在；使…消失
+disappoint: /ˌdɪsəˈpɔɪnt/ vt. 使失望
+disaster: /dɪˈzæstər/ n. 灾难，灾祸；不幸
+disastrous: /dɪˈzæstrəs/ adj. 灾难性的；损失惨重的；悲伤的
+discard: /dɪˈskɑːrd/ vt. 抛弃；放弃；丢弃vi. 放弃n. 抛弃；被丢弃的东西或人
+discern: /dɪˈsɜːrn/ vt. 觉察出；识别；了解；隐约看见vi. 辨别
+discharge: /dɪsˈtʃɑːrdʒ/ vt.卸下,放出,清偿(债务),履行(义务),解雇,开(炮),放(枪),射(箭)vi.卸货,流注n.卸货,流出,放电
+discipline: /ˈdɪsəplɪn/ n. 学科；纪律；训练；惩罚vt. 训练，训导；惩戒
+disclose: /dɪsˈkloʊz/ vt. 公开；揭露
+discount: /ˈdɪskaʊnt/ n. 折扣；贴现率vi. 贴现；打折扣出售商品vt. 打折扣；将…贴现；贬损；低估；忽视
+discourage: /dɪsˈkɜːrɪdʒ/ vt. 阻止；使气馁
+discover: /dɪˈskʌvər/ vt. 发现；发觉vi. 发现
+discovery: /dɪˈskʌvəri/ n. 发现，发觉；被发现的事物
+discrepancy: /dɪˈskrepənsi/ n. 不符；矛盾；相差
+discrete: /dɪˈskriːt/ adj. 离散的，不连续的n. 分立元件；独立部件

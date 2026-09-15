@@ -1,0 +1,20 @@
+fabricate: /ˈfæbrɪkeɪt/ vt. 制造；伪造；装配
+facet: /ˈfæsɪt/ n. 面；方面；小平面vt. 在…上琢面
+facilitate: /fəˈsɪlɪteɪt/ vt. 促进；帮助；使容易
+facility: /fəˈsɪləti/ n. 设施，设备；（机器等的）特别装置，特殊功能；（特定用途的）场所；才能，天赋
+fact: /fækt/ n. 事实；实际；真相
+factor: /ˈfæktər/ n. 因素；要素；[物] 因数；代理人vi. 做代理商vt. 把…作为因素计入；代理经营；把…分解成n. (Factor)人名；(英)法克特
+factory: /ˈfæktri,ˈfæktəri/ n. 工厂；制造厂；代理店
+faculty: /ˈfæklti/ n. 科，系；能力，官能；全体教员
+fade: /feɪd/ vi. 褪色；凋谢；逐渐消失vt. 使褪色adj. 平淡的；乏味的n. [电影][电视] 淡出；[电影][电视] 淡入n. (Fade)人名；(法)法德
+Fahrenheit: /ˈfærənhaɪt/ adj. 华氏温度计的；华氏的n. 华氏温度计；华氏温标
+fail: /feɪl/ vi. 失败，不及格；破产；缺乏；衰退vt. 不及格；使失望；忘记；舍弃n. 不及格n. (Fail)人名；(葡、捷)法伊尔；(法)法伊
+failure: /ˈfeɪljər/ n. 失败；故障；失败者；破产
+faint: /feɪnt/ adj. 模糊的；头晕的；虚弱的；[医] 衰弱的vi. 昏倒；变得微弱；变得没气力n. [中医] 昏厥，昏倒
+fair: /fer/ adj. 公平的；美丽的，白皙的；[气象] 晴朗的adv. 公平地；直接地；清楚地vi. 转晴n. 展览会；市集；美人n. (Fair)人名；(英、芬)费尔
+fairly: /ˈferli/ adv. 相当地；公平地；简直n. (Fairly)人名；(英)费尔利
+faith: /feɪθ/ n. 信仰；信念；信任；忠实n. (Faith)人名；(匈)福伊特；(英)费思，费丝(女名)；(瑞典)法伊特
+faithful: /ˈfeɪθfl/ adj. 忠实的，忠诚的；如实的；准确可靠的n. (Faithful)人名；(英)费思富尔
+fake: /feɪk/ n.假货,欺骗adj.假的vt.伪造,赝造,捏造,假造,仿造vi.伪装
+fall: /fɔːl/ n.秋天,落下,瀑布,降低,落差,采伐量,堕落,下降vi.倒下,落下,来临,失守,变成,垮台,下跌,阵亡vt.美英方击倒,砍倒(树木)adj.秋天的
+FALSE: /fɔːls/ adj. 错误的；虚伪的；伪造的adv. 欺诈地

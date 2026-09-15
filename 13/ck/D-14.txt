@@ -1,0 +1,20 @@
+domestic: /dəˈmestɪk/ adj. 国内的；家庭的；驯养的；一心只管家务的n. 国货；佣人
+dominant: /ˈdɑːmɪnənt/ adj. 显性的；占优势的；支配的，统治的n. 显性
+dominate: /ˈdɑːmɪneɪt/ vt. 控制；支配；占优势；在…中占主要地位vi. 占优势；处于支配地位
+donate: /ˈdoʊneɪt/ vt. 捐赠；捐献vi. 捐赠；捐献
+donkey: /ˈdɑːŋki/ n. 驴子；傻瓜；顽固的人
+doom: /duːm/ n. 厄运；死亡；判决；世界末日vt. 注定；判决；使失败n. (Doom)人名；(泰)伦
+door: /dɔːr/ n. 门；家，户；门口；通道n. (Door)人名；(英)多尔
+dorm: /dɔːrm/ n. 宿舍（等于dormitory）n. (Dorm)人名；(瑞典)多尔姆
+dormitory: /ˈdɔːrmətɔːri/ n. 宿舍，学生宿舍adj. 住宅区的
+dose: /doʊs/ n. 剂量；一剂，一服vi. 服药vt. 给药；给…服药n. (Dose)人名；(德)多泽；(意、西、葡、塞)多塞；(英)多斯
+dot: /dɑːt/ n. 点，圆点；嫁妆vi. 打上点vt. 加小点于n. (Dot)人名；(中)多(广东话·威妥玛)；(英)多特(女子教名 Dorothea 和 Dorothy 的昵称)；(越)突
+double: /ˈdʌbl/ n.两倍,[计] 双精度型adj.两倍的,双重的vt.使加倍vi.加倍,快步走,加倍努力
+doubt: /daʊt/ n. 怀疑；疑问；疑惑v. 怀疑；不信；恐怕；拿不准
+doubtful: /ˈdaʊtfl/ adj. 可疑的；令人生疑的；疑心的；不能确定的
+doubtless: /ˈdaʊtləs/ adv. 无疑地，肯定地；大概adj. 无疑的，确定的
+down: /daʊn/ adj.向下的adv.向下,在下面,下去,降下 prep.往下,沿着n.绒毛,软毛,开阔的高地
+downstairs: /ˌdaʊnˈsterz/ adv. 在楼下adj. 楼下的n. 楼下
+downward: /ˈdaʊnwərd/ adj. 向下的，下降的adv. 向下
+dozen: /ˈdʌzn/ n. 十二个，一打adj. 一打的
+draft: /dræft/ n.草稿,草案,草图vt.起草,为...打样,设计v.草拟

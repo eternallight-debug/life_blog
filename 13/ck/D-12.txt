@@ -1,0 +1,20 @@
+disposition: /ˌdɪspəˈzɪʃn/ n. 处置；[心理] 性情；[军] 部署；倾向
+dispute: /dɪ'spjuːt/ n. 辩论；争吵；意见不同v. 辩论；对……进行质疑；争夺；抵抗（进攻）
+disregard: /ˌdɪsrɪˈɡɑːrd/ v. 忽视，无视，不尊重n. 忽视，无视，不尊重
+disrupt: /dɪsˈrʌpt/ vt. 破坏；使瓦解；使分裂；使中断；使陷于混乱adj. 分裂的，中断的；分散的
+dissatisfy: /dɪs'sætɪs,fai/ v. 使不满，使失望
+dissipate: /ˈdɪsɪpeɪt/ vt. 浪费；使…消散vi. 驱散；放荡
+dissolve: /dɪˈzɑːlv/ vt. 使溶解；使分解；使液化vi. 溶解；解散；消失n. 叠化画面；画面的溶暗
+distance: /ˈdɪstəns/ n. 距离；远方；疏远；间隔vt. 疏远；把…远远甩在后面
+distant: /ˈdɪstənt/ adj. 遥远的；冷漠的；远隔的；不友好的，冷淡的
+distil: /dɪˈstɪl/ vi. 蒸馏；提炼；渗出vt. 蒸馏；提取…的精华；使渗出
+distinct: /dɪˈstɪŋkt/ adj. 明显的；独特的；清楚的；有区别的
+distinction: /dɪˈstɪŋkʃn/ n. 区别；差别；特性；荣誉、勋章
+distinguish: /dɪˈstɪŋɡwɪʃ/ vt. 区分；辨别；使杰出，使表现突出vi. 区别，区分；辨别
+distort: /dɪˈstɔːrt/ vt. 扭曲；使失真；曲解vi. 扭曲；变形
+distract: /dɪˈstrækt/ vt. 转移；分心
+distress: /dɪˈstres/ n. 危难，不幸；贫困；悲痛vt. 使悲痛；使贫困
+distribute: /dɪˈstrɪbjuːt/ vt. 分配；散布；分开；把…分类
+distribution: /ˌdɪstrɪˈbjuːʃn/ n. 分布；分配；供应
+district: /ˈdɪstrɪkt/ n. 区域；地方；行政区
+disturb: /dɪˈstɜːrb/ vt. 打扰；妨碍；使不安；弄乱；使恼怒vi. 打扰；妨碍

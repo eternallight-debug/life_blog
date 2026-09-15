@@ -1,0 +1,20 @@
+definitely: /ˈdefɪnətli/ adv. 清楚地，当然；明确地，肯定地
+definition: /ˌdefɪˈnɪʃn/ n. 定义；[物] 清晰度；解说
+defy: /dɪˈfaɪ/ vt. 藐视；公然反抗；挑衅；使落空n. 挑战；对抗
+degenerate: /dɪˈdʒenəreɪt; dɪˈdʒenərət; dɪˈdʒenərɪt/ v. 使退化；恶化；堕落adj. 退化的；堕落的；退化的；简并的n. 堕落的人
+degrade: /dɪˈɡreɪd/ vt. 贬低；使……丢脸；使……降级；使……降解vi. 降级，降低；退化
+degree: /dɪˈɡriː/ n. 程度，等级；度；学位；阶层
+delay: /dɪˈleɪ/ v. 延期；（使）耽搁；推迟n. 延迟的时间；延期；延时；延迟器n. (Delay) （美）德莱（人名）
+delegate: /ˈdelɪɡət/ n. 代表，会议代表；委员会成员v. 授（权），把……委托给他人；委派……为代表，任命
+delegation: /ˌdelɪˈɡeɪʃn/ n. 代表团；授权；委托
+delete: /dɪˈliːt/ vt. 删除
+deliberate: /dɪˈlɪbərət/ adj. 故意的；深思熟虑的；从容的vt. 仔细考虑；商议
+delicate: /ˈdelɪkət/ adj. 微妙的；精美的，雅致的；柔和的；易碎的；纤弱的；清淡可口的
+delicious: /dɪˈlɪʃəs/ adj. 美味的；可口的
+delight: /dɪˈlaɪt/ n. 高兴vi. 高兴vt. 使高兴n. (Delight)人名；(英)迪莱特
+deliver: /dɪˈlɪvər/ vt. 交付；发表；递送；释放；给予（打击）；给…接生vi. 实现；传送；履行；投递n. 投球
+delivery: /dɪˈlɪvəri/ n. [贸易] 交付；分娩；递送
+delta: /ˈdeltə/ n. （河流的）三角洲；德耳塔（希腊字母的第四个字）n. (Delta)人名；(英、罗、葡)德尔塔
+demand: /dɪˈmænd/ n. （坚决的或困难的）要求；（顾客的）需求v. 强烈要求；需要；逼问；查问，查询n. (Demand) （德）德曼德（人名）
+democracy: /dɪˈmɑːkrəsi/ n. 民主，民主主义；民主政治
+democratic: /ˌdeməˈkrætɪk/ adj. 民主的；民主政治的；大众的
