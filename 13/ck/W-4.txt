@@ -1,0 +1,20 @@
+western: /ˈwestərn/ adj. 西方的，西部的；有西方特征的n. 西方人；西部片，西部小说n. (Western)人名；(英)韦斯顿
+westward: /ˈwestwərd/ adj. 向西的；西方的adv. 向西n. 西部；西方n. (Westward) （英、美）韦史特华尔德（人名）
+wet: /wet/ adj. [气象][物] 潮湿的；有雨的n. 雨天；湿气vt. 弄湿vi. 变湿n. (Wet)人名；(英、纳米、南非)韦特
+what: /wʌt/ pron. 什么；多么；多少adj. 什么；多么；何等adv. 到什么程度，在哪一方面int. 什么；多么
+whatever: /wətˈevər/ pron.凡是...,无论什么adj.无论怎样的,无论哪一种的,什么也
+wheat: /wiːt/ n. 小麦；小麦色n. (Wheat)人名；(英)惠特
+wheel: /wiːl/ n. 车轮；方向盘；转动vt. 转动；使变换方向；给…装轮子vi. 旋转；突然转变方向；盘旋飞行
+when: /wen/ conj.就在那个时候,在...的时候adv.什么时候,...的时候 pron.什么时侯,那时
+whenever: /wenˈevər/ conj. 无论何时，无论什么情况；每当；别的什么时候（也可以）adv. 不论何时，随便什么时候；究竟什么时候
+where: /wer/ adv. 在哪里pron. 哪里conj. 在…的地方n. 地点
+whereas: /ˌwerˈæz/ conj. 然而；鉴于n. 序言，开场白；条件语句
+whereby: /werˈbaɪ/ conj. 凭借；通过…；借以；与…一致adv. 凭此；借以
+wherever: /werˈevər/ adv. 无论什么地方；究竟在哪里conj. 无论在哪里；无论什么情况下
+whether: /ˈweðər/ conj. 是否；不论pron. 两个中的哪一个
+which: /wɪtʃ/ pron.哪个,哪几个,...的,...那个adj.哪个
+whichever: /wɪtʃˈevər/ pron. 任何一个；无论哪个；无论哪些adj. 无论哪个；无论哪些det. 任何一个；无论哪个；无论哪些
+while: /waɪl/ n.一会儿,时间 conj.当...的时候,虽然vt.消磨 prep.古方直到
+whilst: /waɪlst/ conj. 当……的时候；与……同时；然而；虽然，尽管；直到……为止（等于 while）adv. 在……时候（等于 while）
+whip: /wɪp/ n.鞭子,车夫v.鞭打,抽打,突然移动
+whirl: /wɜːrl/ v.(使)旋转,急动,急走n.旋转,—连串快速的活动

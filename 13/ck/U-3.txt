@@ -1,0 +1,20 @@
+unit: /ˈjuːnɪt/ n. 单位，单元；装置；[军] 部队；部件
+unite: /juˈnaɪt/ vt. 使…混合；使…联合；使…团结vi. 团结；联合；混合
+unity: /ˈjuːnəti/ n. 团结；一致；联合；个体n. (Unity)人名；(英)尤妮蒂
+universal: /ˌjuːnɪˈvɜːrsl/ adj. 普遍的；通用的；宇宙的；全世界的；全体的n. 一般概念；普通性
+universe: /ˈjuːnɪvɜːrs/ n. 宇宙；世界；领域
+university: /ˌjuːnɪˈvɜːrsəti/ n. 大学；综合性大学；大学校舍
+unjust: /ˌʌnˈdʒʌst/ adj. 不公平的，不公正的；非正义的
+unkind: /ˌʌnˈkaɪnd/ adj. 不友善的，不亲切的；刻薄的；（天气）恶劣的
+unknown: /ˌʌnˈnoʊn/ adj. 未知的；陌生的，默默无闻的n. 未知数；未知的事物，默默无闻的人
+unless: /ənˈles/ conj. 除非；若非prep. 除……之外
+unlike: /ˌʌnˈlaɪk/ prep. 不像，和……不同；与……不同，与……相反；非……的特征，不是……的特点adj. 不同的，不相似的，不像的conj. 不同于
+unlikely: /ʌnˈlaɪkli/ adj. 不太可能的；没希望的adv. 未必
+unload: /ˌʌnˈloʊd/ vt. 卸；摆脱…之负担；倾销vi. 卸货；退子弹
+unlucky: /ʌnˈlʌki/ adj. 不幸的；倒霉的；不吉利的
+unnecessary: /ʌnˈnesəseri/ adj. 不必要的；多余的，无用的
+unpleasant: /ʌnˈpleznt/ adj. 讨厌的；使人不愉快的
+unsatisfactory: /ˌʌnˌsætɪsˈfæktəri/ adj. 不令人满意的；不满足的；不符合要求的
+unstable: /ʌnˈsteɪbl/ adj. 不稳定的；动荡的；易变的
+unsuitable: /ʌnˈsuːtəbl/ adj. 不适合的；不适宜的；不相称的
+until: /ənˈtɪl/ conj. 到……时，直到……为止prep. 到……时，直到……为止

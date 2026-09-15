@@ -1,0 +1,20 @@
+unusual: /ʌnˈjuːʒuəl/ adj. 不寻常的；与众不同的；不平常的
+unusually: /ʌnˈjuːʒuəli/ adv. 特别地，及其，非常；异常地，不同寻常地
+unwilling: /ʌnˈwɪlɪŋ/ adj. 不愿意的；不情愿的；勉强的
+up: /ʌp/ adv.向上,到(较高的地方,北方),起来,起床 prep.向上,在上,沿adj.向上的,上行的
+update: /ˌʌpˈdeɪt/ vt. 更新；校正，修正；使现代化n. 更新；现代化
+upgrade: /ˈʌpɡreɪd/ n.升级,上升,上坡adv.往上vt.使升级,提升,改良品种
+uphold: /ʌpˈhoʊld/ vt. 支撑；鼓励；赞成；举起
+upon: /əˈpɑːn/ prep. 在……之上；即将来临adv. 在上面地；此后
+upper: /ˈʌpər/ adj. 上面的，上部的；较高的n. 鞋面；兴奋剂（常用复数 uppers）n. （Upper）（英）厄珀（人名）
+upright: /ˈʌpraɪt/ adj. 正直的，诚实的；垂直的，直立的；笔直的；合乎正道的n. 垂直；竖立
+upset: /ʌpˈset/ vt. 使心烦；颠覆；扰乱vi. 翻倒adj. 心烦的；混乱的；弄翻的n. 混乱；翻倒；颠覆
+upstairs: /ˌʌpˈsterz/ adv. 在（或向）楼上；在（或向）上一层；智力上adj. 楼上的n. 楼上
+upward: /ˈʌpwərd/ adj. 向上的；上升的adv. 向上地；增涨地
+upwards: /ˈʌpwərdz/ adv. 向上；在上部；向上游
+urge: /ɜːrdʒ/ vt. 力劝，催促；驱策，推进n. 强烈的欲望，迫切要求；推动力vi. 强烈要求
+urgent: /ˈɜːrdʒənt/ adj. 紧急的；急迫的
+us: /əs,ʌs/ pron. 我们
+usage: /ˈjuːsɪdʒ/ n. 使用；用法；惯例
+use: /juːz/ n. 使用；用途；发挥vt. 使用，运用；利用；耗费n. （Use）（德）乌泽（人名）
+used: /juːst; juːzd/ adj. 习惯的；二手的，使用过的v. 用（use 的过去式和过去分词）

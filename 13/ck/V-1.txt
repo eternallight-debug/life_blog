@@ -1,0 +1,20 @@
+vacant: /ˈveɪkənt/ adj. 空虚的；空的；空缺的；空闲的；茫然的n. （Vacant）（法）瓦康（人名）
+vacation: /veɪˈkeɪʃn/ n. 假期；（房屋）搬出vi. 休假，度假
+vacuum: /ˈvækjuːm/ n. 真空；空缺，空白；真空吸尘器adj. 真空的；利用真空的；产生真空的vt. 用真空吸尘器清扫
+vague: /veɪɡ/ adj. 模糊的；含糊的；不明确的；暧昧的n. (Vague)人名；(法)瓦格；(英)韦格
+vain: /veɪn/ adj. 徒劳的；自负的；无结果的；无用的
+valid: /ˈvælɪd/ adj. 有效的；有根据的；合法的；正当的
+validity: /vəˈlɪdəti/ n. [计] 有效性；正确；正确性
+valley: /ˈvæli/ n. 山谷；流域；溪谷n. (Valley)人名；(英)瓦利；(法)瓦莱
+valuable: /ˈvæljuəbl/ adj. 有价值的；贵重的；可估价的n. 贵重物品
+value: /ˈvæljuː/ n. 值；价值；价格；重要性；确切涵义vt. 评价；重视；估价
+valve: /vælv/ n. 阀；[解剖] 瓣膜；真空管；活门vt. 装阀于；以活门调节n. (Valve)人名；(俄、芬)瓦尔韦
+van: /væn/ n. 先锋；厢式货车；增值网vt. 用车搬运n. (Van)人名；(老、泰、柬、缅)万
+vanish: /ˈvænɪʃ/ vi. 消失；突然不见；成为零vt. 使不见，使消失n. 弱化音
+vanity: /ˈvænəti/ n. 虚荣心；空虚；浮华；无价值的东西
+vapour: /ˈveɪpər/ n. 蒸汽，烟雾vi. 自我吹嘘
+variable: /ˈveriəbl,ˈværiəbl/ adj. 变量的；可变的；易变的，多变的；变异的，[生物] 畸变的n. [数] 变量；可变物，可变因素
+variation: /ˌveriˈeɪʃn/ n. 变化，变更，变动；[生物] 变异，变种；变奏曲
+variety: /vəˈraɪəti/ n. 多样；种类；杂耍；变化，多样化
+various: /ˈveriəs,ˈværiəs/ adj. 各种各样的；多方面的
+vary: /ˈveri,ˈværi/ vi. 变化；变异；违反vt. 改变；使多样化；变奏n. (Vary)人名；(英、法、罗、柬)瓦里

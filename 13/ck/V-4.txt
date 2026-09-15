@@ -1,0 +1,20 @@
+vigorous: /ˈvɪɡərəs/ adj. 有力的；精力充沛的
+village: /ˈvɪlɪdʒ/ n. 村庄；村民；（动物的）群落
+vine: /vaɪn/ n. 藤；葡萄树；藤本植物；攀缘植物；藤蔓植物vi. 长成藤蔓；爬藤n. (Vine)人名；(葡)维内；(英)瓦因
+vinegar: /ˈvɪnɪɡər/ n. 醋
+violate: /ˈvaɪəleɪt/ vt. 违反；侵犯，妨碍；亵渎
+violence: /ˈvaɪələns/ n. 暴力；侵犯；激烈；歪曲
+violent: /ˈvaɪələnt/ adj. 暴力的；猛烈的
+violet: /ˈvaɪələt/ n. 紫罗兰；堇菜；羞怯的人adj. 紫色的；紫罗兰色的n. (Violet)人名；(西)比奥莱特；(法)维奥莱；(印、匈、英)维奥莱特
+violin: /ˌvaɪəˈlɪn/ n. 小提琴；小提琴手n. (Violin)（意）维奥林（人名）
+virgin: /ˈvɜːrdʒɪn/ n.处女,(晚近用法)处男adj.处女的,童贞的,纯洁的,洁白无瑕疵的,未被玷污的,原始的,处于原耒状态的,未采伐过的森林 美国著名游戏软件公司
+virtual: /ˈvɜːrtʃuəl/ adj. [计] 虚拟的；实质上的，事实上的（但未在名义上或正式获承认）
+virtually: /ˈvɜːrtʃuəli/ adv. 事实上，几乎；实质上
+virtue: /ˈvɜːrtʃuː/ n. 美德；优点；贞操；功效n. (Virtue)人名；(英)弗丘
+virus: /ˈvaɪrəs/ n. [病毒] 病毒；恶毒；毒害n. (Virus)人名；(西)比鲁斯
+visible: /ˈvɪzəbl/ adj. 明显的；看得见的；现有的；可得到的n. 可见物；进出口贸易中的有形项目
+vision: /ˈvɪʒn/ n. 视力；美景；眼力；幻象；想象力；幻视（漫威漫画旗下超级英雄）vt. 想象；显现；梦见
+visit: /ˈvɪzɪt/ n.拜访,访问,游览,参观,(作客)逗留,视察,调查vt.拜访,访问,参观,视察,降临vi.访问,参观,闲谈
+visitor: /ˈvɪzɪtər/ n. 访问者，参观者；视察者；候鸟
+visual: /ˈvɪʒuəl/ adj. 视觉的，视力的；栩栩如生的
+visualize: /ˈvɪʒuəlaɪz/ vt. 形象，形象化；想像，设想vi. 显现

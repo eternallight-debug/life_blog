@@ -1,0 +1,20 @@
+weary: /ˈwɪri/ adj. 疲倦的；厌烦的；令人厌烦的vi. 疲倦；厌烦vt. 使疲倦；使厌烦
+weather: /ˈweðər/ n. 天气；气象；气候；处境vt. 经受住；使风化；侵蚀；使受风吹雨打vi. 风化；受侵蚀；经受风雨adj. 露天的；迎风的n. (Weather)人名；(英)韦瑟
+weave: /wiːv/ vt. 编织；编排；使迂回前进vi. 纺织；编成；迂回行进n. 织物；织法；编织式样
+web: /web/ n. 网；卷筒纸；蹼；织物；圈套vt. 用网缠住；使中圈套vi. 形成网
+wedding: /ˈwedɪŋ/ n. 婚礼，婚宴；结婚；结合v. 与…结婚（wed的ing形式）n. (Wedding)人名；(德)韦丁
+wedge: /wedʒ/ n. 楔子；楔形物；不和v. 楔入；挤进；楔住n. (Wedge) 韦奇（人名）
+Wednesday: /'wenzdei/ n. 星期三
+weed: /wiːd/ n.野草,杂草v.除草,铲除
+week: /wiːk/ n. 周，星期
+weekday: /ˈwiːkdeɪ/ n. 平日，普通日；工作日
+weekend: /ˈwiːkend/ n. 周末，周末休假；周末聚会adj. 周末的，周末用的vi. 度周末
+weekly: /ˈwiːkli/ adj. 每周的；周刊的；一周一次的n. 周刊adv. 每周一次；逐周
+weep: /wiːp/ v. 哭泣，流泪；哭着说；哀悼；渗出（液体）n. 哭泣，落泪
+weigh: /weɪ/ vt. 权衡；考虑；称…重量vi. 重量为…；具有重要性；成为…的重荷；起锚n. 权衡；称重量
+weight: /weɪt/ n. 重量，重力；负担；砝码；重要性vt. 加重量于，使变重n. (Weight)人名；(英)韦特；(捷)魏格特
+welcome: /ˈwelkəm/ n.欢迎vt.欢迎int.欢迎adj.受欢迎的
+weld: /weld/ vt. 焊接；使结合；使成整体vi. 焊牢n. 焊接；焊接点n. (Weld)人名；(英)韦尔德
+welfare: /ˈwelfer/ n. 福利；幸福；福利事业；安宁adj. 福利的；接受社会救济的
+well: /wel/ adv. 很好地；充分地；满意地；适当地adj. 良好的；健康的；适宜的n. 井；源泉v. 涌出n. (Well)人名；(英、德、荷)韦尔
+west: /west/ n. 西；西方；西部adj. 西方的；朝西的adv. 在西方；向西方；自西方n. (West)人名；(英、德、芬、瑞典)韦斯特
