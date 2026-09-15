@@ -1,0 +1,20 @@
+sensitive: /ˈsensətɪv/ adj. 敏感的；感觉的；[仪] 灵敏的；感光的；易受伤害的；易受影响的n. 敏感的人；有灵异能力的人
+sentence: /ˈsentəns/ n. [语][计] 句子，命题；宣判，判决vt. 判决，宣判
+sentiment: /ˈsentɪmənt/ n. 感情，情绪；情操；观点；多愁善感
+separate: /ˈseprət/ adj.分开的,分离的,个别的,单独的v.分开,隔离,分散,分别
+separately: /ˈseprətli/ adv. 分别地；分离地；个别地
+separation: /ˌsepəˈreɪʃn/ n. 分离，分开；间隔，距离；[法] 分居；缺口
+September: /sepˈtembər/ n. 九月
+sequence: /ˈsiːkwəns/ n. [数][计] 序列；顺序；续发事件vt. 按顺序排好
+series: /ˈsɪriːz/ n. 系列，连续；[电] 串联；级数；丛书
+serious: /ˈsɪriəs/ adj. 严肃的，严重的；认真的；庄重的；危急的
+seriously: /ˈsɪriəsli/ adv. 认真地；严重地，严肃地
+servant: /ˈsɜːrvənt/ n. 仆人，佣人；公务员；雇工n. (Servant)人名；(西)塞尔万特；(法)塞尔旺
+serve: /sɜːrv/ vt. 招待，供应；为…服务；对…有用；可作…用vi. 服役，服务；适合，足够；发球；招待，侍候n. 发球，轮到发球n. (Serve)人名；(法)塞尔夫
+service: /ˈsɜːrvɪs/ n. 服务，服侍；服役；仪式adj. 服务性的；耐用的；服现役的vt. 维修，检修；保养n. (Service)人名；(英)瑟维斯
+session: /ˈseʃn/ n. 会议；（法庭的）开庭；（议会等的）开会；学期；讲习会
+set: /set/ vt. 放置，安置; 使处于某种状况; 设置; 摆放餐具;vi. 落山; 出发; 凝结;n. 一套，一副; 集合; 布景; 电视机;adj. 固定的; 位于…的; 顽固的; 安排好的;
+setting: /ˈsetɪŋ/ n. 环境；安装；布置；[天] 沉落v. 放置；沉没；使…处于某位置（set的ing形式）
+settle: /ˈsetl/ vi. 解决；定居；沉淀；下陷vt. 解决；安排；使…定居n. 有背长椅n. (Settle)人名；(英)塞特尔
+settlement: /ˈsetlmənt/ n. 解决，处理；[会计] 结算；沉降；殖民
+seven: /ˈsevn/ num. 七个，七n. 七个人；七点钟；七岁adj. 七的；七个的n. (Seven) （土、法、俄）谢文（人名）

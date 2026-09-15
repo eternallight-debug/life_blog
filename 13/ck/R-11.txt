@@ -1,0 +1,20 @@
+reserve: /rɪˈzɜːrv/ n.储备(物),储藏量,预备队vt.储备,保存,保留,预定,预约
+reside: /rɪˈzaɪd/ vi. 住，居住；属于
+residence: /ˈrezɪdəns/ n. 住宅，住处；居住
+resident: /ˈrezɪdənt/ n.居民adj.居住的,常驻的
+residential: /ˌrezɪˈdenʃl/ adj. 住宅的；与居住有关的
+resign: /rɪˈzaɪn/ vt. 辞职；放弃；委托；使听从vi. 辞职n. 辞去职务
+resignation: /ˌrezɪɡˈneɪʃn/ n. 辞职；放弃；辞职书；顺从
+resist: /rɪˈzɪst/ vi. 抵抗，抗拒；忍耐vt. 抵抗；忍耐，忍住n. [助剂] 抗蚀剂；防染剂
+resistance: /rɪˈzɪstəns/ n. 阻力；电阻；抵抗；反抗；抵抗力
+resistant: /rɪˈzɪstənt/ adj. 抵抗的，反抗的；顽固的n. 抵抗者
+resolution: /ˌrezəˈluːʃn/ n. [物] 分辨率；决议；解决；决心
+resolve: /rɪˈzɑːlv/ vt. 决定；溶解；使……分解；决心要做……；[主化]解析vi. 解决；决心；分解n. 坚决；决定要做的事
+resonance: /ˈrezənəns/ n. [力] 共振；共鸣；反响
+resort: /rɪˈzɔːrt/ n. 凭借，手段；度假胜地；常去之地vi. 求助，诉诸；常去；采取某手段或方法
+resource: /rɪˈsɔːs/ n. 资源，财力；办法；智谋vi. 向...提供资金
+respect: /rɪˈspekt/ n. 尊敬，尊重；方面；敬意vt. 尊敬，尊重；遵守
+respectful: /rɪˈspektfl/ adj. 恭敬的；有礼貌的
+respective: /rɪˈspektɪv/ adj. 分别的，各自的
+respectively: /rɪˈspektɪvli/ adv. 分别地；各自地，独自地
+respond: /rɪˈspɑːnd/ vi. 回答；作出反应；承担责任vt. 以…回答n. 应答；唱和

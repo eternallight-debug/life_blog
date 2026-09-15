@@ -1,0 +1,20 @@
+towel: /ˈtaʊəl/ n. 毛巾，手巾；[纸] 纸巾vt. 用毛巾擦vi. 用毛巾擦干身体
+tower: /ˈtaʊər/ n. 塔；高楼；堡垒vi. 高耸；超越n. (Tower)人名；(英)托尔
+town: /taʊn/ n. 城镇，市镇；市内商业区n. (Town)人名；(英)汤
+toy: /tɔɪ/ n. 玩具；小装饰品；不值钱的东西vi. 玩弄；调情；随随便便地对待adj. 作为玩具的；玩物似的n. (Toy) （美）托伊（人名）
+trace: /treɪs/ n.痕迹,踪迹,微量,迹线,缰绳vt.描绘,映描,画轮廓,追踪,回溯,探索vi.上溯,沿路走
+track: /træk/ n. 轨道；足迹，踪迹；小道vt. 追踪；通过；循路而行；用纤拉vi. 追踪；走；留下足迹
+tract: /trækt/ n. 束；大片土地，地带；小册子n. (Tract)人名；(英)特拉克特
+tractor: /ˈtræktər/ n. 拖拉机；牵引机
+trade: /treɪd/ n. 贸易，交易；行业；职业vi. 交易，买卖；以物易物vt. 用……进行交换
+tradition: /trəˈdɪʃn/ n. 惯例，传统；传说
+traditional: /trəˈdɪʃənl/ adj. 传统的；惯例的
+traffic: /ˈtræfɪk/ n. 交通；运输；贸易；[通信] 通信量vt. 用…作交换；在…通行vi. 交易，买卖
+tragedy: /ˈtrædʒədi/ n. 悲剧；灾难；惨案
+tragic: /ˈtrædʒɪk/ adj. 悲剧的；悲痛的，不幸的
+trail: /treɪl/ n.踪迹,痕迹,形迹vt.跟踪,追踪,拉,拖,拖拉,(指植物)蔓生,蔓延,(指人)没精打采地走
+train: /treɪn/ n. 火车；行列；长队；裙裾v. 培养；训练；瞄准n. (Train)人名；(英)特雷恩；(法)特兰；(意)特拉因
+training: /ˈtreɪnɪŋ/ n. 训练；培养；瞄准；整枝v. 训练；教养（train的ing形式）
+trait: /treɪt/ n. 特性，特点；品质；少许n. （Trait）（美、法）特雷（人名）
+traitor: /ˈtreɪtər/ n. 叛徒；卖国贼；背信弃义的人
+tram: /træm/ n. 电车轨道；煤车vt. 用煤车运载vi. 乘电车

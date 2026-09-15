@@ -1,0 +1,20 @@
+stem: /stem/ n. 干；茎；船首；血统vt. 阻止；除去…的茎；给…装柄vi. 阻止；起源于某事物；逆行abbr. 理工科的统称（science，technology，engineering，math）
+step: /step/ n. 步，脚步；步骤；步伐；梯级vi. 踏，踩；走vt. 走，迈步； 竖立（桅杆）于桅座上
+stereo: /ˈsterioʊ/ n. 立体声；立体声系统adj. 立体的；立体声的；立体感觉的
+stereotype: /ˈsteriətaɪp/ n. 陈腔滥调，老套；成见；模式化形象；铅版，铅版（浇铸或印刷）v. 对……形成模式化的看法，对……存有成见；套用老套，使一成不变；使用铅版
+stern: /stɜːrn/ adj. 严厉的；坚定的；严峻的；认真的n. 船尾；末端；（幽默）（人的）臀部n. (Stern) （英、以、法、瑞典、西）斯特恩（人名）
+steward: /ˈstuːərd/ n. 管家；乘务员；膳务员；工会管事vi. 当服务员；当管事vt. 管理n. (Steward)人名；(英)斯图尔德
+stewardess: /ˈstuːərdəs/ n. 女管家；女干事；女服务员
+stick: /stɪk/ vt. 刺，戳；伸出；粘贴vi. 坚持；伸出；粘住n. 棍；手杖；呆头呆脑的人n. （Stick）（芬）斯蒂克（人名）
+sticky: /ˈstɪki/ adj. 粘的；粘性的
+stiff: /stɪf/ adj.硬的,僵直的,拘谨的,呆板的,艰难的,费劲的,僵硬的
+stiffen: /ˈstɪfn/ vi. 变硬；变猛烈；变粘vt. 使变硬；使粘稠
+still: /stɪl/ n.寂静,剧照,照片adj.静止的,静寂的adv.还,仍,更,还要,尽管如此,依然 静止画面,静态图片
+stimulate: /ˈstɪmjuleɪt/ vt. 刺激；鼓舞，激励vi. 起刺激作用；起促进作用
+stimulus: /ˈstɪmjələs/ n. 刺激；激励；刺激物
+sting: /stɪŋ/ n. 刺痛；讽刺，刺激；刺毛vt. 刺；驱使；使…苦恼；使…疼痛vi. 刺痛；被刺痛；感到剧痛n. (Sting)人名；(英)斯廷；(德)施廷
+stir: /stɜːr/ v. 搅拌；微动；（使）活动；激发，打动；（非正式）挑拨；传播n. 搅拌；激动；（非正式）监狱
+stitch: /stɪtʃ/ n. 针脚，线迹；一针vt. 缝，缝合vi. 缝，缝合
+stock: /stɑːk/ n.树干,库存,股票,股份,托盘,祖先,血统,原料adj.股票的,普通的,常备的,存货的,繁殖用的vt.装把手于,进货,备有,放牧vi.出新芽,采购
+stocking: /ˈstɑːkɪŋ/ n.长袜
+stomach: /ˈstʌmək/ n. 胃；腹部；胃口vt. 忍受；吃下vi. 忍受

@@ -1,0 +1,20 @@
+segment: /ˈseɡmənt/ n. 段，部分；（水果或花的）瓣，（动物的）节；弓形；音段；（广播或节目的）时间段v. 分割；（细胞）分裂
+segregate: /ˈseɡrɪɡeɪt/ vt. 使隔离；使分离；在…实行种族隔离
+seize: /siːz/ vt. 抓住；夺取；理解；逮捕vi. 抓住；利用；（机器）卡住
+seldom: /ˈseldəm/ adv. 很少，不常
+select: /sɪˈlekt/ vt.选择,挑选adj.精选的
+selection: /sɪˈlekʃn/ n. 选择，挑选；选集；精选品
+self: /self/ n. 自己，自我；本质；私心adj. 同一的vt. 使自花授精；使近亲繁殖vi. 自花授精n. （Self）（英）塞尔夫（人名）
+selfish: /ˈselfɪʃ/ adj. 自私的；利己主义的
+sell: /sel/ vt. 销售；推销；出卖；欺骗vi. 卖；出售；受欢迎；有销路n. 销售；失望；推销术n. (Sell)人名；(德)泽尔；(英、芬、瑞典)塞尔
+seller: /ˈselər/ n. 卖方，售货员n. (Seller)人名；(匈)谢勒；(西)塞列尔
+semester: /sɪˈmestər/ n. 学期；半年
+semiconductor: /ˈsemikəndʌktər/ n. [电子][物] 半导体
+seminar: /ˈsemɪnɑːr/ n. 讨论会，研讨班
+senate: /ˈsenət/ n. 参议院，上院；（古罗马的）元老院
+senator: /ˈsenətər/ n. 参议员；（古罗马的）元老院议员；评议员，理事n. (Senator)人名；(瑞典、斯威)塞纳托尔
+send: /send/ vt. 发送，寄；派遣；使进入；发射vi. 派人；寄信n. 上升运动n. (Send)人名；(德)森德
+senior: /ˈsiːniər/ adj. 高级的；年长的；地位较高的；年资较深的，资格较老的n. 上司；较年长者；毕业班学生n. (Senior)人名；(英)西尼尔
+sensation: /senˈseɪʃn/ n. 感觉；轰动；感动
+sense: /sens/ n. 感觉，官能；观念；道理；理智vt. 感觉到；检测n. (Sense) （美）森斯（人名）
+sensible: /ˈsensəbl/ adj. 明智的；通情达理的；合乎情理的；意识到的，能感觉到的n. 可感觉到的东西

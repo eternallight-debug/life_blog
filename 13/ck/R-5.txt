@@ -1,0 +1,20 @@
+recognize: /ˈrekəɡnaɪz/ vt. 认出，识别；承认；接受，认可；赞赏vi. 确认，承认；具结
+recollect: /ˌrekəˈlekt/ v. 回忆，想起
+recommend: /ˌrekəˈmend/ vt. 推荐，介绍；劝告；使受欢迎；托付vi. 推荐；建议
+recommendation: /ˌrekəmenˈdeɪʃn/ n. 推荐；建议；推荐信
+reconcile: /ˈrekənsaɪl/ vt. 使一致；使和解；调停，调解；使顺从
+record: /ˈrekərd; rɪˈkɔːrd/ n.履历,档案,诉状,最高纪录,报告,唱片vt.记录,标明,将...录音vi.录音,被录音adj.创纪录的
+recorder: /rɪˈkɔːrdər/ n. 录音机；记录器；记录员；八孔直笛
+recover: /rɪˈkʌvər/ vt. 恢复；弥补；重新获得vi. 恢复；胜诉；重新得球n. 还原至预备姿势n. (Recover)人名；(西)雷科韦尔
+recovery: /rɪˈkʌvəri/ n. 恢复，复原；痊愈；重获
+recreation: /ˌriːkriˈeɪʃn/ n. 娱乐；消遣；休养
+recruit: /rɪˈkruːt/ v. 征募；聘用；通过招募组建；补充；（非正式）说服；（使）恢复健康n. 招聘；新兵；新成员
+rectangular: /rekˈtæŋɡjələr/ adj. 矩形的；成直角的
+rectify: /ˈrektɪfaɪ/ vt. 改正；精馏；整流
+recur: /rɪˈkɜːr/ vi. 复发；重现；采用；再来；循环；递归
+recycle: /ˌriːˈsaɪkl/ v. 回收利用；使再循环；重新使用n. 回收利用，循环使用
+red: /red/ n.红色,红衣服,红颜料,赤字,亏空adj.红(色)的,革命的
+reduce: /rɪˈduːs/ vt. 减少；降低；使处于；把…分解vi. 减少；缩小；归纳为
+reduction: /rɪˈdʌkʃn/ n. 减少；下降；缩小；还原反应
+redundant: /rɪˈdʌndənt/ adj. 多余的，过剩的；被解雇的，失业的；冗长的，累赘的
+reed: /riːd/ n. [作物] 芦苇；簧片；牧笛；不可依靠的人vt. 用芦苇盖；用芦苇装饰n. (Reed)人名；(西、意、瑞典)雷德；(英)里德

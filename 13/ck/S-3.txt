@@ -1,0 +1,20 @@
+say: /seɪ/ vt. 讲；说明；例如；声称；假设；指明vi. 讲；表示；念；假定；背诵n. (Say)人名；(土)萨伊；(法、老、柬)赛；(英)塞伊；(匈、罗)绍伊
+scale: /skeɪl/ n.刻度,衡量,比例,数值范围,比例尺,天平,等级vt.依比例决定,攀登,测量vi.剥落,生水垢,重,攀登,衡量
+scan: /skæn/ vt. 扫描；浏览；细看；详细调查；标出格律vi. 扫描；扫掠n. 扫描；浏览；审视；细看
+scandal: /ˈskændl/ n. 丑闻；流言蜚语；诽谤；公愤
+scar: /skɑːr/ n.伤痕,疤痕v.结疤,使留下伤痕,创伤
+scarce: /skers/ adj. 缺乏的，不足的；稀有的adv. 仅仅；几乎不；几乎没有
+scarcely: /ˈskersli/ adv. 几乎不，简直不；几乎没有；决不； 刚……就……；仅仅，刚刚；勉强，刚；根本不可能；不可能，不会
+scare: /sker/ v. （使）害怕；受惊吓；吓跑n. 恐惧；惊吓；（社会上的）大恐慌adj. 骇人的
+scared: /skerd/ adj. 害怕的v. 使害怕（scare的过去分词）
+scarf: /skɑːrf/ n. 围巾；嵌接，嵌接处；头巾领巾vt. 披嵌接；用围巾围n. (Scarf)人名；(英)斯卡夫[ 复数 scarfs或scarves ]
+scatter: /ˈskætər/ v. 撒播；散开；散布；驱散；散布于……上；散射（电磁辐射或粒子）；（棒球）有效投（球）n. 零星散布的东西；离差；散射
+scene: /siːn/ n. 场面；情景；景象；事件
+scenery: /ˈsiːnəri/ n. 风景；景色；舞台布景
+scent: /sent/ n. 气味；嗅觉；痕迹；察觉能力vt. 闻到；发觉；使充满…的气味；循着遗臭追踪vi. 发出…的气味；有…的迹象；嗅着气味追赶n. (Scent)人名；(英)森特
+sceptical: /ˈskeptɪkl/ adj. 怀疑的；怀疑论的；习惯怀疑的
+schedule: /ˈskedʒuːl/ n.时间表,进度表v.确定时间
+scheme: /skiːm/ n. 计划；组合；体制；诡计vi. 搞阴谋；拟订计划vt. 计划；策划n. (Scheme)人名；(瑞典)谢默
+scholar: /ˈskɑːlər/ n. 学者；奖学金获得者
+scholarship: /ˈskɑːlərʃɪp/ n. 奖学金；学识，学问
+school: /skuːl/ n. 学校；学院；学派；鱼群vt. 教育

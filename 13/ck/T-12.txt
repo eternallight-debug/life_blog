@@ -1,0 +1,20 @@
+tramp: /træmp/ v.重步行走,踏,践,践踏
+transaction: /trænˈzækʃn/ n. 交易；事务；办理；会报，学报
+transcend: /trænˈsend/ vt. 胜过，超越
+transfer: /trænsˈfɜːr/ n.迁移,移动,传递,转移,调任,转帐,过户,转让vt.转移,调转,调任,传递,转让,改变vi.转移,转学,换车
+transform: /trænsˈfɔːrm/ vt. 改变，使…变形；转换vi. 变换，改变；转化
+transformation: /ˌtrænsfərˈmeɪʃn/ n. [遗] 转化；转换；改革；变形
+transformer: /trænsˈfɔːrmər/ n. [电] 变压器；促使变化的人
+transient: /ˈtrænʃnt/ adj. 短暂的；路过的n. 瞬变现象；过往旅客；候鸟
+transistor: /trænˈzɪstə(r)/ n. 晶体管（收音机）
+transit: /ˈtrænzɪt,ˈtrænsɪt/ n.经过,通行,搬运,运输,运输线,转变vt.横越,通过,经过vi.通过n.[天] 中天,经纬仪
+transition: /trænˈsɪʃn/ n. 过渡；转变；[分子生物] 转换；变调
+translate: /trænzˈleɪt/ vt. 翻译；转化；解释；转变为；调动vi. 翻译
+translation: /trænzˈleɪʃn/ n. 翻译；译文；转化；调任
+transmission: /trænzˈmɪʃn/ n. 传动装置，[机] 变速器；传递；传送；播送
+transmit: /trænsˈmɪt/ vt. 传输；传播；发射；传达；遗传vi. 传输；发射信号
+transparent: /trænsˈpærənt/ adj. 透明的；显然的；坦率的；易懂的
+transplant: /trænsˈplɑːnt/ v. 移植；移栽；使移居n. 移植；移植器官；被移植物；移居者
+transport: /ˈtrænspɔːrt/ n. 运输；运输机；狂喜；流放犯vt. 运输；流放；使狂喜
+transportation: /ˌtrænspɔːrˈteɪʃn/ n. 运输；运输系统；运输工具；流放
+trap: /træp/ n.圈套,陷阱,诡计,活板门,存水弯,汽水闸,(双轮)轻便马车vi.设圈套,设陷阱vt.诱捕,诱骗,计捉,设陷,坑害,使受限制

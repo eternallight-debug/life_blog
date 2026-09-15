@@ -1,0 +1,20 @@
+strongly: /ˈstrɔːŋli/ adv. 坚定地；强有力地；强烈地（说服）；（气味）浓重地
+structural: /ˈstrʌktʃərəl/ adj. 结构的；建筑的
+structure: /ˈstrʌktʃər/ n. 结构；构造；建筑物vt. 组织；构成；建造
+struggle: /ˈstrʌɡl/ v. 奋斗；艰难地行进；斗争；搏斗；争夺；挣扎成名n. 斗争；冲突；使劲；奋斗；难事
+stubborn: /ˈstʌbərn/ adj. 顽固的；顽强的；难处理的
+student: /ˈstuːdnt/ n. 学生；学者n. (Student)人名；(德)施图登特
+studio: /ˈstuːdioʊ/ n. 工作室；[广播][电视] 演播室；画室；电影制片厂
+study: /ˈstʌdi/ n. 学习，研究；课题；书房；学问vt. 学习；考虑；攻读；细察vi. 研究；用功n. (Study)人名；(英)斯塔迪
+stuff: /stʌf/ n. 东西；材料；填充物；素材资料vt. 塞满；填塞；让吃饱vi. 吃得过多
+stumble: /ˈstʌmbl/ vi. 踌躇，蹒跚；失足；犯错vt. 使…困惑；使…绊倒n. 绊倒；蹒跚而行
+stupid: /ˈstuːpɪd/ adj. 愚蠢的；麻木的；乏味的n. 傻瓜，笨蛋
+sturdy: /ˈstɜːrdi/ adj. 坚定的；强健的；健全的n. 羊晕倒病n. (Sturdy)人名；(英)斯特迪
+style: /staɪl/ n. 风格；时尚；类型；字体vt. 设计；称呼；使合潮流vi. 设计式样；用刻刀作装饰画n. (Style)人名；(英)斯泰尔
+subject: /ˈsʌbdʒɪkt/ n.题目,主题,科目,学科,国民,[语法]主语adj.受他国统治的,未独立的,受制于...的,受...影响的,以...为条件的vt.使屈从于...,使隶属
+subjective: /səbˈdʒektɪv/ adj. 主观的；个人的；自觉的
+submarine: /ˌsʌbməˈriːn/ n. 潜水艇；海底生物adj. 海底的；水下的vt. 用潜水艇攻击vi. 在下疾行；在下滑动
+submerge: /səbˈmɜːrdʒ/ vt. 淹没；把…浸入；沉浸vi. 淹没；潜入水中；湮没
+submit: /səbˈmɪt/ vt. 使服从；主张；呈递；提交vi. 服从，顺从
+subordinate: /səˈbɔːrdɪnət/ n. 部属，下属，下级；从属，次要vt. 使……居下位；使……服从adj. 从属的，隶属的；次要的
+subscribe: /səbˈskraɪb/ vi. 订阅；捐款；认购；赞成；签署vt. 签署；赞成；捐助

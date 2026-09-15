@@ -1,0 +1,20 @@
+seam: /siːm/ n. 缝；接缝vt. 缝合；接合；使留下伤痕vi. 裂开；产生裂缝
+seaman: /ˈsiːmən/ n. 海员，水手；水兵n. (Seaman)人名；(英)西曼；(意、瑞典)塞亚曼
+seaport: /ˈsiːpɔːrt/ n. 海港；港口都市
+search: /sɜːrtʃ/ v. 搜索，搜寻；调查，搜查；搜身；探求；思索; （在计算机上）搜索n. 搜寻；探究，查究；检索n. (Search) （印、美）瑟奇（人名）
+season: /ˈsiːzn/ n. 时期；季节；赛季vt. 给…调味；使适应vi. 变得成熟；变干燥
+seat: /siːt/ n. 座位；所在地；职位vt. 使…坐下；可容纳…的；使就职
+second: /ˈsekənd; sɪˈkɑːnd/ n.秒,片刻,第二者,第二人,助手,次货,二等品adj.另一个,又一个 num.第二vt.赞成,支持
+secondary: /ˈsekənderi/ adj. 第二的；中等的；次要的；中级的n. 副手；代理人
+secondly: /ˈsekəndli/ adv. 其次；第二
+secret: /ˈsiːkrət/ adj. 秘密的，机密的；不公开的；善于掩饰自己的n. 秘密，机密；秘诀；奥秘；默祷n. (Secret) （法）塞克雷（人名）
+secretary: /ˈsekrəteri/ n. 秘书；书记；部长；大臣
+section: /ˈsekʃn/ n. 截面；部分；部门；地区；章节vi. 被切割成片；被分成部分vt. 把…分段；将…切片；对…进行划分
+sector: /ˈsektər/ n. 部门；扇形，扇区；象限仪；函数尺vt. 把…分成扇形
+secure: /sɪˈkjʊr/ adj. 安全的；无虑的；有把握的；稳当的vt. 保护；弄到；招致；缚住vi. 获得安全；船抛锚；停止工作
+security: /sɪˈkjʊrəti/ n. 安全，安全性；保证；证券；抵押品adj. 安全的；保安的；保密的
+see: /siː/ vt. 看见；理解；领会；觉察；拜访vi. 看；看见；领会n. （See）（英）西伊；（柬）塞；（德）泽（人名）
+seed: /siːd/ n. 种子；根据；精液；萌芽；子孙；原由vt. 播种；结实；成熟；去…籽vi. 播种；（植物）结实n. (Seed)人名；(英)锡德
+seek: /siːk/ vt. 寻求；寻找；探索；搜索vi. 寻找；探索；搜索
+seem: /siːm/ vi. 似乎；像是；装作n. (Seem)人名；(英)西姆
+seemingly: /ˈsiːmɪŋli/ adv. 看来似乎；表面上看来

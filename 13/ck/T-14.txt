@@ -1,0 +1,20 @@
+trim: /trɪm/ adj.整齐的,整洁的vt.整理,修整,装饰
+trip: /trɪp/ n.(短途)旅行,绊倒,摔倒,失足,往返,差错,支吾,旅程vt.使跌倒,使犯错,使失败,挑剔vi.轻快地走,摔倒,绊倒,失足,结巴,远足,犯错,旅行
+triple: /ˈtrɪpl/ adj. 三倍的；三方的n. 三倍数；三个一组vi. 增至三倍vt. 使成三倍
+triumph: /ˈtraɪʌmf/ n. 胜利，凯旋；欢欣vi. 获得胜利，成功
+trivial: /ˈtrɪviəl/ adj. 不重要的，琐碎的；琐细的
+troop: /truːp/ n. 军队；组；群；多数vi. 群集；成群而行；结队vt. 把（骑兵）编成骑兵连
+tropical: /ˈtrɑːpɪkl/ adj. 热带的；热情的；酷热的
+trouble: /ˈtrʌbl/ n. 麻烦；烦恼；故障；动乱vt. 麻烦；使烦恼；折磨vi. 费心，烦恼
+troublesome: /ˈtrʌblsəm/ adj. 麻烦的；讨厌的；使人苦恼的
+trousers: /ˈtraʊzərz/ n. 裤子，长裤
+truck: /trʌk/ n. 卡车；交易；手推车vi. 驾驶卡车；以物易物vt. 交易；以卡车运输adj. （美）运货汽车的n. (Truck)人名；(德)特鲁克
+true: /truː/ adj. 真实的；正确的adv. 真实地；准确地n. 真实；准确vt. 装准n. (TRUE)人名；(英)特鲁
+truly: /ˈtruːli/ adv. 真实地，不假；真诚地n. (Truly)人名；(英)特鲁利
+trumpet: /ˈtrʌmpɪt/ n. 喇叭；喇叭声vt. 吹喇叭；吹嘘vi. 吹喇叭；发出喇叭般的声音
+trunk: /trʌŋk/ n. 树干；躯干；象鼻；汽车车尾的行李箱vt. 把…放入旅行箱内adj. 干线的；躯干的；箱子的n. (Trunk)人名；(德、匈、西)特伦克
+trust: /trʌst/ n. 信任，信赖；责任；托拉斯vt. 信任，信赖；盼望；赊卖给vi. 信任，信赖；依靠n. (Trust)人名；(英)特拉斯特
+truth: /truːθ/ n. 真理；事实；诚实；实质
+try: /traɪ/ vt. 试图，努力；试验；审判；考验vi. 尝试；努力；试验n. 尝试；努力；试验n. (Try)人名；(英、印尼)特里；(柬)德里
+tub: /tʌb/ n. 浴盆；桶vt. 把…装入桶；为…洗盆浴vi. 洗盆浴；（衣服等）被放在桶里洗
+tube: /tuːb/ n. 管；电子管；隧道；电视机vt. 使成管状；把…装管；用管输送vi. 乘地铁；不及格

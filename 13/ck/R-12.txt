@@ -1,0 +1,20 @@
+response: /rɪˈspɑːns/ n. 响应；反应；回答
+responsibility: /rɪˌspɑːnsəˈbɪləti/ n. 责任，职责；义务
+responsible: /rɪˈspɑːnsəbl/ adj. 负责的，可靠的；有责任的
+rest: /rest/ n.休息,静止,支持物,台,架,[音]休止符,其余,其他vi.休息,睡眠,静止,依靠,搁在,保持(状态),取决于vt.使休息,使静止,睡眠,依靠,搁在
+restaurant: /ˈrestrɑːnt,ˈrestərɑːnt/ n. 餐馆；[经] 饭店
+restless: /ˈrestləs/ adj. 焦躁不安的；不安宁的；得不到满足的
+restore: /rɪˈstɔːr/ vt. 恢复；修复；归还vi. 恢复；还原
+restrain: /rɪˈstreɪn/ vt. 抑制，控制；约束；制止
+restraint: /rɪˈstreɪnt/ n. 抑制，克制；约束
+restrict: /rɪˈstrɪkt/ vt. 限制；约束；限定
+restriction: /rɪˈstrɪkʃn/ n. 限制；约束；束缚
+result: /rɪˈzʌlt/ n. 结果；成绩；答案；比赛结果vi. 结果；导致；产生
+resultant: /rɪˈzʌltənt/ adj. 由此导致的，因而发生的n. 合力，合成速率；结果
+resume: /rɪˈzuːm/ n.摘要,概略,美 履历vt.再继续,重新开始,重新占用,再用,恢复
+retail: /ˈriːteɪl; rɪˈteɪl/ n. 零售v. 零售，（以某价格）零售；详述；散播（私密消息）adv. 以零售方式adj. 零售的n. (Retail) （印）勒塔伊（人名）
+retain: /rɪˈteɪn/ vt. 保持；雇；记住
+retell: /ˌriːˈtel/ vt. 复述；再讲；重述
+retention: /rɪˈtenʃn/ n. 保留；扣留，滞留；记忆力；闭尿
+retire: /rɪˈtaɪər/ vi. 退休；撤退；退却；（陪审团）退庭vt. 退休；离开；收回n. 退休；退隐；退兵信号
+retort: /rɪˈtɔːrt/ v. 反驳，回嘴；蒸馏；在曲颈瓶里加热；（对侮辱或伤害）进行报复n. 反驳，顶嘴；曲颈瓶，蒸馏瓶；蒸馏，干馏

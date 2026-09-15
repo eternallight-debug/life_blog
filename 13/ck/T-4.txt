@@ -1,0 +1,20 @@
+tentative: /ˈtentətɪv/ adj. 试验性的，暂定的；踌躇的n. 假设，试验
+tenth: /tenθ/ num. 第十n. 第十个；十分之一；十度音adj. 第十个的；十分之一的
+term: /tɜːrm/ n. 术语；学期；期限；条款；(代数式等的)项vt. 把…叫做n. (Term)人名；(泰)丁
+terminal: /ˈtɜːrmɪnl/ n. 航空站；终点站；终端机；线接头；末端；晚期病人adj. 晚期的；无可挽回的；末端的；终点的；期末的；（花朵等）顶升的
+terminate: /ˈtɜːrmɪneɪt/ vt. 使终止；使结束；解雇vi. 结束，终止；结果adj. 结束的
+terrace: /ˈterəs/ n. 平台；梯田；阳台vt. 使成梯田，使成阶地；使有平台屋顶vi. 成阶地；成梯田；筑成坛adj. （女服）叠层式的n. (Terrace)人名；(英)特勒斯
+terrain: /təˈreɪn/ n. [地理] 地形，地势；领域；地带
+terrible: /ˈterəbl/ adj. 可怕的；很糟的；令人讨厌的adv. 很，非常
+terrific: /təˈrɪfɪk/ adj. 极好的；极其的，非常的；可怕的
+terrify: /ˈterɪfaɪ/ vt. 恐吓；使恐怖；使害怕
+territory: /ˈterətɔːri/ n. 领土，领域；范围；地域；版图
+terror: /ˈterər/ n. 恐怖；恐怖行动；恐怖时期；可怕的人n. (Terror)人名；(南非)特罗尔
+test: /test/ n. 测验，考查；测试；检验；化验v. 测验；化验，检查；试验，测试；考验
+testify: /ˈtestɪfaɪ/ vt. 证明，证实；作证vi. 作证；证明
+testimony: /ˈtestɪmoʊni/ n. [法] 证词，证言；证据
+text: /tekst/ n. [计] 文本；课文；主题vt. 发短信
+textbook: /ˈtekstbʊk/ n. 教科书，课本
+textile: /ˈtekstaɪl/ n. 纺织品，织物adj. 纺织的
+texture: /ˈtekstʃər/ n. 质地；纹理；结构；本质，实质vt. 使具有浮凸纹理；使质地不平
+than: /ðən,ðæn/ conj.比 prep.与...相比较

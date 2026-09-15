@@ -1,0 +1,20 @@
+significant: /sɪɡˈnɪfɪkənt/ adj. 重大的；有效的；有意义的；值得注意的；意味深长的n. 象征；有意义的事物
+signify: /ˈsɪɡnɪfaɪ/ vt. 表示；意味；预示vi. 有重要性；要紧；冒充内行
+silence: /ˈsaɪləns/ n. 沉默；寂静；缄默；不谈；无声状态vt. 使沉默；使安静；压制；消除噪音int. 安静！；别作声！
+silent: /ˈsaɪlənt/ adj. 沉默的；寂静的；无记载的n. 无声电影
+silicon: /ˈsɪlɪkən/ n. [化学] 硅；硅元素
+silk: /sɪlk/ n. 丝绸；蚕丝；丝织物adj. 丝的；丝绸的；丝制的vi. （玉米）处于长须的阶段中n. (Silk)人名；(英、瑞典)西尔克
+silly: /ˈsɪli/ adj. 愚蠢的；不明事理的；没头脑的n. 傻瓜n. (Silly)人名；(匈)希伊；(法)西利
+silver: /ˈsɪlvər/ n.银,银子vt.镀银
+similar: /ˈsɪmələr/ adj. 相似的n. 类似物
+similarly: /ˈsɪmələrli/ adv. 类似地，差不多地；同样地，也
+simple: /ˈsɪmpl/ adj. 简单的；单纯的；天真的n. 笨蛋；愚蠢的行为；出身低微者n. (Simple)人名；(法)桑普勒
+simplicity: /sɪmˈplɪsəti/ n. 朴素；简易；天真；愚蠢
+simplify: /ˈsɪmplɪfaɪ/ vt. 简化；使单纯；使简易
+simply: /ˈsɪmpli/ adv. 简单地；仅仅；简直；朴素地；坦白地
+simulate: /ˈsɪmjuleɪt/ vt. 模仿；假装；冒充adj. 模仿的；假装的
+simultaneous: /ˌsaɪmlˈteɪniəs/ adj. 同时的；联立的；同时发生的n. 同时译员
+sin: /sɪn/ n. 罪恶；罪孽；过失vi. 犯罪；犯过失vt. 犯罪n. （Sin）（罗）西恩；（匈）欣；（柬、阿拉伯）辛；（缅）信（人名）
+since: /sɪns/ prep. 自……以后；（表示气愤）何曾conj. 自……以来；因为adv. 自……以后；此后；之前n. (Since) （法、美）新斯（人名）
+sincere: /sɪnˈsɪr/ adj. 真诚的；诚挚的；真实的
+sing: /sɪŋ/ vi. 唱歌；歌颂；鸣叫；呼号vt. 唱；用诗赞颂；唱着使n. 演唱；鸣声；呼啸声n. (Sing)人名；(老、德、泰)辛

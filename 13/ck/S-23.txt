@@ -1,0 +1,20 @@
+stable: /ˈsteɪbl/ adj.稳定的
+stack: /stæk/ n.堆,一堆,堆栈v.堆叠
+stadium: /ˈsteɪdiəm/ n. 体育场；露天大型运动场
+staff: /stæf/ n.棒,杖,杆,支柱,全体职员,[军]参谋机构,[音]五线谱vt.供给人员,充当职员
+stage: /steɪdʒ/ n. 阶段；舞台；戏剧；驿站vt. 举行；上演；筹划vi. 举行；适于上演；乘驿车旅行n. (Stage)人名；(英)斯特奇
+stagger: /ˈstæɡər/ vt. 蹒跚；使交错；使犹豫vi. 蹒跚；犹豫n. 蹒跚；交错安排adj. 交错的；错开的
+stain: /steɪn/ vt. 玷污；败坏；给…着色vi. 污染；被玷污；被染污n. 污点；瑕疵；着色剂
+stair: /ster/ n. 楼梯，阶梯；梯级n. (Stair)人名；(英、葡)斯泰尔
+staircase: /ˈsterkeɪs/ n. 楼梯
+stake: /steɪk/ n. 桩，棍子；赌注；火刑；奖金vt. 资助，支持；系…于桩上；把…押下打赌vi. 打赌n. (Stake)人名；(瑞典)斯塔克
+stale: /steɪl/ adj. 陈腐的；不新鲜的vi. 变陈旧；撒尿；变得不新鲜vt. 使变旧；变得不新鲜n. 尿n. (Stale)人名；(塞)斯塔莱
+stall: /stɔːl/ n.货摊,畜栏,厩,出售摊v.(使)停转,(使)停止,迟延
+stamp: /stæmp/ n. 邮票；印记；标志；跺脚vt. 铭记；标出；盖章于…；贴邮票于…；用脚踩踏vi. 跺脚；捣碎；毁掉n. (Stamp)人名；(德)施坦普；(英)斯坦普
+stand: /stænd/ vi. 站立；位于；停滞vt. 使站立；忍受；抵抗n. 站立；立场；看台；停止；货摊；证人席；支架
+standard: /ˈstændərd/ n. 标准；水准；旗；度量衡标准adj. 标准的；合规格的；公认为优秀的n. (Standard)人名；(英)斯坦达德；(德)施坦达德
+standpoint: /ˈstændpɔɪnt/ n. 立场；观点
+star: /stɑːr/ n. 星，恒星；明星；星形物vt. 用星号标于；由…主演，由…担任主角vi. 担任主角adj. 明星的，主角的；星形的n. (Star)人名；(瑞典)斯塔尔；(德)施塔尔
+stare: /ster/ vi. 凝视，盯着看；显眼vt. 凝视，盯着看n. 凝视；注视n. (Stare)人名；(瑞典)斯塔勒
+start: /stɑːrt/ vt. 开始；启动vi. 出发n. 开始；起点
+startle: /ˈstɑːrtl/ vt. 使吓一跳；使惊奇vi. 惊吓；惊跳；惊奇n. 惊愕；惊恐

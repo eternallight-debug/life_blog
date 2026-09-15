@@ -1,0 +1,10 @@
+twin: /twɪn/ n.双胞胎中一人,孪生子adj.双胞胎的,一对的,相似的vi.生双胞胎,成对vt.孪生,使成对
+twinkle: /ˈtwɪŋkl/ v. 闪烁；（眼睛）闪亮，闪闪发光；发亮；轻快移动n. （眼睛的）闪亮；欣喜的神情；闪烁
+twist: /twɪst/ n.一扭,扭曲,盘旋,曲折,歪曲,手法,螺旋状vt.拧,扭曲,绞,搓,捻,使苦恼,使转动,编织vi.扭弯,扭曲,缠绕,扭动,呈螺旋形
+two: /tuː/ n. 两个adj. 两个的num. 二
+type: /taɪp/ n. 类型，品种；模范；样式vt. 打字；测定（血等）类型vi. 打字n. (Type)人名；(英)泰普
+typewriter: /ˈtaɪpraɪtər/ n. 打字机
+typhoon: /taɪˈfuːn/ n. [气象] 台风
+typical: /ˈtɪpɪkl/ adj. 典型的；特有的；象征性的
+typist: /ˈtaɪpɪst/ n. 打字员，打字者
+tyre: /ˈtaɪər/ n. 轮胎，轮箍v. 装轮胎于……n. (Tyre) （美、英、加）泰尔（人名）
