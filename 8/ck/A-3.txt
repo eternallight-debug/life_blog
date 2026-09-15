@@ -1,0 +1,20 @@
+accumulate: /əˈkjuːmjəleɪt/ vi. 累积；积聚vt. 积攒
+accuracy: /ˈækjərəsi/ n. [数] 精确度，准确性
+accurate: /ˈækjərət/ adj. 精确的
+accuse: /əˈkjuːz/ vt. 控告，指控；谴责；归咎于vi. 指责；控告
+accustom: /əˈkʌstəm/ v. 使习惯于，使适应
+accustomed: /əˈkʌstəmd/ adj. 习惯的；通常的；独有的v. 使习惯于（accustom的过去分词）
+ache: /eɪk/ n.疼痛vi.觉得疼痛,渴望
+achieve: /əˈtʃiːv/ vt. 取得；获得；实现；成功vi. 达到预期的目的，实现预期的结果，如愿以偿
+achievement: /əˈtʃiːvmənt/ n. 成就；完成；达到；成绩
+acid: /ˈæsɪd/ n. 酸；俚迷幻药adj. 酸的；讽刺的；刻薄的
+acknowledge: /əkˈnɑːlɪdʒ/ vt. 承认；答谢；报偿；告知已收到
+acquaint: /əˈkweɪnt/ vt. 使熟悉；使认识
+acquaintance: /əˈkweɪntəns/ n. 熟人；相识；了解；知道
+acquire: /əˈkwaɪər/ vt. 获得；取得；学到；捕获
+acquisition: /ˌækwɪˈzɪʃn/ n. 获得物，获得；收购
+acre: /ˈeɪkər/ n. 土地，地产；英亩
+across: /əˈkrɔːs/ adv.横过,交叉地,在对面 prep.越过,交叉,在...的那边,在...对面那边
+act: /ækt/ n.幕,法案,法令,动作,举动,节目,(戏剧的)幕vi.行动,产生...的效果,担当,表演,假装,表现,见效vt.扮演,装作
+action: /ˈækʃn/ n. 行动；活动；功能；战斗；情节n. （Action）（英）埃克申（人名）
+activate: /ˈæktɪveɪt/ vt. 刺激；使活动；使活泼；使产生放射性vi. 激活；有活力

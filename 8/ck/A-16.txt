@@ -1,0 +1,20 @@
+assemble: /əˈsembl/ vt. 集合，聚集；装配；收集vi. 集合，聚集
+assembly: /əˈsembli/ n. 装配；集会，集合n. 汇编，编译
+assert: /əˈsɜːrt/ vt. 维护，坚持；断言；主张；声称
+assess: /əˈses/ vt. 评定；估价；对…征税
+asset: /ˈæset/ n. 资产；优点；有用的东西；有利条件；财产；有价值的人或物n. （法）阿塞（人名）
+assign: /əˈsaɪn/ vt. 分配；指派；[计][数] 赋值vi. 将财产过户（尤指过户给债权人）
+assignment: /əˈsaɪnmənt/ n. 分配；任务；作业；功课
+assimilate: /əˈsɪməleɪt/ vt. 吸收；使同化；把…比作；使相似vi. 吸收；同化
+assist: /əˈsɪst/ v.援助,帮助
+assistant: /əˈsɪstənt/ n. 助手，助理，助教adj. 辅助的，助理的；有帮助的
+associate: /əˈsəʊsieɪt/ vt.使发生联系,使联合vi.交往,结交n.合作人,同事adj.副的
+association: /əˌsəʊsiˈeɪʃn/ n. 协会，联盟，社团；联合；联想
+assume: /əˈsuːm/ vi. 设想；承担；采取vt. 假定；僭取；篡夺；夺取；擅用；侵占
+assumption: /əˈsʌmpʃn/ n. 假定；设想；担任；采取
+assurance: /əˈʃʊrəns/ n. 保证，担保；（人寿）保险；确信；断言；厚脸皮，无耻
+assure: /əˈʃʊr/ vt. 保证；担保；使确信；弄清楚
+astonish: /əˈstɑːnɪʃ/ v. （使）惊讶；（使）害怕
+astronaut: /ˈæstrənɔːt/ n. 宇航员，航天员；太空旅行者
+astronomy: /əˈstrɑːnəmi/ n. 天文学
+at: /ət,æt/ prep.在,于,向,对准,在...方面;Austria,奥地利

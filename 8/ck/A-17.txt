@@ -1,0 +1,20 @@
+athlete: /ˈæθliːt/ n. 运动员，体育家；身强力壮的人
+Atlantic: /ətˈlæntɪk/ n. 大西洋adj. 大西洋的
+atmosphere: /ˈætməsfɪr/ n. 气氛；大气；空气
+atmospheric: /ˌætməsˈfɪrɪk,ˌætməsˈferɪk/ adj. 大气的，大气层的
+atom: /ˈætəm/ n. 原子
+atomic: /əˈtɑːmɪk/ adj. 原子的，原子能的；微粒子的
+attach: /əˈtætʃ/ vt. 使依附；贴上；系上；使依恋vi. 附加；附属；伴随
+attack: /əˈtæk/ n. 攻击；抨击；疾病发作vt. 攻击；抨击；动手干vi. 攻击；腐蚀n. (Attack)人名；(瑞典)阿塔克
+attain: /əˈteɪn/ vt. 达到，实现；获得；到达vi. 达到；获得；到达n. 成就
+attempt: /əˈtempt/ n. 企图，试图；攻击vt. 企图，试图；尝试
+attend: /əˈtend/ vt. 出席；上（大学等）；照料；招待；陪伴vi. 出席；致力于；照料；照顾
+attendance: /əˈtendəns/ n. 出席；到场；出席人数；考勤
+attendant: /əˈtendənt/ n. 服务员，侍者；随员，陪从；参与者adj. 伴随的；陪伴的
+attention: /əˈtenʃn/ n. 注意力；关心；立正！（口令）
+attentive: /əˈtentɪv/ adj. 注意的；体贴的；留心的
+attitude: /ˈætɪtuːd/ n. 态度；看法；意见；姿势
+attorney: /əˈtɜːrni/ n. 律师；代理人；检察官
+attract: /əˈtrækt/ vt. 吸引；引起vi. 吸引；有吸引力
+attraction: /əˈtrækʃn/ n. 吸引，吸引力；引力；吸引人的事物
+attractive: /əˈtræktɪv/ adj. 吸引人的；有魅力的；引人注目的

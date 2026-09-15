@@ -1,0 +1,20 @@
+agency: /ˈeɪdʒənsi/ n. 代理，中介；代理处，经销处；作用
+agenda: /əˈdʒendə/ n. 议程；日常工作事项；日程表
+agent: /ˈeɪdʒənt/ n. 代理人，代理商；药剂；特工；动因vt. 由…作中介；由…代理adj. 代理的n. (Agent)人名；(罗)阿真特
+aggravate: /ˈæɡrəveɪt/ vt. 加重；使恶化；激怒
+aggressive: /əˈɡresɪv/ adj. 侵略性的；好斗的；有进取心的；有闯劲的
+agitation: /ˌædʒɪˈteɪʃn/ n. 激动；搅动；煽动；烦乱
+ago: /əˈɡoʊ/ adv. 以前adj. 以前的n. (Ago) （美）阿戈（人名）
+agony: /ˈæɡəni/ n. 苦恼；极大的痛苦；临死的挣扎
+agree: /əˈɡriː/ vt. 同意，赞成；承认；约定，商定vi. 同意，意见一致；约定，商定
+agreeable: /əˈɡriːəbl/ adj. 令人愉快的；适合的；和蔼可亲的
+agreement: /əˈɡriːmənt/ n. 协议；同意，一致
+agriculture: /ˈæɡrɪkʌltʃər/ n. 农业；农耕；农业生产；农艺，农学
+ahead: /əˈhed/ adv. 朝前地，在前面；提前地；领先；（为进步而）向前地；（数量或价值上）更多，更高；将来；获得成功；占优势adj. 在前的，领先的；提前的
+AI: /ˌeɪ ˈaɪ/ abbr. 人工智能（artificial intelligence）
+aid: /eɪd/ n. 援助；帮助；助手；帮助者vt. 援助；帮助；有助于vi. 帮助n. (Aid)人名；(阿拉伯、印、英)艾德
+aim: /eɪm/ v. 目的在于；引导；把……对准；瞄准n. 目的；瞄准
+air: /er/ n. 空气，大气；天空；样子；曲调vt. 使通风，晾干；夸耀vi. 通风
+aircraft: /ˈerkræft/ n. 飞机，航空器
+airline: /ˈerlaɪn/ n. 航空公司；航线adj. 航线的
+airplane: /ˈerpleɪn/ n. 飞机

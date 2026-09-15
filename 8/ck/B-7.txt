@@ -1,0 +1,20 @@
+bit: /bɪt/ n.小块,少量,片刻,马嚼子,辅币vt.上马嚼子,控制 vbl.咬n.[计]位,比特
+bite: /baɪt/ vt. 咬；刺痛n. 咬；一口；咬伤；刺痛vi. 咬；刺痛abbr. 机内测试设备（Built-In Test Equipment）n. (Bite)人名；(匈)比泰
+bitter: /ˈbɪtər/ adj. 苦的；痛苦的；尖刻的；充满仇恨的n. 苦味；苦啤酒adv. 激烈地；严寒刺骨地vt. 使变苦n. (Bitter)人名；(英、法、德、芬、捷、匈)比特
+bitterly: /ˈbɪtərli/ adv. 苦涩地，悲痛地，残酷地，怨恨地；极其，非常，强烈地
+bizarre: /bɪˈzɑːr/ adj. 奇异的（指态度，容貌，款式等）
+black: /blæk/ n.黑色,黑颜料,黑人adj.黑色的,弄脏了的,忧郁的vt.(使)变黑,涂黑
+blackboard: /ˈblækbɔːrd/ n. 黑板
+blade: /bleɪd/ n. 叶片；刀片，刀锋；剑
+blame: /bleɪm/ vt. 责备；归咎于n. 责备；责任；过失
+blank: /blæŋk/ adj.空白的,空着的,失色的,没有表情的n.空白,美 表格
+blanket: /ˈblæŋkɪt/ n. 毛毯，毯子；毯状物，覆盖层adj. 总括的，全体的；没有限制的vt. 覆盖，掩盖；用毯覆盖
+blast: /blæst/ n. 爆炸；冲击波；一阵vi. 猛攻vt. 爆炸；损害；使枯萎n. (Blast)人名；(德)布拉斯特
+blaze: /bleɪz/ n.火焰,光辉,情感爆发vi.燃烧,照耀,激发vt.在树皮上刻路标,公开宣布
+bleak: /bliːk/ adj. 阴冷的；荒凉的，无遮蔽的；黯淡的，无希望的；冷酷的；单调的
+bleed: /bliːd/ vt. 使出血；榨取vi. 流血；渗出；悲痛
+blend: /blend/ vt. 混合vi. 混合；协调n. 混合；掺合物
+bless: /bles/ vt. 祝福；保佑；赞美n. (Bless)人名；(英、意、德、匈)布莱斯
+blind: /blaɪnd/ adj. 盲目的；瞎的adv. 盲目地；看不见地n. 掩饰，借口；百叶窗vt. 使失明；使失去理智n. (Blind)人名；(法)布兰；(德、瑞典)布林德
+block: /blɑːk/ n. 块；街区；大厦；障碍物vt. 阻止；阻塞；限制；封盖adj. 成批的，大块的；交通堵塞的n. (Block)人名；(英、法、德、西、葡、芬、罗)布洛克
+blood: /blʌd/ n. 血，血液；血统vt. 从…抽血；使先取得经验n. (Blood)人名；(英、西)布拉德
