@@ -1,0 +1,20 @@
+attribute: /əˈtrɪbjuːt/ n. 属性；特质vt. 归属；把……归于
+audience: /ˈɔːdiəns/ n. 观众；听众；读者；接见；正式会见；拜会
+augment: /ɔːɡˈment/ vi. 增加；增大vt. 增加；增大n. 增加；增大
+August: /ɔːˈɡʌst/ n. 八月n. （美、德、英、波）奥古斯特（人名）adj. （august）威严的，令人敬畏的
+aunt: /ænt/ n. 阿姨；姑妈；伯母；舅妈
+aural: /ˈɔːrəl/ adj. 听觉的；耳的；气味的；先兆的n. (Aural)人名；(西)奥拉尔
+Australia: /ɔːˈstreɪljə/ n. 澳大利亚，澳洲
+Australian: /ɔːˈstreɪliən/ adj. 澳大利亚的，澳大利亚人的；（动物地理区划）澳新区的；澳大利亚植物区系界的n. 澳大利亚人
+authentic: /ɔːˈθentɪk/ adj. 真正的，真实的；可信的
+author: /ˈɔːθər/ n. 作者；作家；创始人vt. 创作出版
+authoritative: /əˈθɔːrəteɪtɪv/ adj. 有权威的；命令式的；当局的
+authority: /əˈθɔːrəti/ n. 权威；权力；当局
+authorize: /ˈɔːθəraɪz/ vt. 批准，认可；授权给；委托代替
+auto: /ˈɔːtoʊ/ n. 汽车（等于automobile）；自动vi. 乘汽车n. (Auto)人名；(葡)奥托
+automatic: /ˌɔːtəˈmætɪk/ adj. 自动的；无意识的；必然的n. 自动机械；自动手枪
+automation: /ˌɔːtəˈmeɪʃn/ n. 自动化；自动操作
+automobile: /ˈɔːtəməbiːl/ n. 汽车vt. 驾驶汽车[ 过去式 automobiled 过去分词 automobiled 现在分词 automobiling ]
+autonomy: /ɔːˈtɑːnəmi/ n. 自治，自治权
+autumn: /ˈɔːtəm/ n. 秋天；成熟期；渐衰期，凋落期adj. 秋天的，秋季的n. (Autumn)人名；(英)奥特姆
+auxiliary: /ɔːɡˈzɪliəri/ adj. 辅助的；副的；附加的；（发动机、设备等）备用的n. 助动词；辅助者，辅助物；附属机构；（北美）志愿队；（海军的）辅助舰队

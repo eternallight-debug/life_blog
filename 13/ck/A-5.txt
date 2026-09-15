@@ -1,0 +1,20 @@
+administration: /ədˌmɪnɪˈstreɪʃn/ n. 管理；行政；实施；行政机构
+admire: /ədˈmaɪər/ vt. 钦佩；赞美vi. 钦佩；称赞
+admission: /ədˈmɪʃn/ n. 承认；入场费；进入许可；坦白；录用
+admit: /ədˈmɪt/ vt. 承认；准许进入；可容纳vi. 承认；容许
+adolescent: /ˌædəˈlesnt/ adj. 青春期的；未成熟的n. 青少年
+adopt: /əˈdɑːpt/ vt. 采取；接受；收养；正式通过vi. 采取；过继
+adult: /əˈdʌlt,ˈædʌlt/ adj. 成年的；成熟的n. 成年人
+advance: /ədˈvæns/ n. 发展；前进；增长；预付款vt. 提出；预付；使……前进；将……提前vi. 前进；进展；上涨adj. 预先的；先行的
+advanced: /ədˈvænst/ adj. 先进的；高级的；晚期的；年老的v. 前进；增加；上涨（advance的过去式和过去分词形式）
+advantage: /ədˈvæntɪdʒ/ n. 优势；利益；有利条件vi. 获利vt. 有利于；使处于优势
+advent: /ˈædvent/ n. 到来；出现；基督降临；基督降临节
+adventure: /ədˈventʃər/ n. 冒险；冒险精神；投机活动vt. 冒险；大胆说出vi. 冒险
+adverb: /ˈædvɜːrb/ n. 副词adj. 副词的
+adverse: /ədˈvɜːrs,ˈædvɜːrs/ adj. 不利的；相反的；敌对的（名词adverseness，副词adversely）
+advertise: /ˈædvərtaɪz/ vt. 通知；为…做广告；使突出vi. 做广告，登广告；作宣传
+advertisement: /ˌædvərˈtaɪzmənt/ n. 广告，宣传
+advice: /ədˈvaɪs/ n. 建议；忠告；劝告；通知
+advisable: /ədˈvaɪzəbl/ adj. 明智的，可取的，适当的
+advise: /ədˈvaɪz/ vt. 建议；劝告，忠告；通知；警告vi. 建议；与…商量
+advocate: /ˈædvəkeɪt; ˈædvəkət/ v. 提倡，拥护；为……辩护n. 拥护者；辩护者；辩护律师，出庭律师；律师；为（某团体）谋利益者

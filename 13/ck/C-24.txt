@@ -1,0 +1,20 @@
+corps: /kɔːr/ n. 军团；兵种；兵队；（德国大学的）学生联合会n. （Corps）（西、德）科尔普斯（人名）
+correct: /kəˈrekt/ adj. （政治或思想）正确的；恰当的；端正的v. 改正；批改（学生作业）；校正；指出错误；抵消；校准（仪器）；修正、调整（数据）
+correction: /kəˈrekʃn/ n. 改正，修正
+correlate: /ˈkɔːrəleɪt/ vi. 关联vt. 使有相互关系；互相有关系n. 相关物；相关联的人
+correspond: /ˌkɔːrəˈspɑːnd/ vi. 符合，一致；相应；通信
+correspondence: /ˌkɔːrəˈspɑːndəns/ n. 通信；一致；相当
+correspondent: /ˌkɔːrəˈspɑːndənt/ n. 通讯记者；客户；通信者；代理商行
+corresponding: /ˌkɔːrəˈspɑːndɪŋ/ adj. 相当的，相应的；一致的；通信的v. 类似（correspond的ing形式）；相配
+corridor: /ˈkɔːrɪdɔːr/ n. 走廊
+corrode: /kəˈroʊd/ vt. 侵蚀；损害vi. 受腐蚀；起腐蚀作用
+corrupt: /kəˈrʌpt/ adj. 腐败的，贪污的；堕落的vt. 使腐烂；使堕落，使恶化vi. 堕落，腐化；腐烂
+cosmic: /ˈkɑːzmɪk/ adj. 宇宙的（等于cosmical）
+cost: /kɔːst/ n.成本,价钱,代价vt.价值为,(使)花费(金钱,时间,劳力等),使失去(生命,健康等),令人付出vi.花费
+costly: /ˈkɔːstli/ adj. 昂贵的；代价高的n. (Costly)人名；(英)科斯特利
+costume: /ˈkɑːstuːm/ n. 服装，装束；戏装，剧装vt. 给…穿上服装
+cottage: /ˈkɑːtɪdʒ/ n. 小屋；村舍；（农舍式的）小别墅
+cotton: /ˈkɑːtn/ n. 棉花；棉布；棉线vi. 一致；理解；和谐；亲近adj. 棉的；棉制的n. (Cotton)人名；(英、西、葡)科顿；(法)戈登
+couch: /kaʊtʃ/ n. 睡椅，长沙发；床；卧榻vi. 蹲伏，埋伏；躺着vt. 使躺下；表达；弯下n. (Couch)人名；(英)库奇
+cough: /kɔːf/ v. 咳嗽；咳出；突然发出刺耳的声音；厉声说出；供认n. 咳嗽，咳嗽声；咳嗽病n. (Cough) （美、英）考夫（人名）
+could: /kəd,kʊd/ aux. 能够， 可以；可能；差点就，本来有可能；很想v. 能（can 的过去式）
