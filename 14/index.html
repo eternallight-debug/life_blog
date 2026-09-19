@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>享受时间</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto}
+html,body{height:100%}
+body{
+  background: #277376;
+  overflow-x:hidden;
+  color:#fff;
+}
+#particles{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  z-index:1;
+}
+.wrap{
+  position:relative;z-index:2;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:2rem 1rem;
+}
+.container{max-width:520px;width:100%}
+
+.title{
+  text-align:center;
+  font-size:32px;
+  margin-bottom:2rem;
+  text-shadow:0 0 12px rgba(255,255,255,0.3);
+}
+
+.tool{
+  display:block;
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,0.2);
+  color:#fff;
+  text-decoration:none;
+  text-align:center;
+  padding:20px;
+  border-radius:16px;
+  margin-bottom:14px;
+  font-size:16px;
+  font-weight:500;
+  transition:all 0.3s ease;
+}
+.tool:hover{
+  transform:scale(1.05);
+  background:rgba(255,255,255,0.14);
+  border-color:rgba(255,255,255,0.4);
+  box-shadow:0 8px 30px rgba(0,0,0,0.2);
+}
+
+.footer{
+  margin-top:2.5rem;
+  text-align:center;
+  color:rgba(255,255,255,0.6);
+  font-size:14px;
+}
+</style>
+</head>
+<body>
+
+<div id="particles"></div>
+
+<div class="wrap">
+  <div class="container">
+    <h2 class="title">Hello 啊</h2>
+
+    <a href="五子棋.html" class="tool">五子棋</a>
+   
+    <div class="footer">
+      棋逢对手<br>持续更新中 · 静态页面无后台
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script>
+particlesJS("particles",{
+  particles:{
+    number:{value:70},
+    color:{value:"#ffffff"},
+    opacity:{value:0.4},
+    size:{value:2.5},
+    line_linked:{enable:true,color:"#ffffff",opacity:0.15,width:1},
+    move:{speed:0.7}
+  }
+});
+</script>
+
+</body>
+</html>
