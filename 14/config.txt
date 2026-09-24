@@ -1,5 +1,5 @@
-title:棋子
-description:来下棋
+title:游戏
+description:来玩
 time:2026-09-19
-label:游戏,棋,娱乐,推荐
-category:娱乐/下棋
+label:游戏,棋,娱乐,推荐，汉诺塔
+category:娱乐/小游戏

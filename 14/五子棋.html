@@ -25,7 +25,6 @@
     transition: padding .3s, background .3s;
   }
 
-  /* ================= 主面板 ================= */
   .app {
     width: min(94vw, 700px);
     display: flex;
@@ -71,7 +70,6 @@
     touch-action: manipulation;
   }
 
-  /* ---- 选色遮罩 ---- */
   .overlay {
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
@@ -113,7 +111,6 @@
   .mini-stone.white { background: radial-gradient(circle at 33% 30%, #ffffff, #b9b9b9 80%); }
   .picker-tag { font-size: 10.5px; font-weight: 500; color: #8e9dbb; }
 
-  /* ---- 底部按钮行 ---- */
   .controls {
     display: flex;
     gap: 8px;
@@ -155,7 +152,6 @@
     border-color: transparent;
   }
 
-  /* ---- 数据菜单 ---- */
   .data-menu {
     position: absolute;
     bottom: calc(100% + 10px);
@@ -208,7 +204,6 @@
   .data-menu button svg { width: 16px; height: 16px; flex: none; }
   .data-menu button span { flex: 1; }
 
-  /* ================= 全屏按钮 ================= */
   .fullscreen-btn {
     position: fixed;
     top: 14px;
@@ -249,7 +244,6 @@
     .fullscreen-btn svg { width: 18px; height: 18px; }
   }
 
-  /* ================= 全屏模式 ================= */
   body.is-fullscreen {
     padding: 0;
     overflow: hidden;
@@ -277,7 +271,6 @@
     box-shadow: none;
   }
 
-  /* 全屏时全屏按钮变成极淡的角标，悬停才明显 —— 方便退出 */
   body.is-fullscreen .fullscreen-btn {
     opacity: .16;
     background: rgba(0,0,0,.4);
@@ -295,7 +288,6 @@
 </head>
 <body>
 
-<!-- 全屏按钮（右上角） -->
 <button class="fullscreen-btn" id="fullscreenBtn" aria-label="全屏" title="全屏"></button>
 
 <div class="app">
@@ -310,7 +302,7 @@
     <div class="overlay show" id="overlay">
       <div class="picker">
         <div class="picker-title">选择你的棋子</div>
-        <div class="picker-sub">19 路 · 黑棋先行 · 无禁手</div>
+        <div class="picker-sub">19 路 · 黑棋先行 · 无禁手 · 强化 AI</div>
         <div class="picker-btns">
           <button data-color="black">
             <span class="mini-stone black"></span>
@@ -362,14 +354,29 @@
 (() => {
   'use strict';
 
-  /* ==================== 常量 ==================== */
+  /* ==================================================================
+     常量
+     ================================================================== */
   const SIZE = 19;
   const EMPTY = 0, BLACK = 1, WHITE = 2;
   const DIRS = [[1, 0], [0, 1], [1, 1], [1, -1]];
 
-  const AI_TIME_LIMIT = 3500;
-  const AI_MAX_DEPTH = 12;
+  const S_WIN       = 100000000;
+  const S_FIVE      = 10000000;
+  const S_OPEN_FOUR = 1000000;
+  const S_FOUR      = 100000;
+  const S_OPEN_THREE= 50000;
+  const S_THREE     = 5000;
+  const S_OPEN_TWO  = 1000;
+  const S_TWO       = 100;
 
+  const TIME_LIMIT = 2600;   // AI 思考上限（毫秒）
+  const MAX_DEPTH  = 10;     // 主搜索最大深度
+  const VCF_DEPTH  = 18;     // VCF 最大深度
+
+  /* ==================================================================
+     DOM
+     ================================================================== */
   const canvas = document.getElementById('board');
   const ctx = canvas.getContext('2d');
   const statusText = document.getElementById('statusText');
@@ -385,7 +392,9 @@
   const overlay = document.getElementById('overlay');
   const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-  /* ==================== 状态 ==================== */
+  /* ==================================================================
+     状态
+     ================================================================== */
   let humanColor = BLACK;
   let aiColor = WHITE;
 
@@ -403,177 +412,95 @@
 
   let boardPx = 0, cell = 0, pad = 0;
 
-  /* ==================== 线 ==================== */
-  let lines = [];
-  let pointLines = [];
-  let lineScoreBlack = [];
-  let lineScoreWhite = [];
-  let totalBlack = 0, totalWhite = 0;
+  /* ==================================================================
+     ★ 方向棋型分查找表
+     每格 2 bit（0 空 / 1 我 / 2 对手或边界），11 格 = 22 bit
+     ================================================================== */
+  const DIR_TABLE = new Int32Array(1 << 22).fill(-1);
 
-  /* ==================== Zobrist ==================== */
-  let zobrist = [];
-  let curHash = 0;
+  const P_FIVE       = ['11111'];
+  const P_OPEN_FOUR  = ['011110'];
+  const P_FOUR       = ['11110', '01111', '11011', '10111', '11101'];
+  const P_OPEN_THREE = ['01110', '010110', '011010'];
+  const P_THREE      = [
+    '11100', '00111', '11010', '01011', '10110', '01101',
+    '11001', '10011', '10101'
+  ];
+  const P_OPEN_TWO   = ['00110', '01100', '01010', '010010'];
+  const P_TWO        = [
+    '11000', '00011', '10100', '00101', '10010', '01001', '10001'
+  ];
 
-  function initLines() {
-    lines = [];
-    pointLines = Array.from({ length: SIZE }, () =>
-      Array.from({ length: SIZE }, () => [])
-    );
-
-    for (let y = 0; y < SIZE; y++) {
-      const line = [];
-      for (let x = 0; x < SIZE; x++) line.push([x, y]);
-      const idx = lines.length;
-      lines.push(line);
-      for (let x = 0; x < SIZE; x++) pointLines[y][x].push(idx);
+  function matchPattern(s, pat, center) {
+    let start = s.indexOf(pat);
+    while (start !== -1) {
+      if (start <= center && center < start + pat.length) return true;
+      start = s.indexOf(pat, start + 1);
     }
-    for (let x = 0; x < SIZE; x++) {
-      const line = [];
-      for (let y = 0; y < SIZE; y++) line.push([x, y]);
-      const idx = lines.length;
-      lines.push(line);
-      for (let y = 0; y < SIZE; y++) pointLines[y][x].push(idx);
-    }
-    for (let d = -(SIZE - 1); d <= SIZE - 1; d++) {
-      const line = [];
-      for (let y = 0; y < SIZE; y++) {
-        const x = y + d;
-        if (x >= 0 && x < SIZE) line.push([x, y]);
-      }
-      if (line.length < 5) continue;
-      const idx = lines.length;
-      lines.push(line);
-      for (const [x, y] of line) pointLines[y][x].push(idx);
-    }
-    for (let d = 0; d <= 2 * (SIZE - 1); d++) {
-      const line = [];
-      for (let y = 0; y < SIZE; y++) {
-        const x = d - y;
-        if (x >= 0 && x < SIZE) line.push([x, y]);
-      }
-      if (line.length < 5) continue;
-      const idx = lines.length;
-      lines.push(line);
-      for (const [x, y] of line) pointLines[y][x].push(idx);
-    }
+    return false;
   }
 
-  function scoreLine(line, player) {
-    let s = 'o';
-    for (let i = 0; i < line.length; i++) {
-      const v = board[line[i][1]][line[i][0]];
-      if (v === EMPTY) s += '.';
-      else if (v === player) s += 'x';
-      else s += 'o';
-    }
-    s += 'o';
-    return scoreLineString(s);
+  function computeDirScore(code) {
+    const a = new Array(11);
+    let c = code;
+    for (let i = 10; i >= 0; i--) { a[i] = c & 3; c >>>= 2; }
+    if (a[5] !== 1) return 0;
+
+    let s = '';
+    for (let i = 0; i < 11; i++) s += a[i];
+
+    for (let i = 0; i < P_FIVE.length; i++)
+      if (matchPattern(s, P_FIVE[i], 5)) return S_FIVE;
+    for (let i = 0; i < P_OPEN_FOUR.length; i++)
+      if (matchPattern(s, P_OPEN_FOUR[i], 5)) return S_OPEN_FOUR;
+    for (let i = 0; i < P_FOUR.length; i++)
+      if (matchPattern(s, P_FOUR[i], 5)) return S_FOUR;
+    for (let i = 0; i < P_OPEN_THREE.length; i++)
+      if (matchPattern(s, P_OPEN_THREE[i], 5)) return S_OPEN_THREE;
+    for (let i = 0; i < P_THREE.length; i++)
+      if (matchPattern(s, P_THREE[i], 5)) return S_THREE;
+    for (let i = 0; i < P_OPEN_TWO.length; i++)
+      if (matchPattern(s, P_OPEN_TWO[i], 5)) return S_OPEN_TWO;
+    for (let i = 0; i < P_TWO.length; i++)
+      if (matchPattern(s, P_TWO[i], 5)) return S_TWO;
+    return 0;
   }
 
-  function scoreLineString(s) {
-    let score = 0;
-    let m;
-
-    if (/xxxxx/.test(s)) return 10000000;
-
-    m = s.match(/\.xxxx\./g);
-    if (m) { score += m.length * 1000000; s = s.replace(/\.xxxx\./g, 'oooooo'); }
-
-    m = s.match(/x\.xxx|xxx\.x|xx\.xx/g);
-    if (m) {
-      score += m.length * 100000;
-      s = s.replace(/x\.xxx/g, 'ooooo')
-           .replace(/xxx\.x/g, 'ooooo')
-           .replace(/xx\.xx/g, 'ooooo');
+  function lookupDir(code) {
+    let v = DIR_TABLE[code];
+    if (v === -1) {
+      v = computeDirScore(code);
+      DIR_TABLE[code] = v;
     }
-
-    m = s.match(/oxxxx\.|\.xxxxo/g);
-    if (m) {
-      score += m.length * 100000;
-      s = s.replace(/oxxxx\./g, 'oooooo').replace(/\.xxxxo/g, 'oooooo');
-    }
-
-    m = s.match(/\.xxx\./g);
-    if (m) { score += m.length * 50000; s = s.replace(/\.xxx\./g, 'ooooo'); }
-
-    m = s.match(/\.x\.xx\.|\.xx\.x\./g);
-    if (m) {
-      score += m.length * 50000;
-      s = s.replace(/\.x\.xx\./g, 'oooooo').replace(/\.xx\.x\./g, 'oooooo');
-    }
-
-    m = s.match(/oxxx\.|\.xxxo|oxx\.x|ox\.xx|x\.xxo|xx\.xo/g);
-    if (m) {
-      score += m.length * 5000;
-      s = s.replace(/oxxx\./g, 'ooooo')
-           .replace(/\.xxxo/g, 'ooooo')
-           .replace(/oxx\.x/g, 'ooooo')
-           .replace(/ox\.xx/g, 'ooooo')
-           .replace(/x\.xxo/g, 'ooooo')
-           .replace(/xx\.xo/g, 'ooooo');
-    }
-
-    m = s.match(/\.xx\./g);
-    if (m) { score += m.length * 1000; s = s.replace(/\.xx\./g, 'oooo'); }
-
-    m = s.match(/\.x\.x\./g);
-    if (m) { score += m.length * 800; s = s.replace(/\.x\.x\./g, 'ooooo'); }
-
-    m = s.match(/oxx\.|\.xxo|ox\.x|x\.xo/g);
-    if (m) { score += m.length * 200; }
-
-    return score;
+    return v;
   }
 
-  function updateLines(x, y) {
-    const idxs = pointLines[y][x];
-    for (let i = 0; i < idxs.length; i++) {
-      const li = idxs[i];
-      totalBlack -= lineScoreBlack[li];
-      totalWhite -= lineScoreWhite[li];
-
-      const b = scoreLine(lines[li], BLACK);
-      const w = scoreLine(lines[li], WHITE);
-      lineScoreBlack[li] = b;
-      lineScoreWhite[li] = w;
-
-      totalBlack += b;
-      totalWhite += w;
-    }
-  }
-
-  function recomputeAllLines() {
-    lineScoreBlack = new Array(lines.length).fill(0);
-    lineScoreWhite = new Array(lines.length).fill(0);
-    totalBlack = 0; totalWhite = 0;
-    for (let i = 0; i < lines.length; i++) {
-      const b = scoreLine(lines[i], BLACK);
-      const w = scoreLine(lines[i], WHITE);
-      lineScoreBlack[i] = b;
-      lineScoreWhite[i] = w;
-      totalBlack += b;
-      totalWhite += w;
-    }
-  }
-
-  function initZobrist() {
-    zobrist = [];
-    for (let y = 0; y < SIZE; y++) {
-      zobrist[y] = [];
-      for (let x = 0; x < SIZE; x++) {
-        zobrist[y][x] = [
-          0,
-          (Math.random() * 0x7fffffff) | 0,
-          (Math.random() * 0x7fffffff) | 0
-        ];
-      }
-    }
-    curHash = 0;
-  }
-
-  /* ==================== 基础工具 ==================== */
+  /* ==================================================================
+     基础工具
+     ================================================================== */
   function inBoard(x, y) {
     return x >= 0 && x < SIZE && y >= 0 && y < SIZE;
+  }
+
+  function getDirScoreAt(x, y, d, player) {
+    const dx = DIRS[d][0], dy = DIRS[d][1];
+    let code = 0;
+    for (let k = -5; k <= 5; k++) {
+      let v;
+      if (k === 0) {
+        v = 1;
+      } else {
+        const nx = x + dx * k, ny = y + dy * k;
+        if (nx < 0 || nx >= SIZE || ny < 0 || ny >= SIZE) {
+          v = 2;
+        } else {
+          const b = board[ny][nx];
+          v = b === EMPTY ? 0 : (b === player ? 1 : 2);
+        }
+      }
+      code = (code << 2) | v;
+    }
+    return lookupDir(code);
   }
 
   function checkWinFast(x, y, player) {
@@ -582,9 +509,8 @@
       let count = 1;
       for (let s = -1; s <= 1; s += 2) {
         for (let k = 1; k < 5; k++) {
-          const nx = x + dx * k * s;
-          const ny = y + dy * k * s;
-          if (!inBoard(nx, ny)) break;
+          const nx = x + dx * k * s, ny = y + dy * k * s;
+          if (nx < 0 || nx >= SIZE || ny < 0 || ny >= SIZE) break;
           if (board[ny][nx] !== player) break;
           count++;
         }
@@ -600,9 +526,8 @@
       const cells = [[x, y]];
       for (let s = -1; s <= 1; s += 2) {
         for (let k = 1; k < 5; k++) {
-          const nx = x + dx * k * s;
-          const ny = y + dy * k * s;
-          if (!inBoard(nx, ny)) break;
+          const nx = x + dx * k * s, ny = y + dy * k * s;
+          if (nx < 0 || nx >= SIZE || ny < 0 || ny >= SIZE) break;
           if (board[ny][nx] !== player) break;
           cells.push([nx, ny]);
         }
@@ -612,310 +537,338 @@
     return null;
   }
 
-  function evaluate(player) {
-    const my = player === BLACK ? totalBlack : totalWhite;
-    const opp = player === BLACK ? totalWhite : totalBlack;
-    return my - opp * 1.12;
-  }
-
-  function moveHeuristic(x, y, player) {
+  /* ==================================================================
+     评估
+     ================================================================== */
+  function evaluateBoard(player) {
     let score = 0;
-    for (let d = 0; d < 4; d++) {
-      const dx = DIRS[d][0], dy = DIRS[d][1];
-      let count = 1;
-      let blocks = 0;
-
-      for (let s = -1; s <= 1; s += 2) {
-        for (let k = 1; k <= 4; k++) {
-          const nx = x + dx * k * s;
-          const ny = y + dy * k * s;
-          if (!inBoard(nx, ny)) { blocks++; break; }
-          const v = board[ny][nx];
-          if (v === player) count++;
-          else if (v === EMPTY) break;
-          else { blocks++; break; }
+    for (let y = 0; y < SIZE; y++) {
+      for (let x = 0; x < SIZE; x++) {
+        if (board[y][x] !== player) continue;
+        for (let d = 0; d < 4; d++) {
+          score += getDirScoreAt(x, y, d, player);
         }
       }
-
-      if (count >= 5) score += 1000000;
-      else if (count === 4) score += blocks === 0 ? 100000 : 10000;
-      else if (count === 3) score += blocks === 0 ? 10000 : 1000;
-      else if (count === 2) score += blocks === 0 ? 1000 : 100;
-      else score += 10;
     }
     return score;
   }
 
-  /* ==================== 威胁分析 ==================== */
-  function getLineString(x, y, dx, dy, player) {
-    let s = '';
-    for (let k = -4; k <= 4; k++) {
-      if (k === 0) { s += 'x'; continue; }
-      const nx = x + dx * k, ny = y + dy * k;
-      if (!inBoard(nx, ny)) { s += 'o'; continue; }
-      const v = board[ny][nx];
-      if (v === EMPTY) s += '.';
-      else if (v === player) s += 'x';
-      else s += 'o';
-    }
-    return s;
+  function evaluate(player) {
+    const opp = 3 - player;
+    return evaluateBoard(player) - evaluateBoard(opp) * 1.05;
   }
 
-  function analyzeThreats(x, y, player) {
-    board[y][x] = player;
-
-    let five = false;
-    let openFours = 0;
-    let fours = 0;
-    let openThrees = 0;
-
-    for (let d = 0; d < 4; d++) {
-      const dx = DIRS[d][0], dy = DIRS[d][1];
-      const s = getLineString(x, y, dx, dy, player);
-
-      if (/xxxxx/.test(s)) { five = true; break; }
-
-      if (/\.xxxx\./.test(s)) {
-        openFours++;
-      } else if (/xxxx\.|\.xxxx|xxx\.x|x\.xxx|xx\.xx/.test(s)) {
-        fours++;
-      }
-
-      if (/\.xxx\./.test(s)) {
-        openThrees++;
-      } else if (/\.xx\.x\.|\.x\.xx\./.test(s)) {
-        openThrees++;
-      }
+  /* ==================================================================
+     着法生成
+     ================================================================== */
+  const NEIGH = [];
+  for (let dy = -2; dy <= 2; dy++) {
+    for (let dx = -2; dx <= 2; dx++) {
+      if (dx === 0 && dy === 0) continue;
+      NEIGH.push([dx, dy]);
     }
-
-    board[y][x] = EMPTY;
-    return { five, openFours, fours, openThrees };
   }
 
-  function generateCandidates(player, depth) {
+  const candVisited = new Uint8Array(SIZE * SIZE);
+
+  function getCandidates() {
     const res = [];
-    const visited = new Set();
-
+    candVisited.fill(0);
+    let hasStone = false;
     for (let y = 0; y < SIZE; y++) {
       for (let x = 0; x < SIZE; x++) {
         if (board[y][x] === EMPTY) continue;
-        for (let dy = -2; dy <= 2; dy++) {
-          for (let dx = -2; dx <= 2; dx++) {
-            const nx = x + dx, ny = y + dy;
-            if (!inBoard(nx, ny)) continue;
-            if (board[ny][nx] !== EMPTY) continue;
-            const key = ny * SIZE + nx;
-            if (visited.has(key)) continue;
-            visited.add(key);
-            res.push({ x: nx, y: ny, score: 0 });
-          }
+        hasStone = true;
+        for (let i = 0; i < NEIGH.length; i++) {
+          const nx = x + NEIGH[i][0], ny = y + NEIGH[i][1];
+          if (nx < 0 || nx >= SIZE || ny < 0 || ny >= SIZE) continue;
+          if (board[ny][nx] !== EMPTY) continue;
+          const key = ny * SIZE + nx;
+          if (candVisited[key]) continue;
+          candVisited[key] = 1;
+          res.push({ x: nx, y: ny });
         }
       }
     }
-
-    const opp = 3 - player;
-    for (let i = 0; i < res.length; i++) {
-      const c = res[i];
-      const myH = moveHeuristic(c.x, c.y, player);
-      const oppH = moveHeuristic(c.x, c.y, opp);
-      c.score = myH + oppH * 0.85;
+    if (!hasStone) {
+      const mid = (SIZE - 1) >> 1;
+      res.push({ x: mid, y: mid });
     }
-
-    res.sort((a, b) => b.score - a.score);
-
-    let width;
-    if (depth >= 6) width = 10;
-    else if (depth >= 4) width = 8;
-    else width = 6;
-
-    return res.length > width ? res.slice(0, width) : res;
+    return res;
   }
 
-  /* ==================== 搜索 ==================== */
-  let searchStartTime = 0;
+  function moveScore(x, y, player) {
+    const opp = 3 - player;
+    let my = 0, op = 0;
+    for (let d = 0; d < 4; d++) {
+      my += getDirScoreAt(x, y, d, player);
+      op += getDirScoreAt(x, y, d, opp);
+    }
+    return my + op * 0.9;
+  }
+
+  function generateMoves(player, depth) {
+    const cands = getCandidates();
+    for (let i = 0; i < cands.length; i++) {
+      const c = cands[i];
+      c.score = moveScore(c.x, c.y, player);
+    }
+    cands.sort((a, b) => b.score - a.score);
+
+    let width;
+    if (depth >= 8) width = 8;
+    else if (depth >= 6) width = 10;
+    else if (depth >= 4) width = 12;
+    else width = 14;
+
+    return cands.length > width ? cands.slice(0, width) : cands;
+  }
+
+  /* ==================================================================
+     Alpha-Beta 搜索
+     ================================================================== */
   let nodesSearched = 0;
-  let timeUp = false;
+  let searchStartTime = 0;
+  let timeUpFlag = false;
+
+  function checkTime() {
+    if ((nodesSearched & 511) === 0) {
+      if (performance.now() - searchStartTime > TIME_LIMIT) timeUpFlag = true;
+    }
+    return timeUpFlag;
+  }
 
   function alphaBeta(depth, alpha, beta, player, ply) {
     nodesSearched++;
-    if ((nodesSearched & 255) === 0) {
-      if (performance.now() - searchStartTime > AI_TIME_LIMIT) {
-        timeUp = true;
-        return 0;
-      }
-    }
-    if (timeUp) return 0;
+    if (checkTime()) return 0;
+    if (depth <= 0) return evaluate(player);
 
-    if (depth === 0) return evaluate(player);
-
-    const opp = 3 - player;
-    const candidates = generateCandidates(player, depth);
-    if (candidates.length === 0) return evaluate(player);
+    const moves = generateMoves(player, depth);
+    if (moves.length === 0) return evaluate(player);
 
     let best = -Infinity;
+    for (let i = 0; i < moves.length; i++) {
+      const m = moves[i];
+      board[m.y][m.x] = player;
 
-    for (let i = 0; i < candidates.length; i++) {
-      const c = candidates[i];
-      board[c.y][c.x] = player;
-      curHash ^= zobrist[c.y][c.x][player];
-      updateLines(c.x, c.y);
-
-      let value;
-      if (checkWinFast(c.x, c.y, player)) {
-        value = 10000000 - ply;
+      let val;
+      if (checkWinFast(m.x, m.y, player)) {
+        val = S_WIN - ply;
       } else {
-        value = -alphaBeta(depth - 1, -beta, -alpha, opp, ply + 1);
+        val = -alphaBeta(depth - 1, -beta, -alpha, 3 - player, ply + 1);
       }
 
-      board[c.y][c.x] = EMPTY;
-      curHash ^= zobrist[c.y][c.x][player];
-      updateLines(c.x, c.y);
+      board[m.y][m.x] = EMPTY;
+      if (timeUpFlag) return 0;
 
-      if (timeUp) return 0;
-
-      if (value > best) best = value;
-      if (value > alpha) alpha = value;
+      if (val > best) best = val;
+      if (val > alpha) alpha = val;
       if (alpha >= beta) break;
     }
-
     return best;
   }
 
-  function findBestMove(player) {
-    searchStartTime = performance.now();
-    nodesSearched = 0;
-    timeUp = false;
+  let pvMove = null;
 
-    const opp = 3 - player;
+  function searchRoot(depth, player) {
+    const moves = generateMoves(player, depth);
 
-    let stones = 0;
-    for (let y = 0; y < SIZE; y++)
-      for (let x = 0; x < SIZE; x++)
-        if (board[y][x] !== EMPTY) stones++;
-    if (stones === 0) {
-      const mid = Math.floor(SIZE / 2);
-      return { x: mid, y: mid };
-    }
-
-    const allCandidates = [];
-    const visited = new Set();
-    for (let y = 0; y < SIZE; y++) {
-      for (let x = 0; x < SIZE; x++) {
-        if (board[y][x] === EMPTY) continue;
-        for (let dy = -2; dy <= 2; dy++) {
-          for (let dx = -2; dx <= 2; dx++) {
-            const nx = x + dx, ny = y + dy;
-            if (!inBoard(nx, ny)) continue;
-            if (board[ny][nx] !== EMPTY) continue;
-            const key = ny * SIZE + nx;
-            if (visited.has(key)) continue;
-            visited.add(key);
-            allCandidates.push({ x: nx, y: ny });
-          }
-        }
+    if (pvMove) {
+      const idx = moves.findIndex(m => m.x === pvMove.x && m.y === pvMove.y);
+      if (idx > 0) {
+        const m = moves.splice(idx, 1)[0];
+        moves.unshift(m);
       }
     }
 
-    if (allCandidates.length === 0) return null;
+    let bestMove = moves[0];
+    let bestScore = -Infinity;
+    let alpha = -Infinity;
 
-    for (const c of allCandidates) {
+    for (let i = 0; i < moves.length; i++) {
+      const m = moves[i];
+      board[m.y][m.x] = player;
+
+      let val;
+      if (checkWinFast(m.x, m.y, player)) {
+        val = S_WIN;
+      } else {
+        val = -alphaBeta(depth - 1, -Infinity, -alpha, 3 - player, 1);
+      }
+
+      board[m.y][m.x] = EMPTY;
+      if (timeUpFlag) break;
+
+      if (val > bestScore) { bestScore = val; bestMove = m; }
+      if (val > alpha) alpha = val;
+    }
+
+    return { move: bestMove, score: bestScore };
+  }
+
+  /* ==================================================================
+     VCF：连续冲四算杀
+     ================================================================== */
+  function findFivePoints(x, y, player) {
+    const res = [];
+    const seen = new Set();
+    for (let d = 0; d < 4; d++) {
+      const dx = DIRS[d][0], dy = DIRS[d][1];
+      for (let k = -4; k <= 4; k++) {
+        if (k === 0) continue;
+        const nx = x + dx * k, ny = y + dy * k;
+        if (!inBoard(nx, ny)) continue;
+        if (board[ny][nx] !== EMPTY) continue;
+        const key = ny * SIZE + nx;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        board[ny][nx] = player;
+        if (checkWinFast(nx, ny, player)) res.push({ x: nx, y: ny });
+        board[ny][nx] = EMPTY;
+      }
+    }
+    return res;
+  }
+
+  function getFourMoves(player) {
+    const cands = getCandidates();
+    const res = [];
+    for (let i = 0; i < cands.length; i++) {
+      const c = cands[i];
+      board[c.y][c.x] = player;
+      let isFour = false;
+      for (let d = 0; d < 4; d++) {
+        if (getDirScoreAt(c.x, c.y, d, player) >= S_FOUR) {
+          isFour = true;
+          break;
+        }
+      }
+      board[c.y][c.x] = EMPTY;
+      if (isFour) res.push(c);
+    }
+    return res;
+  }
+
+  function vcfSearch(player, depth) {
+    if (depth <= 0 || timeUpFlag) return null;
+    if (checkTime()) return null;
+
+    const fourMoves = getFourMoves(player);
+
+    for (let i = 0; i < fourMoves.length; i++) {
+      const m = fourMoves[i];
+      board[m.y][m.x] = player;
+      nodesSearched++;
+
+      if (checkWinFast(m.x, m.y, player)) {
+        board[m.y][m.x] = EMPTY;
+        return { x: m.x, y: m.y };
+      }
+
+      let isOpenFour = false;
+      for (let d = 0; d < 4; d++) {
+        if (getDirScoreAt(m.x, m.y, d, player) >= S_OPEN_FOUR) {
+          isOpenFour = true;
+          break;
+        }
+      }
+
+      if (isOpenFour) {
+        board[m.y][m.x] = EMPTY;
+        return { x: m.x, y: m.y };
+      }
+
+      const defenses = findFivePoints(m.x, m.y, player);
+
+      if (defenses.length >= 2) {
+        board[m.y][m.x] = EMPTY;
+        return { x: m.x, y: m.y };
+      }
+
+      if (defenses.length === 1) {
+        const d = defenses[0];
+        board[d.y][d.x] = 3 - player;
+
+        const next = vcfSearch(player, depth - 1);
+
+        board[d.y][d.x] = EMPTY;
+        board[m.y][m.x] = EMPTY;
+
+        if (next) return { x: m.x, y: m.y };
+      } else {
+        board[m.y][m.x] = EMPTY;
+      }
+    }
+
+    return null;
+  }
+
+  /* ==================================================================
+     主搜索
+     ================================================================== */
+  function findBestMove(player) {
+    searchStartTime = performance.now();
+    timeUpFlag = false;
+    nodesSearched = 0;
+
+    const opp = 3 - player;
+
+    let stoneCount = 0;
+    for (let y = 0; y < SIZE; y++)
+      for (let x = 0; x < SIZE; x++)
+        if (board[y][x] !== EMPTY) stoneCount++;
+
+    if (stoneCount === 0) {
+      const mid = (SIZE - 1) >> 1;
+      return { x: mid, y: mid };
+    }
+
+    const cands = getCandidates();
+
+    // 1. 自己能一步赢
+    for (let i = 0; i < cands.length; i++) {
+      const c = cands[i];
       board[c.y][c.x] = player;
       const win = checkWinFast(c.x, c.y, player);
       board[c.y][c.x] = EMPTY;
       if (win) return c;
     }
 
-    for (const c of allCandidates) {
+    // 2. 对手能一步赢，必堵
+    for (let i = 0; i < cands.length; i++) {
+      const c = cands[i];
       board[c.y][c.x] = opp;
       const win = checkWinFast(c.x, c.y, opp);
       board[c.y][c.x] = EMPTY;
       if (win) return c;
     }
 
-    for (const c of allCandidates) {
-      const t = analyzeThreats(c.x, c.y, player);
-      if (t.five || t.openFours > 0 || t.fours >= 2 ||
-          (t.fours >= 1 && t.openThrees >= 1)) {
-        return c;
-      }
-    }
+    // 3. VCF 算杀
+    const vcfMove = vcfSearch(player, VCF_DEPTH);
+    if (vcfMove && !timeUpFlag) return vcfMove;
 
-    for (const c of allCandidates) {
-      const t = analyzeThreats(c.x, c.y, opp);
-      if (t.five || t.openFours > 0 || t.fours >= 2 ||
-          (t.fours >= 1 && t.openThrees >= 1)) {
-        return c;
-      }
-    }
+    // 4. 迭代加深 Alpha-Beta
+    timeUpFlag = false;
+    searchStartTime = performance.now();
 
-    for (const c of allCandidates) {
-      const t = analyzeThreats(c.x, c.y, player);
-      if (t.openThrees >= 2) {
-        return c;
-      }
-    }
+    pvMove = null;
+    let bestMove = cands[0];
 
-    let bestMove = allCandidates[0];
-
-    for (let depth = 2; depth <= AI_MAX_DEPTH; depth += 2) {
-      let alpha = -Infinity;
-      let currentBest = null;
-      let currentBestScore = -Infinity;
-
-      for (const c of allCandidates) {
-        c.score = moveHeuristic(c.x, c.y, player) + moveHeuristic(c.x, c.y, opp) * 0.85;
-
-        const tMy = analyzeThreats(c.x, c.y, player);
-        if (tMy.openThrees >= 2) c.score += 100000;
-        else if (tMy.fours >= 1 && tMy.openThrees >= 1) c.score += 200000;
-
-        const tOpp = analyzeThreats(c.x, c.y, opp);
-        if (tOpp.openThrees >= 2) c.score += 80000;
-        else if (tOpp.fours >= 1 && tOpp.openThrees >= 1) c.score += 150000;
-      }
-      allCandidates.sort((a, b) => b.score - a.score);
-
-      const width = Math.min(allCandidates.length, depth <= 2 ? 16 : 12);
-
-      for (let i = 0; i < width; i++) {
-        const c = allCandidates[i];
-        board[c.y][c.x] = player;
-        curHash ^= zobrist[c.y][c.x][player];
-        updateLines(c.x, c.y);
-
-        let value;
-        if (checkWinFast(c.x, c.y, player)) {
-          value = 10000000;
-        } else {
-          value = -alphaBeta(depth - 1, -Infinity, -alpha, opp, 1);
-        }
-
-        board[c.y][c.x] = EMPTY;
-        curHash ^= zobrist[c.y][c.x][player];
-        updateLines(c.x, c.y);
-
-        if (timeUp) break;
-
-        if (value > currentBestScore) {
-          currentBestScore = value;
-          currentBest = c;
-        }
-        if (value > alpha) alpha = value;
-      }
-
-      if (!timeUp && currentBest) {
-        bestMove = currentBest;
-        if (currentBestScore >= 9000000) break;
-      }
-
-      if (timeUp) break;
-      if (performance.now() - searchStartTime > AI_TIME_LIMIT * 0.55) break;
+    for (let depth = 2; depth <= MAX_DEPTH; depth += 2) {
+      const r = searchRoot(depth, player);
+      if (timeUpFlag) break;
+      bestMove = r.move;
+      pvMove = r.move;
+      if (r.score >= S_WIN - 100) break;
+      if (performance.now() - searchStartTime > TIME_LIMIT * 0.5) break;
     }
 
     return bestMove;
   }
 
-  /* ==================== 游戏流程 ==================== */
+  /* ==================================================================
+     游戏流程
+     ================================================================== */
   function newGame() {
     cancelAI();
     board = Array.from({ length: SIZE }, () => new Array(SIZE).fill(EMPTY));
@@ -926,8 +879,7 @@
     lastMove = null;
     hover = null;
     moveHistory = [];
-    curHash = 0;
-    recomputeAllLines();
+    pvMove = null;
     draw();
     updateStatus();
   }
@@ -937,8 +889,6 @@
     if (!inBoard(x, y) || board[y][x] !== EMPTY) return false;
 
     board[y][x] = color;
-    curHash ^= zobrist[y][x][color];
-    updateLines(x, y);
     moveHistory.push({ color, x, y });
     lastMove = { x, y, color };
     hover = null;
@@ -974,10 +924,7 @@
   }
 
   function cancelAI() {
-    if (aiTimer) {
-      clearTimeout(aiTimer);
-      aiTimer = null;
-    }
+    if (aiTimer) { clearTimeout(aiTimer); aiTimer = null; }
     aiThinking = false;
   }
 
@@ -1002,7 +949,7 @@
         draw();
         updateStatus();
       }
-    }, 40);
+    }, 30);
   }
 
   function resign() {
@@ -1018,7 +965,9 @@
     updateStatus();
   }
 
-  /* ==================== 状态栏 ==================== */
+  /* ==================================================================
+     状态栏
+     ================================================================== */
   function updateStatus() {
     let dotClass = 'dot none';
     let text = '';
@@ -1058,12 +1007,12 @@
 
   function flashStatus(msg, ms) {
     statusText.textContent = msg;
-    setTimeout(() => {
-      if (!pickerOpen) updateStatus();
-    }, ms || 1600);
+    setTimeout(() => { if (!pickerOpen) updateStatus(); }, ms || 1600);
   }
 
-  /* ==================== 绘制 ==================== */
+  /* ==================================================================
+     绘制
+     ================================================================== */
   function resize() {
     const rect = canvas.getBoundingClientRect();
     const cssSize = rect.width;
@@ -1120,9 +1069,9 @@
     const starR = Math.max(1.6, cell * 0.11);
     ctx.fillStyle = 'rgba(50,32,12,.9)';
     const stars = [[3,3],[3,9],[3,15],[9,3],[9,9],[9,15],[15,3],[15,9],[15,15]];
-    for (const [sx, sy] of stars) {
+    for (const st of stars) {
       ctx.beginPath();
-      ctx.arc(pad + sx * cell, pad + sy * cell, starR, 0, Math.PI * 2);
+      ctx.arc(pad + st[0] * cell, pad + st[1] * cell, starR, 0, Math.PI * 2);
       ctx.fill();
     }
 
@@ -1161,9 +1110,9 @@
       ctx.lineWidth = Math.max(2, s * 0.006);
       ctx.shadowColor = 'rgba(255,60,60,.85)';
       ctx.shadowBlur = 10;
-      for (const [cx, cy] of winCells) {
+      for (const wc of winCells) {
         ctx.beginPath();
-        ctx.arc(pad + cx * cell, pad + cy * cell, r * 1.06, 0, Math.PI * 2);
+        ctx.arc(pad + wc[0] * cell, pad + wc[1] * cell, r * 1.06, 0, Math.PI * 2);
         ctx.stroke();
       }
       ctx.restore();
@@ -1203,7 +1152,9 @@
     ctx.restore();
   }
 
-  /* ==================== 坐标换算 ==================== */
+  /* ==================================================================
+     坐标换算
+     ================================================================== */
   function getPos(e) {
     const rect = canvas.getBoundingClientRect();
     if (!rect.width) return null;
@@ -1221,7 +1172,9 @@
     return { x: i, y: j };
   }
 
-  /* ==================== 开局 ==================== */
+  /* ==================================================================
+     开局
+     ================================================================== */
   function showPicker() {
     cancelAI();
     pickerOpen = true;
@@ -1249,7 +1202,9 @@
     startGame(btn.dataset.color === 'black' ? BLACK : WHITE);
   });
 
-  /* ==================== 交互 ==================== */
+  /* ==================================================================
+     交互
+     ================================================================== */
   canvas.addEventListener('click', (e) => {
     if (gameOver || aiThinking || pickerOpen) return;
     if (current !== humanColor) return;
@@ -1297,8 +1252,6 @@
     for (let i = 0; i < steps; i++) {
       const m = moveHistory.pop();
       board[m.y][m.x] = EMPTY;
-      curHash ^= zobrist[m.y][m.x][m.color];
-      updateLines(m.x, m.y);
       current = m.color;
     }
 
@@ -1306,6 +1259,7 @@
     winResult = null;
     winCells = null;
     hover = null;
+    pvMove = null;
 
     if (moveHistory.length > 0) {
       const lm = moveHistory[moveHistory.length - 1];
@@ -1330,7 +1284,9 @@
     showPicker();
   });
 
-  /* ==================== 数据菜单 ==================== */
+  /* ==================================================================
+     数据菜单
+     ================================================================== */
   dataBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     const open = dataMenu.classList.toggle('show');
@@ -1349,11 +1305,13 @@
     dataBtn.classList.remove('open');
   }
 
-  /* ==================== 导出 / 导入 ==================== */
+  /* ==================================================================
+     导出 / 导入
+     ================================================================== */
   function formatDate(d) {
-    const pad2 = (n) => String(n).padStart(2, '0');
-    return `${d.getFullYear()}${pad2(d.getMonth()+1)}${pad2(d.getDate())}`
-         + `-${pad2(d.getHours())}${pad2(d.getMinutes())}${pad2(d.getSeconds())}`;
+    const p = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}`
+         + `-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
   }
 
   function downloadFile(filename, content, mime) {
@@ -1377,7 +1335,7 @@
     }
     const data = {
       app: 'gomoku-19',
-      version: 1,
+      version: 2,
       size: SIZE,
       humanColor: humanColor,
       result: gameOver
@@ -1419,11 +1377,8 @@
 
   function importGame(text) {
     let data;
-    try {
-      data = JSON.parse(text);
-    } catch (err) {
-      throw new Error('不是有效的 JSON 文件');
-    }
+    try { data = JSON.parse(text); }
+    catch (err) { throw new Error('不是有效的 JSON 文件'); }
 
     if (!data || data.app !== 'gomoku-19') throw new Error('不是本程序导出的棋局文件');
     if (data.size !== SIZE) throw new Error('棋盘大小不匹配（需要 19 路）');
@@ -1434,7 +1389,6 @@
     overlay.classList.remove('show');
 
     board = Array.from({ length: SIZE }, () => new Array(SIZE).fill(EMPTY));
-    curHash = 0;
     moveHistory = [];
     current = BLACK;
     gameOver = false;
@@ -1442,6 +1396,7 @@
     winCells = null;
     lastMove = null;
     hover = null;
+    pvMove = null;
 
     humanColor = (data.humanColor === WHITE) ? WHITE : BLACK;
     aiColor = 3 - humanColor;
@@ -1452,7 +1407,6 @@
       if (board[m.y][m.x] !== EMPTY) continue;
 
       board[m.y][m.x] = m.c;
-      curHash ^= zobrist[m.y][m.x][m.c];
       moveHistory.push({ color: m.c, x: m.x, y: m.y });
       lastMove = { x: m.x, y: m.y, color: m.c };
       current = 3 - m.c;
@@ -1469,7 +1423,6 @@
       }
     }
 
-    recomputeAllLines();
     draw();
     updateStatus();
 
@@ -1478,7 +1431,9 @@
     return imported;
   }
 
-  /* ==================== 全屏功能 ==================== */
+  /* ==================================================================
+     全屏
+     ================================================================== */
   const FS_ENTER_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M8 3H5a2 2 0 0 0-2 2v3"/>
@@ -1508,7 +1463,6 @@
     fsState = on;
     document.body.classList.toggle('is-fullscreen', on);
 
-    // 尝试调用浏览器原生全屏（失败不影响 CSS 全屏效果）
     try {
       if (on) {
         const el = document.documentElement;
@@ -1528,28 +1482,21 @@
     } catch (err) { /* 忽略 */ }
 
     updateFsIcon();
-
-    // 多次触发 resize，确保画布尺寸稳定
     requestAnimationFrame(resize);
     setTimeout(resize, 100);
     setTimeout(resize, 320);
   }
 
-  fullscreenBtn.addEventListener('click', () => {
-    setFullscreen(!fsState);
-  });
+  fullscreenBtn.addEventListener('click', () => setFullscreen(!fsState));
 
-  // 监听原生全屏变化（用户按 ESC 退出时同步状态）
   function onNativeFsChange() {
     const isNativeFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
-    // 原生全屏已退出，但我们的状态还标记着全屏 → 说明用户按了 ESC
     if (!isNativeFs && fsState) {
       fsState = false;
       document.body.classList.remove('is-fullscreen');
       updateFsIcon();
       setTimeout(resize, 100);
     } else if (isNativeFs) {
-      // 原生全屏已进入，确保 UI 状态正确
       setTimeout(resize, 100);
     }
   }
@@ -1558,12 +1505,11 @@
   document.addEventListener('webkitfullscreenchange', onNativeFsChange);
   document.addEventListener('msfullscreenchange', onNativeFsChange);
 
-  // 初始化图标
   updateFsIcon();
 
-  /* ==================== 启动 ==================== */
-  initLines();
-  initZobrist();
+  /* ==================================================================
+     启动
+     ================================================================== */
   newGame();
   showPicker();
   resize();

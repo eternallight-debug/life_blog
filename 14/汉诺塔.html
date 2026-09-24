@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>汉诺塔</title>
+<style>
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px;
+    overflow: hidden;
+    font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+    color: #e8eefc;
+    background: radial-gradient(circle at 50% -10%, #1e2a4a 0%, #0b1020 62%);
+    user-select: none;
+  }
+
+  /* ---------- 顶栏 ---------- */
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: min(1200px, 100%);
+    padding: 0 4px;
+  }
+
+  .moves {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+  .moves b {
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+  }
+  .moves .min-part {
+    font-size: 13px;
+    font-weight: 400;
+    color: #5d6d8c;
+    letter-spacing: .3px;
+  }
+
+  .tools {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tools button,
+  .tools select {
+    font: inherit;
+    color: #b9c9e8;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+
+  .tools button:hover,
+  .tools select:hover {
+    background: rgba(255,255,255,.12);
+    color: #fff;
+    border-color: rgba(255,255,255,.2);
+  }
+
+  .tools select {
+    padding: 5px 8px;
+    font-size: 13px;
+    appearance: none;
+    text-align: center;
+    min-width: 54px;
+  }
+  .tools option { color: #111; }
+
+  .tools button.icon {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  /* ---------- 状态提示 ---------- */
+  #status {
+    min-height: 20px;
+    font-size: 13px;
+    color: #6ee7a8;
+    text-align: center;
+    letter-spacing: .3px;
+    transition: opacity .3s;
+  }
+
+  /* ---------- 棋盘 ---------- */
+  #boardWrap {
+    position: relative;
+    flex: 0 0 auto;
+  }
+
+  #board {
+    position: absolute;
+    top: 0; left: 0;
+    width: 900px;
+    height: 440px;
+    transform-origin: top left;
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow: 0 20px 50px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.06);
+    overflow: hidden;
+    touch-action: none;
+  }
+
+  .base {
+    position: absolute;
+    left: 0; bottom: 22px;
+    width: 100%; height: 16px;
+    border-radius: 6px;
+    background: linear-gradient(180deg, #7c8aa8, #39435e);
+    box-shadow: 0 8px 22px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.3);
+  }
+
+  .peg {
+    position: absolute;
+    top: 0;
+    width: 300px;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .peg .rod {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 38px;
+    width: 12px;
+    height: 310px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #4d5a78, #9dabc9 42%, #4d5a78);
+    box-shadow: inset 0 0 8px rgba(0,0,0,.5);
+  }
+
+  .peg .keycap {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 4px;
+    min-width: 26px;
+    padding: 1px 8px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    text-align: center;
+    color: #8fa3c9;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    transition: background .15s, color .15s, box-shadow .15s;
+  }
+  .peg.ok .keycap {
+    background: rgba(80,220,140,.22);
+    color: #c9ffe0;
+    box-shadow: 0 0 12px rgba(80,220,140,.4);
+  }
+  .peg.bad .keycap {
+    background: rgba(255,90,90,.22);
+    color: #ffd8d8;
+    box-shadow: 0 0 12px rgba(255,90,90,.4);
+  }
+
+  .peg::before {
+    content: "";
+    position: absolute;
+    left: 40px; right: 40px;
+    top: 18px; bottom: 34px;
+    border-radius: 14px;
+    background: transparent;
+    transition: background .15s, box-shadow .15s;
+  }
+  .peg:hover::before { background: rgba(255,255,255,.035); }
+  .peg.ok::before {
+    background: rgba(80,220,140,.1);
+    box-shadow: inset 0 0 0 2px rgba(80,220,140,.5);
+  }
+  .peg.bad::before {
+    background: rgba(255,90,90,.1);
+    box-shadow: inset 0 0 0 2px rgba(255,90,90,.55);
+  }
+
+  /* ---------- 盘子 ---------- */
+  .disk {
+    position: absolute;
+    border-radius: 8px;
+    pointer-events: none;
+    border: 1px solid rgba(0,0,0,.28);
+    box-shadow:
+      inset 0 2px 0 rgba(255,255,255,.42),
+      inset 0 -5px 0 rgba(0,0,0,.2),
+      0 5px 12px rgba(0,0,0,.42);
+    will-change: left, top;
+  }
+
+  .disk.held {
+    z-index: 9999;
+    filter: brightness(1.14) saturate(1.1);
+    box-shadow:
+      inset 0 2px 0 rgba(255,255,255,.5),
+      inset 0 -5px 0 rgba(0,0,0,.2),
+      0 16px 30px rgba(0,0,0,.65),
+      0 0 0 2px rgba(255,255,255,.5),
+      0 0 30px rgba(160,200,255,.4);
+  }
+
+  @keyframes floatUp {
+    0%   { transform: translateY(0); }
+    50%  { transform: translateY(-6px); }
+    100% { transform: translateY(0); }
+  }
+  .disk.held.kbd { animation: floatUp 1.6s ease-in-out infinite; }
+
+  /* ================= 弹窗 ================= */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(4,7,16,.74);
+    backdrop-filter: blur(7px);
+  }
+  .overlay.show { display: flex; }
+
+  .modal {
+    width: 100%;
+    color: #e8eefc;
+    background: linear-gradient(180deg, #1c2745, #131b31);
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 16px;
+    box-shadow: 0 30px 80px rgba(0,0,0,.72);
+    padding: 22px 24px;
+    animation: pop .18s ease-out;
+  }
+  @keyframes pop {
+    from { transform: scale(.94); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+
+  .modal.small { max-width: 380px; text-align: center; }
+  .modal.small h3 { margin: 0 0 8px; font-size: 17px; }
+  .modal.small p { margin: 6px 0; font-size: 13.5px; color: #a6b6d4; line-height: 1.8; }
+  .modal.small .kbdline { margin-top: 14px; color: #cfe0ff; font-size: 12.5px; }
+  .modal-btns {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+  .modal-btns button {
+    font: inherit;
+    padding: 7px 16px;
+    border-radius: 9px;
+    cursor: pointer;
+    color: #dbe6ff;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.16);
+    transition: background .15s, transform .1s;
+  }
+  .modal-btns button:hover { background: rgba(255,255,255,.16); }
+  .modal-btns button:active { transform: scale(.96); }
+  .modal-btns button.primary {
+    background: linear-gradient(180deg, #3d7cf0, #2a5fd0);
+    border-color: rgba(120,170,255,.6);
+    color: #fff;
+  }
+  .modal-btns button.primary:hover { background: linear-gradient(180deg, #4c8bff, #3468dc); }
+
+  .modal.big {
+    max-width: 660px;
+    max-height: 84vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid rgba(255,255,255,.09);
+    flex: 0 0 auto;
+  }
+  .modal-head h3 { margin: 0; font-size: 16px; letter-spacing: 1px; }
+  .modal-head .x {
+    width: 30px; height: 30px;
+    padding: 0;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    color: #b9c9e8;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .modal-head .x:hover { background: rgba(255,255,255,.16); }
+
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 12px 20px 0;
+    flex: 0 0 auto;
+  }
+  .tabs button {
+    padding: 5px 13px;
+    border-radius: 999px;
+    font: inherit;
+    font-size: 12.5px;
+    color: #9fb0d0;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .tabs button:hover { background: rgba(255,255,255,.11); color: #dbe6ff; }
+  .tabs button.active {
+    color: #fff;
+    background: linear-gradient(180deg, rgba(90,150,255,.4), rgba(60,110,220,.3));
+    border-color: rgba(130,180,255,.5);
+  }
+
+  .panes {
+    padding: 16px 22px 22px;
+    overflow-y: auto;
+    flex: 1 1 auto;
+    font-size: 13.5px;
+    line-height: 1.95;
+    color: #c3d0e6;
+  }
+  .panes::-webkit-scrollbar { width: 8px; }
+  .panes::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.16);
+    border-radius: 8px;
+  }
+
+  .pane { display: none; }
+  .pane.active { display: block; }
+  .pane h4 {
+    margin: 0 0 8px;
+    font-size: 13.5px;
+    color: #8fc4ff;
+    letter-spacing: .3px;
+  }
+  .pane p { margin: 0 0 12px; }
+  .pane ul { margin: 0 0 14px; padding-left: 20px; }
+  .pane li { margin: 4px 0; }
+  .pane b { color: #fff; }
+  .pane kbd, .modal kbd {
+    display: inline-block;
+    padding: 0 6px;
+    border-radius: 5px;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.18);
+    border-bottom-width: 2px;
+    font-family: inherit;
+    font-size: 11.5px;
+    color: #dbe6ff;
+  }
+  .pane .note {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-left: 3px solid rgba(120,180,255,.6);
+    border-radius: 0 10px 10px 0;
+    background: rgba(90,150,255,.1);
+    font-size: 12.5px;
+    color: #bcd2f5;
+  }
+  .pane pre {
+    margin: 0 0 14px;
+    padding: 13px 15px;
+    overflow-x: auto;
+    border-radius: 10px;
+    background: rgba(0,0,0,.34);
+    border: 1px solid rgba(255,255,255,.08);
+    font-family: ui-monospace, Consolas, "Courier New", monospace;
+    font-size: 12px;
+    line-height: 1.85;
+    color: #a9e5c6;
+  }
+
+  /* ================= 全屏：只显示步数 ================= */
+  html:fullscreen body {
+    justify-content: center;
+    padding: 0;
+  }
+  html:fullscreen .bar {
+    position: fixed;
+    top: 14px;
+    left: 20px;
+    width: auto;
+    padding: 0;
+    z-index: 100;
+    pointer-events: none;
+  }
+  html:fullscreen .tools,
+  html:fullscreen .min-part,
+  html:fullscreen #status {
+    display: none;
+  }
+  html:fullscreen .moves b {
+    font-size: 20px;
+    color: rgba(255,255,255,.75);
+  }
+</style>
+</head>
+<body>
+
+  <div class="bar">
+    <div class="moves">
+      <b id="moves">0</b>
+      <span class="min-part">/ <span id="min">15</span></span>
+    </div>
+    <div class="tools">
+      <select id="count" title="盘子数量">
+        <option value="3">3</option>
+        <option value="4" selected>4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+      </select>
+      <button id="reset" class="icon" title="重新开始（R）">↺</button>
+      <button id="fsBtn" class="icon" title="全屏">⛶</button>
+      <button id="helpBtn" class="icon" title="玩法说明">?</button>
+    </div>
+  </div>
+
+  <div id="boardWrap">
+    <div id="board"></div>
+  </div>
+
+  <div id="status"></div>
+
+  <!-- ============ 重新开始确认 ============ -->
+  <div class="overlay" id="confirmOverlay">
+    <div class="modal small">
+      <h3>重新开始？</h3>
+      <p>当前的步数与进度将会丢失。</p>
+      <p class="kbdline">按 <kbd>空格</kbd> 确认 &nbsp;·&nbsp; <kbd>Esc</kbd> 取消</p>
+      <div class="modal-btns">
+        <button id="confirmYes" class="primary">确认</button>
+        <button id="confirmNo">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 玩法说明 ============ -->
+  <div class="overlay" id="helpOverlay">
+    <div class="modal big">
+      <div class="modal-head">
+        <h3>玩法说明</h3>
+        <button class="x" id="helpClose" title="关闭">✕</button>
+      </div>
+
+      <div class="tabs">
+        <button data-tab="ops" class="active">操作方法</button>
+        <button data-tab="rules">规则</button>
+        <button data-tab="origin">起源</button>
+        <button data-tab="algo">递归解法</button>
+      </div>
+
+      <div class="panes">
+
+        <div class="pane active" data-pane="ops">
+          <h4>鼠标</h4>
+          <ul>
+            <li>柱子上 <b>左键</b> → 拿起最上面的盘子，<b>跟随鼠标</b>移动。</li>
+            <li>任意柱子上 <b>左键或右键</b> → 放下盘子。</li>
+          </ul>
+          <h4>键盘</h4>
+          <ul>
+            <li><kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> 对应 左 / 中 / 右 三根柱子（<kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> 同效）。</li>
+            <li><b>空手按键</b> → 在该柱子上方<b>举起</b>盘子，<b>不跟随鼠标</b>。</li>
+            <li><b>手上有盘子时按键</b> → 放到对应柱子上。</li>
+          </ul>
+          <h4>其他</h4>
+          <ul>
+            <li><kbd>R</kbd> → 重新开始，<kbd>空格</kbd> 确认。</li>
+          </ul>
+          <div class="note">
+            目标：把所有盘子从<b>最左边</b>移到<b>最右边</b>，且始终保持「大在下、小在上」。
+          </div>
+        </div>
+
+        <div class="pane" data-pane="rules">
+          <h4>基本设定</h4>
+          <ul>
+            <li>三根柱子，若干个<b>大小各不相同</b>的圆盘。</li>
+            <li>初始时全部按「<b>大在下、小在上</b>」叠在最左边。</li>
+          </ul>
+          <h4>移动规则</h4>
+          <ul>
+            <li>每次<b>只能移动一个</b>圆盘。</li>
+            <li>只能拿某根柱子<b>最上面</b>的那一个。</li>
+            <li>任何时刻，<b>大盘子都不能压在小盘子上面</b>。</li>
+          </ul>
+          <h4>胜利条件</h4>
+          <ul>
+            <li>把所有圆盘完整移到<b>最右边</b>，顺序依然是「大在下、小在上」。</li>
+          </ul>
+          <div class="note">
+            最少步数 = <b>2<sup>n</sup> − 1</b>。3 盘 7 步，4 盘 15 步，5 盘 31 步，10 盘 1023 步。
+          </div>
+        </div>
+
+        <div class="pane" data-pane="origin">
+          <h4>从何而来</h4>
+          <p>
+            汉诺塔（Tower of Hanoi）由法国数学家 <b>爱德华·卢卡斯</b>（Édouard Lucas）
+            于 <b>1883 年</b>首次介绍给公众，因此也被称为「卢卡斯塔」。
+          </p>
+          <h4>那个著名的传说</h4>
+          <p>
+            传说在印度贝拿勒斯的寺庙里，梵天立起三根钻石针，在其中一根上自下而上串起了
+            <b>64 片金盘</b>。僧侣们日夜不停地按照规则搬运。
+          </p>
+          <p>
+            传说当 64 片金盘全部被搬到另一根针上时，<b>世界将在一声霹雳中毁灭</b>。
+          </p>
+          <h4>算一算</h4>
+          <ul>
+            <li>64 片金盘需要 <b>2<sup>64</sup> − 1 ≈ 1.845 × 10<sup>19</sup></b> 次移动。</li>
+            <li>每秒移动一次，需要约 <b>5845 亿年</b>。</li>
+            <li>而宇宙年龄约 138 亿年——暂时可以放心。</li>
+          </ul>
+        </div>
+
+        <div class="pane" data-pane="algo">
+          <h4>核心思路</h4>
+          <p>把 n 个盘子从起点 <b>A</b> 搬到目标 <b>C</b>，借助辅助 <b>B</b>：</p>
+          <ul>
+            <li>把上面 <b>n − 1</b> 个从 A 搬到 B（借助 C）。</li>
+            <li>把最大的第 <b>n</b> 个从 A 直接搬到 C。</li>
+            <li>把 B 上的 <b>n − 1</b> 个搬到 C（借助 A）。</li>
+          </ul>
+          <p>第 1 步和第 3 步是规模更小的同类问题，于是「自己调用自己」——这就是<b>递归</b>。</p>
+
+          <h4>伪代码</h4>
+          <pre>function hanoi(n, from, to, via):
+    if n == 1:
+        把盘子从 from 移到 to
+    else:
+        hanoi(n-1, from, via, to)
+        把第 n 个盘子从 from 移到 to
+        hanoi(n-1, via, to, from)</pre>
+
+          <h4>步数为什么是 2ⁿ − 1</h4>
+          <p>
+            T(n) = 2·T(n − 1) + 1，T(1) = 1，展开得 <b>T(n) = 2<sup>n</sup> − 1</b>。
+            每多一个盘子，步数就「翻倍再加一」：1 → 3 → 7 → 15 → 31 → …
+          </p>
+          <p>而且最优解<b>唯一</b>——任何时刻正确的下一步几乎是确定的。</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  "use strict";
+
+  /* ================= 常量 ================= */
+  const BOARD_W = 900;
+  const BOARD_H = 440;
+  const BASE_TOP = 400;
+  const DISK_H = 30;
+  const DISK_MIN_W = 80;
+  const DISK_MAX_W = 230;
+  const PEG_W = 300;
+  const PEG_X = [150, 450, 750];
+  const LIFT_GAP = 44;
+
+  const KEYS = ['A', 'S', 'D'];
+  const KEY_MAP = { a: 0, s: 1, d: 2, '1': 0, '2': 1, '3': 2 };
+  const HUES = [200, 168, 138, 96, 60, 32, 12, 340];
+
+  /* ================= DOM ================= */
+  const board    = document.getElementById('board');
+  const wrap     = document.getElementById('boardWrap');
+  const movesEl  = document.getElementById('moves');
+  const minEl    = document.getElementById('min');
+  const statusEl = document.getElementById('status');
+  const countSel = document.getElementById('count');
+  const resetBtn = document.getElementById('reset');
+  const fsBtn    = document.getElementById('fsBtn');
+  const helpBtn  = document.getElementById('helpBtn');
+
+  const confirmOverlay = document.getElementById('confirmOverlay');
+  const confirmYes     = document.getElementById('confirmYes');
+  const confirmNo      = document.getElementById('confirmNo');
+
+  const helpOverlay = document.getElementById('helpOverlay');
+  const helpClose   = document.getElementById('helpClose');
+
+  /* ================= 状态 ================= */
+  let N = 4;
+  let pegs = [[], [], []];
+  let diskEls = {};
+  let held = null;
+  let moves = 0;
+  let solved = false;
+  let hoverPeg = -1;
+  const mouse = { x: BOARD_W / 2, y: 140, valid: false };
+  let rafId = 0;
+
+  let confirmOpen = false;
+  let helpOpen = false;
+
+  /* ================= 工具 ================= */
+  function diskWidth(size) {
+    if (N <= 1) return DISK_MAX_W;
+    return DISK_MIN_W + (size - 1) * (DISK_MAX_W - DISK_MIN_W) / (N - 1);
+  }
+
+  function diskColor(size) {
+    const h = HUES[(size - 1) % HUES.length];
+    return `linear-gradient(180deg, hsl(${h} 88% 71%), hsl(${h} 72% 50%))`;
+  }
+
+  function setPos(el, x, y, w, animate) {
+    el.style.transition = animate
+      ? 'left .16s cubic-bezier(.2,.9,.3,1.25), top .16s cubic-bezier(.2,.9,.3,1.25)'
+      : 'none';
+    el.style.left = x + 'px';
+    el.style.top  = y + 'px';
+    if (w !== undefined) el.style.width = w + 'px';
+  }
+
+  function toBoardCoords(clientX, clientY) {
+    const r = board.getBoundingClientRect();
+    const scale = r.width / BOARD_W || 1;
+    let x = (clientX - r.left) / scale;
+    let y = (clientY - r.top) / scale;
+    x = Math.max(20, Math.min(BOARD_W - 20, x));
+    y = Math.max(DISK_H / 2, Math.min(BOARD_H - DISK_H / 2 - 20, y));
+    return { x, y };
+  }
+
+  function keyboardLiftY(peg) {
+    return BASE_TOP - (pegs[peg].length + 1) * DISK_H - LIFT_GAP;
+  }
+
+  /* ================= 初始化 ================= */
+  function init(count) {
+    N = count;
+    pegs = [[], [], []];
+    for (let s = N; s >= 1; s--) pegs[0].push(s);
+    held = null;
+    moves = 0;
+    solved = false;
+    hoverPeg = -1;
+    movesEl.textContent = '0';
+    minEl.textContent = String(2 ** N - 1);
+    statusEl.textContent = '';
+    build();
+    layout(false);
+    resize();
+  }
+
+  function build() {
+    board.innerHTML = '';
+    diskEls = {};
+
+    const base = document.createElement('div');
+    base.className = 'base';
+    board.appendChild(base);
+
+    for (let i = 0; i < 3; i++) {
+      const peg = document.createElement('div');
+      peg.className = 'peg';
+      peg.dataset.peg = String(i);
+      peg.style.left = (PEG_X[i] - PEG_W / 2) + 'px';
+
+      const rod = document.createElement('div');
+      rod.className = 'rod';
+      peg.appendChild(rod);
+
+      const cap = document.createElement('div');
+      cap.className = 'keycap';
+      cap.textContent = KEYS[i];
+      peg.appendChild(cap);
+
+      board.appendChild(peg);
+    }
+
+    for (let s = 1; s <= N; s++) {
+      const el = document.createElement('div');
+      el.className = 'disk';
+      el.style.width  = diskWidth(s) + 'px';
+      el.style.height = DISK_H + 'px';
+      el.style.background = diskColor(s);
+      board.appendChild(el);
+      diskEls[s] = el;
+    }
+  }
+
+  /* ================= 渲染 ================= */
+  function layout(animate = true) {
+    for (let p = 0; p < 3; p++) {
+      const stack = pegs[p];
+      for (let j = 0; j < stack.length; j++) {
+        const s = stack[j];
+        const w = diskWidth(s);
+        setPos(diskEls[s], PEG_X[p] - w / 2, BASE_TOP - (j + 1) * DISK_H, w, animate);
+      }
+    }
+  }
+
+  function updateHeldPos(animate) {
+    if (!held) return;
+    const el = diskEls[held.size];
+    const w  = diskWidth(held.size);
+
+    if (held.mode === 'mouse') {
+      el.style.transition = 'none';
+      el.style.left = (mouse.x - w / 2) + 'px';
+      el.style.top  = (mouse.y - DISK_H / 2) + 'px';
+    } else {
+      el.style.transition = animate
+        ? 'left .18s cubic-bezier(.2,.9,.3,1.25), top .18s cubic-bezier(.2,.9,.3,1.25)'
+        : 'none';
+      el.style.left = (PEG_X[held.peg] - w / 2) + 'px';
+      el.style.top  = keyboardLiftY(held.peg) + 'px';
+    }
+  }
+
+  function scheduleHeldUpdate() {
+    if (!held || held.mode !== 'mouse' || rafId) return;
+    rafId = requestAnimationFrame(() => {
+      rafId = 0;
+      if (!held || held.mode !== 'mouse') return;
+      updateHeldPos(false);
+    });
+  }
+
+  function updateHover() {
+    board.querySelectorAll('.peg').forEach(el => {
+      el.classList.remove('ok', 'bad');
+      const p = Number(el.dataset.peg);
+      if (held && hoverPeg === p) {
+        const stack = pegs[p];
+        const top = stack.length ? stack[stack.length - 1] : Infinity;
+        el.classList.add(held.size < top ? 'ok' : 'bad');
+      }
+    });
+  }
+
+  function flashBad(p) {
+    const el = board.querySelector(`.peg[data-peg="${p}"]`);
+    if (!el) return;
+    el.classList.add('bad');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => { el.classList.remove('bad'); updateHover(); }, 380);
+  }
+
+  /* ================= 游戏逻辑 ================= */
+  function pick(p, fromKeyboard) {
+    if (solved || held) return;
+    const stack = pegs[p];
+    if (!stack.length) { flashBad(p); return; }
+
+    const s = stack.pop();
+    held = { size: s, mode: fromKeyboard ? 'keyboard' : 'mouse', peg: p };
+
+    const el = diskEls[s];
+    el.classList.add('held');
+    el.classList.toggle('kbd', fromKeyboard);
+
+    if (fromKeyboard) {
+      const w = diskWidth(s);
+      el.style.transition = 'none';
+      el.style.left = (PEG_X[p] - w / 2) + 'px';
+      el.style.top  = (BASE_TOP - (stack.length + 1) * DISK_H) + 'px';
+      void el.offsetWidth;
+      updateHeldPos(true);
+      statusEl.textContent = `已举起盘子 ${s}，按 A / S / D 放下`;
+    } else {
+      if (!mouse.valid) {
+        mouse.x = PEG_X[p];
+        mouse.y = Math.max(60, BASE_TOP - (stack.length + 1) * DISK_H - LIFT_GAP);
+      }
+      updateHeldPos(false);
+      statusEl.textContent = '';
+    }
+
+    updateHover();
+  }
+
+  function drop(p) {
+    if (!held || solved) return;
+
+    const s = held.size;
+    const stack = pegs[p];
+    const top = stack.length ? stack[stack.length - 1] : Infinity;
+
+    if (s > top) { flashBad(p); return; }
+
+    const el = diskEls[s];
+    el.classList.remove('held', 'kbd');
+
+    held = null;
+    stack.push(s);
+
+    moves++;
+    movesEl.textContent = String(moves);
+    layout(true);
+    updateHover();
+    statusEl.textContent = '';
+    checkWin();
+  }
+
+  function checkWin() {
+    if (pegs[2].length === N) {
+      solved = true;
+      const best = 2 ** N - 1;
+      statusEl.textContent = moves === best
+        ? `🎉 完美！${moves} 步，正是最少步数`
+        : `🎉 完成！共 ${moves} 步（最少 ${best} 步）`;
+    }
+  }
+
+  /* ================= 弹窗 ================= */
+  function openConfirm() {
+    if (confirmOpen || helpOpen) return;
+    confirmOpen = true;
+    confirmOverlay.classList.add('show');
+  }
+  function closeConfirm() {
+    confirmOpen = false;
+    confirmOverlay.classList.remove('show');
+  }
+
+  function openHelp() {
+    if (helpOpen || confirmOpen) return;
+    helpOpen = true;
+    helpOverlay.classList.add('show');
+  }
+  function closeHelp() {
+    helpOpen = false;
+    helpOverlay.classList.remove('show');
+  }
+
+  confirmYes.addEventListener('click', () => { closeConfirm(); init(N); });
+  confirmNo.addEventListener('click', closeConfirm);
+  confirmOverlay.addEventListener('pointerdown', e => {
+    if (e.target === confirmOverlay) closeConfirm();
+  });
+
+  helpBtn.addEventListener('click', openHelp);
+  helpClose.addEventListener('click', closeHelp);
+  helpOverlay.addEventListener('pointerdown', e => {
+    if (e.target === helpOverlay) closeHelp();
+  });
+
+  helpOverlay.querySelectorAll('.tabs button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      helpOverlay.querySelectorAll('.tabs button').forEach(b =>
+        b.classList.toggle('active', b === btn));
+      helpOverlay.querySelectorAll('.pane').forEach(p =>
+        p.classList.toggle('active', p.dataset.pane === tab));
+    });
+  });
+
+  /* ================= 全屏 ================= */
+  function isFullscreen() {
+    return !!(document.fullscreenElement || document.webkitFullscreenElement);
+  }
+
+  function toggleFullscreen() {
+    const el = document.documentElement;
+    if (!isFullscreen()) {
+      const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+      if (req) req.call(el);
+    } else {
+      const exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+      if (exit) exit.call(document);
+    }
+  }
+
+  fsBtn.addEventListener('click', toggleFullscreen);
+
+  function onFsChange() {
+    fsBtn.textContent = isFullscreen() ? '⤡' : '⛶';
+    fsBtn.title = isFullscreen() ? '退出全屏' : '全屏';
+    requestAnimationFrame(resize);
+    setTimeout(resize, 80);
+  }
+  document.addEventListener('fullscreenchange', onFsChange);
+  document.addEventListener('webkitfullscreenchange', onFsChange);
+
+  /* ================= 鼠标交互 ================= */
+  board.addEventListener('contextmenu', e => e.preventDefault());
+
+  function trackPointer(e) {
+    const { x, y } = toBoardCoords(e.clientX, e.clientY);
+    mouse.x = x;
+    mouse.y = y;
+    mouse.valid = true;
+
+    const under = document.elementFromPoint(e.clientX, e.clientY);
+    const pegEl = under && under.closest ? under.closest('.peg') : null;
+    const np = pegEl ? Number(pegEl.dataset.peg) : -1;
+    if (np !== hoverPeg) { hoverPeg = np; updateHover(); }
+
+    if (held && held.mode === 'mouse') scheduleHeldUpdate();
+  }
+
+  window.addEventListener('pointerdown',  trackPointer, { capture: true, passive: true });
+  window.addEventListener('pointermove',  trackPointer, { passive: true });
+  window.addEventListener('pointerenter', trackPointer, { passive: true });
+
+  board.addEventListener('pointerdown', e => {
+    if (confirmOpen || helpOpen) return;
+
+    const pegEl = e.target.closest && e.target.closest('.peg');
+    if (!pegEl) return;
+    const p = Number(pegEl.dataset.peg);
+
+    if (e.button === 2) {
+      e.preventDefault();
+      if (held) drop(p);
+      return;
+    }
+
+    if (e.button === 0) {
+      if (held) drop(p);
+      else pick(p, false);
+    }
+  });
+
+  /* ================= 键盘 ================= */
+  window.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+    if (confirmOpen) {
+      if (e.code === 'Space' || e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        closeConfirm();
+        init(N);
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        closeConfirm();
+      }
+      return;
+    }
+
+    if (helpOpen) {
+      if (e.key === 'Escape') { e.preventDefault(); closeHelp(); }
+      return;
+    }
+
+    if (e.repeat) return;
+
+    const key = e.key.toLowerCase();
+
+    if (key === 'r') {
+      e.preventDefault();
+      openConfirm();
+      return;
+    }
+
+    if (!(key in KEY_MAP)) return;
+    e.preventDefault();
+    const p = KEY_MAP[key];
+    if (held) drop(p);
+    else pick(p, true);
+  });
+
+  /* ================= 缩放 ================= */
+  function resize() {
+    const pad = isFullscreen() ? 70 : 130;
+    const availW = Math.min(window.innerWidth - 32, 1200);
+    const availH = window.innerHeight - pad;
+
+    const s = Math.max(0.3, Math.min(availW / BOARD_W, availH / BOARD_H, 1.35));
+
+    wrap.style.width  = (BOARD_W * s) + 'px';
+    wrap.style.height = (BOARD_H * s) + 'px';
+    board.style.transform = `scale(${s})`;
+  }
+
+  window.addEventListener('resize', resize);
+
+  /* ================= 按钮 ================= */
+  resetBtn.addEventListener('click', openConfirm);
+  countSel.addEventListener('change', () => init(Number(countSel.value)));
+
+  /* ================= 启动 ================= */
+  init(Number(countSel.value));
+  requestAnimationFrame(resize);
+})();
+</script>
+</body>
+</html>
