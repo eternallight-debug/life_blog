@@ -3,378 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>二维码 · 极简</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js">
-    </script>
+    <title>二维码 · 极简 (本地强化版)</title>
+    
+    <!-- 引用本地 JS 库，完全离线运行 -->
+    <script src="qrcode.min.js"></script>
+    <script src="jsQR.js"></script>
+    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: #f0f4f8;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            padding: 1.5rem;
-        }
-
-        .app {
-            background: #ffffff;
-            border-radius: 28px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
-            padding: 2rem 2rem 2.2rem;
-            max-width: 500px;
-            width: 100%;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #f0f4f8; min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 1.5rem; }
+        .app { background: #ffffff; border-radius: 28px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06); padding: 2rem 2rem 2.2rem; max-width: 500px; width: 100%; }
+        
         /* 导航 */
-        .nav {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.8rem;
-            border-bottom: 1.5px solid #edf2f7;
-            padding-bottom: 0.6rem;
-        }
-
-        .nav button {
-            background: transparent;
-            border: none;
-            padding: 0.4rem 1.6rem;
-            border-radius: 40px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #6b7f8f;
-            cursor: pointer;
-            transition: 0.15s;
-        }
-
-        .nav button:hover {
-            color: #1a3344;
-            background: #f4f8fc;
-        }
-
-        .nav button.active {
-            color: #ffffff;
-            background: #1a3344;
-        }
-
-        .page {
-            display: none;
-        }
-        .page.active {
-            display: block;
-        }
-
+        .nav { display: flex; gap: 0.5rem; margin-bottom: 1.8rem; border-bottom: 1.5px solid #edf2f7; padding-bottom: 0.6rem; }
+        .nav button { background: transparent; border: none; padding: 0.4rem 1.6rem; border-radius: 40px; font-size: 0.95rem; font-weight: 500; color: #6b7f8f; cursor: pointer; transition: 0.15s; }
+        .nav button:hover { color: #1a3344; background: #f4f8fc; }
+        .nav button.active { color: #ffffff; background: #1a3344; }
+        .page { display: none; }
+        .page.active { display: block; }
+        
         /* 生成页 */
-        .gen-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 18px;
-        }
-
-        .gen-row input {
-            flex: 1;
-            padding: 0.7rem 1.1rem;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 60px;
-            font-size: 0.95rem;
-            background: #fafcfe;
-            outline: none;
-            transition: 0.15s;
-            color: #1a2a3a;
-        }
-
-        .gen-row input:focus {
-            border-color: #7a9bb5;
-            background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(26, 51, 68, 0.06);
-        }
-
-        .gen-row input::placeholder {
-            color: #b0c4d4;
-        }
-
-        .gen-row button {
-            background: #1a3344;
-            color: white;
-            border: none;
-            padding: 0.7rem 1.8rem;
-            border-radius: 60px;
-            font-weight: 500;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: 0.12s;
-            white-space: nowrap;
-        }
-
-        .gen-row button:hover {
-            background: #0f232f;
-            transform: scale(0.97);
-        }
-
-        /* 控制行 - 每个选项都是完整的按钮样式 */
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 18px;
-            padding: 0 2px;
-        }
-
-        .control-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 0.3rem 0.9rem 0.3rem 0.7rem;
-            border-radius: 40px;
-            border: 1.5px solid #e2e8f0;
-            background: #fafcfe;
-            font-size: 0.78rem;
-            font-weight: 450;
-            color: #1a3344;
-            cursor: pointer;
-            transition: 0.12s;
-            white-space: nowrap;
-        }
-
-        .control-btn:hover {
-            border-color: #b0c8da;
-            background: #f4f8fc;
-        }
-
-        .control-btn label {
-            cursor: pointer;
-            font-weight: 500;
-            color: #4a6579;
-            font-size: 0.75rem;
-            letter-spacing: 0.2px;
-        }
-
-        .control-btn select {
-            border: none;
-            background: transparent;
-            font-size: 0.78rem;
-            font-weight: 450;
-            color: #1a3344;
-            outline: none;
-            cursor: pointer;
-            padding: 0.1rem 1.2rem 0.1rem 0.2rem;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%236b7f8f'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 2px center;
-            background-size: 8px 5px;
-        }
-
-        .control-btn select:hover {
-            color: #0f232f;
-        }
-
-        .control-btn input[type="color"] {
-            width: 26px;
-            height: 26px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 40px;
-            padding: 2px;
-            cursor: pointer;
-            background: white;
-            flex-shrink: 0;
-        }
-
-        .control-btn input[type="color"]:hover {
-            border-color: #b0c8da;
-        }
-
-        /* 预览 */
-        .preview-box {
-            background: #fafcfe;
-            border-radius: 20px;
-            border: 1.5px solid #edf2f7;
-            padding: 1.2rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 180px;
-            margin: 4px 0 14px;
-        }
-
-        #qrcode {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        }
-
-        #qrcode canvas,
-        #qrcode img {
-            display: block;
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-        }
-
-        .placeholder {
-            color: #b8ccdd;
-            font-size: 0.85rem;
-            font-weight: 350;
-        }
-
-        .action-row {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
-        .action-row button {
-            background: transparent;
-            border: 1.5px solid #e2e8f0;
-            padding: 0.5rem 2rem;
-            border-radius: 60px;
-            font-weight: 500;
-            font-size: 0.85rem;
-            color: #1a3344;
-            cursor: pointer;
-            transition: 0.12s;
-            background: #fafcfe;
-        }
-
-        .action-row button:hover {
-            background: #f0f6fc;
-            border-color: #b0c8da;
-        }
-
-        .action-row button.download {
-            background: #1a3344;
-            border-color: #1a3344;
-            color: white;
-        }
-
-        .action-row button.download:hover {
-            background: #0d1f2b;
-        }
-
+        .gen-row { display: flex; gap: 10px; margin-bottom: 18px; }
+        .gen-row input { flex: 1; padding: 0.7rem 1.1rem; border: 1.5px solid #e2e8f0; border-radius: 60px; font-size: 0.95rem; background: #fafcfe; outline: none; transition: 0.15s; color: #1a2a3a; }
+        .gen-row input:focus { border-color: #7a9bb5; background: #ffffff; box-shadow: 0 0 0 3px rgba(26, 51, 68, 0.06); }
+        .gen-row input::placeholder { color: #b0c4d4; }
+        .gen-row button { background: #1a3344; color: white; border: none; padding: 0.7rem 1.8rem; border-radius: 60px; font-weight: 500; font-size: 0.95rem; cursor: pointer; transition: 0.12s; white-space: nowrap; }
+        .gen-row button:hover { background: #0f232f; transform: scale(0.97); }
+        
+        .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 18px; padding: 0 2px; }
+        .control-btn { display: inline-flex; align-items: center; gap: 6px; padding: 0.3rem 0.9rem 0.3rem 0.7rem; border-radius: 40px; border: 1.5px solid #e2e8f0; background: #fafcfe; font-size: 0.78rem; font-weight: 450; color: #1a3344; cursor: pointer; transition: 0.12s; white-space: nowrap; }
+        .control-btn:hover { border-color: #b0c8da; background: #f4f8fc; }
+        .control-btn label { cursor: pointer; font-weight: 500; color: #4a6579; font-size: 0.75rem; letter-spacing: 0.2px; }
+        .control-btn select { border: none; background: transparent; font-size: 0.78rem; font-weight: 450; color: #1a3344; outline: none; cursor: pointer; padding: 0.1rem 1.2rem 0.1rem 0.2rem; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%236b7f8f'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 2px center; background-size: 8px 5px; }
+        .control-btn select:hover { color: #0f232f; }
+        .control-btn input[type="color"] { width: 26px; height: 26px; border: 1.5px solid #e2e8f0; border-radius: 40px; padding: 2px; cursor: pointer; background: white; flex-shrink: 0; }
+        .control-btn input[type="color"]:hover { border-color: #b0c8da; }
+        
+        .preview-box { background: #fafcfe; border-radius: 20px; border: 1.5px solid #edf2f7; padding: 1.2rem; display: flex; justify-content: center; align-items: center; min-height: 180px; margin: 4px 0 14px; }
+        #qrcode { display: flex; justify-content: center; align-items: center; width: 100%; }
+        #qrcode canvas, #qrcode img { display: block; max-width: 100%; height: auto; border-radius: 8px; }
+        .placeholder { color: #b8ccdd; font-size: 0.85rem; font-weight: 350; }
+        
+        .action-row { display: flex; gap: 10px; justify-content: flex-end; }
+        .action-row button { background: transparent; border: 1.5px solid #e2e8f0; padding: 0.5rem 2rem; border-radius: 60px; font-weight: 500; font-size: 0.85rem; color: #1a3344; cursor: pointer; transition: 0.12s; background: #fafcfe; }
+        .action-row button:hover { background: #f0f6fc; border-color: #b0c8da; }
+        .action-row button.download { background: #1a3344; border-color: #1a3344; color: white; }
+        .action-row button.download:hover { background: #0d1f2b; }
+        
         /* 解码页 */
-        .drop-zone {
-            border: 2px dashed #d5e0e8;
-            border-radius: 24px;
-            padding: 2.4rem 1.2rem;
-            text-align: center;
-            background: #fafcfe;
-            transition: 0.15s;
-            cursor: pointer;
-            position: relative;
-            min-height: 150px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .drop-zone.dragover {
-            border-color: #1a3344;
-            background: #f0f6fc;
-        }
-
-        .drop-zone input[type="file"] {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .drop-zone .icon {
-            font-size: 2.4rem;
-            line-height: 1;
-            opacity: 0.4;
-            user-select: none;
-        }
-
-        #previewImg {
-            max-width: 100%;
-            max-height: 160px;
-            border-radius: 16px;
-            margin: 8px 0 10px;
-            display: none;
-        }
-
-        .decode-result {
-            background: #f8fafc;
-            border-radius: 20px;
-            padding: 1rem 1.2rem;
-            border: 1.5px solid #edf2f7;
-            margin-top: 12px;
-            min-height: 56px;
-            word-break: break-all;
-            font-size: 0.95rem;
-            color: #1a2a3a;
-        }
-
-        .decode-result .empty {
-            color: #b8ccdd;
-            font-weight: 350;
-        }
-
-        .decode-result .error {
-            color: #c0392b;
-        }
-
-        .decode-clear {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 6px;
-        }
-
-        .decode-clear button {
-            background: transparent;
-            border: 1.5px solid #e2e8f0;
-            padding: 0.25rem 1.6rem;
-            border-radius: 40px;
-            font-size: 0.78rem;
-            color: #4a6579;
-            cursor: pointer;
-            transition: 0.1s;
-            background: #fafcfe;
-        }
-
-        .decode-clear button:hover {
-            background: #f0f6fc;
-        }
+        .drop-zone { border: 2px dashed #d5e0e8; border-radius: 24px; padding: 2.4rem 1.2rem; text-align: center; background: #fafcfe; transition: 0.15s; cursor: pointer; position: relative; min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .drop-zone.dragover { border-color: #1a3344; background: #f0f6fc; }
+        .drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+        .drop-zone .icon { font-size: 2.4rem; line-height: 1; opacity: 0.4; user-select: none; }
+        
+        #previewImg { max-width: 100%; max-height: 160px; border-radius: 16px; margin: 8px 0 10px; display: none; }
+        
+        .decode-result { background: #f8fafc; border-radius: 20px; padding: 1rem 1.2rem; border: 1.5px solid #edf2f7; margin-top: 12px; min-height: 56px; word-break: break-all; font-size: 0.95rem; color: #1a2a3a; }
+        .decode-result .empty { color: #b8ccdd; font-weight: 350; }
+        .decode-result .error { color: #c0392b; }
+        
+        .decode-clear { display: flex; justify-content: flex-end; margin-top: 6px; }
+        .decode-clear button { background: transparent; border: 1.5px solid #e2e8f0; padding: 0.25rem 1.6rem; border-radius: 40px; font-size: 0.78rem; color: #4a6579; cursor: pointer; transition: 0.1s; background: #fafcfe; }
+        .decode-clear button:hover { background: #f0f6fc; }
 
         @media (max-width: 480px) {
-            .app {
-                padding: 1.2rem 1rem 1.6rem;
-            }
-            .controls {
-                gap: 8px;
-            }
-            .control-btn {
-                padding: 0.25rem 0.7rem 0.25rem 0.5rem;
-                font-size: 0.72rem;
-            }
-            .control-btn input[type="color"] {
-                width: 22px;
-                height: 22px;
-            }
-            .gen-row button {
-                padding: 0.6rem 1.2rem;
-                font-size: 0.9rem;
-            }
-            .preview-box {
-                min-height: 140px;
-                padding: 0.8rem;
-            }
-            .drop-zone {
-                padding: 1.6rem 0.8rem;
-                min-height: 120px;
-            }
+            .app { padding: 1.2rem 1rem 1.6rem; }
+            .controls { gap: 8px; }
+            .control-btn { padding: 0.25rem 0.7rem 0.25rem 0.5rem; font-size: 0.72rem; }
+            .control-btn input[type="color"] { width: 22px; height: 22px; }
+            .gen-row button { padding: 0.6rem 1.2rem; font-size: 0.9rem; }
+            .preview-box { min-height: 140px; padding: 0.8rem; }
+            .drop-zone { padding: 1.6rem 0.8rem; min-height: 120px; }
         }
     </style>
 </head>
@@ -391,9 +90,7 @@
                 <input type="text" id="textInput" placeholder="输入文本或链接">
                 <button id="generateBtn">生成</button>
             </div>
-
             <div class="controls">
-                <!-- 纠错 -->
                 <span class="control-btn">
                     <label>纠错</label>
                     <select id="levelSelect">
@@ -403,20 +100,14 @@
                         <option value="H" selected>H</option>
                     </select>
                 </span>
-
-                <!-- 前景色 -->
                 <span class="control-btn">
                     <label>前景</label>
                     <input type="color" id="fgColor" value="#1a2e3f">
                 </span>
-
-                <!-- 背景色 -->
                 <span class="control-btn">
                     <label>背景</label>
                     <input type="color" id="bgColor" value="#ffffff">
                 </span>
-
-                <!-- 透明下拉 -->
                 <span class="control-btn">
                     <label>透明</label>
                     <select id="transparentMode">
@@ -426,11 +117,9 @@
                     </select>
                 </span>
             </div>
-
             <div class="preview-box">
                 <div id="qrcode"><span class="placeholder">预览</span></div>
             </div>
-
             <div class="action-row">
                 <button id="downloadBtn" class="download">下载</button>
             </div>
@@ -456,7 +145,13 @@
         (function() {
             "use strict";
 
-            // DOM
+            // 检查库是否加载成功 (防呆设计)
+            window.addEventListener('load', function() {
+                if (typeof jsQR === 'undefined' || typeof QRCode === 'undefined') {
+                    alert('依赖库加载失败！请确保 qrcode.min.js 和 jsQR.js 与 index.html 在同一个目录下。');
+                }
+            });
+
             const navBtns = document.querySelectorAll('.nav button');
             const pages = {
                 generate: document.getElementById('page-generate'),
@@ -478,9 +173,8 @@
             const decodeResult = document.getElementById('decodeResult');
 
             let currentQR = null;
-            let currentCanvas = null;
 
-            // 导航
+            // 导航切换
             navBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
                     navBtns.forEach(b => b.classList.remove('active'));
@@ -492,38 +186,27 @@
                 });
             });
 
-            // 获取纠错等级
+            // ============ 生成逻辑 ============
             function getLevel() {
                 const v = levelSelect.value;
                 switch (v) {
-                    case 'L':
-                        return QRCode.CorrectLevel.L;
-                    case 'M':
-                        return QRCode.CorrectLevel.M;
-                    case 'Q':
-                        return QRCode.CorrectLevel.Q;
+                    case 'L': return QRCode.CorrectLevel.L;
+                    case 'M': return QRCode.CorrectLevel.M;
+                    case 'Q': return QRCode.CorrectLevel.Q;
                     case 'H':
-                    default:
-                        return QRCode.CorrectLevel.H;
+                    default: return QRCode.CorrectLevel.H;
                 }
             }
 
-            // 获取颜色（透明通过下拉控制）
             function getColors() {
                 const mode = transparentMode.value;
                 let fg = fgColor.value || '#1a2e3f';
                 let bg = bgColor.value || '#ffffff';
-
-                if (mode === 'fg') {
-                    fg = 'rgba(0,0,0,0)';
-                } else if (mode === 'bg') {
-                    bg = 'rgba(0,0,0,0)';
-                }
-                // 'none' 保持原色
+                if (mode === 'fg') fg = 'rgba(0,0,0,0)';
+                else if (mode === 'bg') bg = 'rgba(0,0,0,0)';
                 return { fg, bg };
             }
 
-            // 生成二维码
             function generateQR(text) {
                 const content = text.trim();
                 if (!content) {
@@ -533,7 +216,6 @@
                     ph.textContent = '预览';
                     qrContainer.appendChild(ph);
                     currentQR = null;
-                    currentCanvas = null;
                     return;
                 }
 
@@ -555,10 +237,6 @@
                         colorLight: bg,
                         correctLevel: level
                     });
-
-                    const canvas = qrContainer.querySelector('canvas');
-                    const img = qrContainer.querySelector('img');
-                    currentCanvas = canvas || img || null;
                 } catch (err) {
                     console.warn('生成失败', err);
                     while (qrContainer.firstChild) qrContainer.removeChild(qrContainer.firstChild);
@@ -567,37 +245,22 @@
                     ph.textContent = '⚠️ 错误';
                     qrContainer.appendChild(ph);
                     currentQR = null;
-                    currentCanvas = null;
                 }
             }
 
-            function refreshQR() {
-                generateQR(textInput.value);
-            }
+            function refreshQR() { generateQR(textInput.value); }
 
-            // 事件绑定
-            generateBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                refreshQR();
-            });
-
+            generateBtn.addEventListener('click', function(e) { e.preventDefault(); refreshQR(); });
             textInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    generateBtn.click();
-                }
+                if (e.key === 'Enter') { e.preventDefault(); generateBtn.click(); }
             });
 
-            // 自动重新生成
             [levelSelect, fgColor, bgColor, transparentMode].forEach(el => {
                 el.addEventListener('change', function() {
-                    if (textInput.value.trim() !== '') {
-                        refreshQR();
-                    }
+                    if (textInput.value.trim() !== '') refreshQR();
                 });
             });
 
-            // 下载
             downloadBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 const canvas = qrContainer.querySelector('canvas');
@@ -611,13 +274,10 @@
                     const ctx = off.getContext('2d');
                     const w = img.naturalWidth || img.width || 220;
                     const h = img.naturalHeight || img.height || 220;
-                    off.width = w;
-                    off.height = h;
+                    off.width = w; off.height = h;
                     ctx.drawImage(img, 0, 0, w, h);
                     downloadCanvas = off;
-                } else {
-                    return;
-                }
+                } else { return; }
 
                 try {
                     const dataURL = downloadCanvas.toDataURL('image/png');
@@ -627,16 +287,29 @@
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                } catch (err) {
-                    console.warn('下载失败', err);
-                }
+                } catch (err) { console.warn('下载失败', err); }
             });
 
-            // 解码
+            // =====================================================================================
+            // ============================= 极致硬核解码引擎 ======================================
+            // =====================================================================================
+
+            function tryDecode(imageData) {
+                if (typeof jsQR === 'undefined') return null;
+                return jsQR(imageData.data, imageData.width, imageData.height, {
+                    inversionAttempts: "attemptBoth",
+                });
+            }
+
             function decodeImage(file) {
                 if (!file) return;
                 if (!file.type.startsWith('image/')) {
                     decodeResult.innerHTML = `<span class="error">请上传图片</span>`;
+                    return;
+                }
+
+                if (typeof jsQR === 'undefined') {
+                    decodeResult.innerHTML = `<span class="error">解码库未加载，请检查同目录下是否有 jsQR.js</span>`;
                     return;
                 }
 
@@ -646,52 +319,148 @@
                     img.onload = function() {
                         previewImg.src = e.target.result;
                         previewImg.style.display = 'block';
+                        decodeResult.innerHTML = `<span class="empty">正在深度解析中，请稍候...</span>`;
 
-                        try {
-                            const c = document.createElement('canvas');
-                            const ctx = c.getContext('2d');
-                            c.width = img.width;
-                            c.height = img.height;
-                            ctx.drawImage(img, 0, 0);
-                            const imageData = ctx.getImageData(0, 0, img.width, img.height);
-                            const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                                inversionAttempts: "dontInvert",
-                            });
-                            if (code && code.data) {
-                                decodeResult.innerHTML = code.data;
-                            } else {
-                                decodeResult.innerHTML = `<span class="error">未检测到二维码</span>`;
+                        setTimeout(() => {
+                            try {
+                                const result = processAndDecode(img);
+                                if (result && result.data) {
+                                    decodeResult.innerHTML = result.data;
+                                } else {
+                                    decodeResult.innerHTML = `<span class="error">未检测到二维码。图片过度模糊或受损。</span>`;
+                                }
+                            } catch (err) {
+                                decodeResult.innerHTML = `<span class="error">解码引擎异常</span>`;
+                                console.error(err);
                             }
-                        } catch (err) {
-                            decodeResult.innerHTML = `<span class="error">解码错误</span>`;
-                            console.warn(err);
-                        }
+                        }, 50);
                     };
-                    img.onerror = function() {
-                        decodeResult.innerHTML = `<span class="error">图片加载失败</span>`;
-                    };
+                    img.onerror = function() { decodeResult.innerHTML = `<span class="error">图片加载失败</span>`; };
                     img.src = e.target.result;
                 };
-                reader.onerror = function() {
-                    decodeResult.innerHTML = `<span class="error">文件读取失败</span>`;
-                };
+                reader.onerror = function() { decodeResult.innerHTML = `<span class="error">文件读取失败</span>`; };
                 reader.readAsDataURL(file);
             }
 
-            fileInput.addEventListener('change', function() {
-                if (this.files && this.files.length > 0) {
-                    decodeImage(this.files[0]);
+            function processAndDecode(img) {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                
+                // 1. 智能缩放与加白边
+                const MAX_SIZE = 600;
+                let targetWidth = img.width;
+                let targetHeight = img.height;
+                const ratio = Math.max(MAX_SIZE / img.width, MAX_SIZE / img.height);
+                if (ratio > 1 || (ratio < 1 && img.width > MAX_SIZE)) {
+                    targetWidth = img.width * ratio;
+                    targetHeight = img.height * ratio;
                 }
+
+                const padding = Math.max(targetWidth, targetHeight) * 0.15;
+                canvas.width = targetWidth + padding * 2;
+                canvas.height = targetHeight + padding * 2;
+
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.imageSmoothingEnabled = true;
+                ctx.drawImage(img, padding, padding, targetWidth, targetHeight);
+
+                const baseImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                let code = null;
+
+                // 策略 1：原图直接识别
+                code = tryDecode(baseImageData);
+                if (code) return code;
+
+                // 策略 2：通道分离法（专杀微信绿码等彩色码）
+                const channels = ['R', 'G', 'B'];
+                for (let c of channels) {
+                    const channelData = new ImageData(baseImageData.width, baseImageData.height);
+                    const src = baseImageData.data;
+                    const dst = channelData.data;
+                    for (let i = 0; i < src.length; i += 4) {
+                        let val = 0;
+                        if (c === 'R') val = src[i];
+                        else if (c === 'G') val = src[i + 1];
+                        else if (c === 'B') val = src[i + 2];
+                        dst[i] = val;
+                        dst[i + 1] = val;
+                        dst[i + 2] = val;
+                        dst[i + 3] = 255;
+                    }
+                    code = tryDecode(channelData);
+                    if (code) return code;
+                }
+
+                // 策略 3：Otsu 自适应全局二值化（专杀投影幕布灰白图）
+                const otsuData = new ImageData(baseImageData.width, baseImageData.height);
+                const srcData = baseImageData.data;
+                const otsuDst = otsuData.data;
+                
+                const hist = new Array(256).fill(0);
+                for (let i = 0; i < srcData.length; i += 4) {
+                    const gray = srcData[i] * 0.299 + srcData[i+1] * 0.587 + srcData[i+2] * 0.114;
+                    hist[Math.round(gray)]++;
+                }
+                
+                let total = canvas.width * canvas.height;
+                let sum = 0;
+                for (let i = 0; i < 256; i++) sum += i * hist[i];
+                let sumB = 0, wB = 0, wF = 0, varMax = 0, threshold = 128;
+                for (let i = 0; i < 256; i++) {
+                    wB += hist[i];
+                    if (wB === 0) continue;
+                    wF = total - wB;
+                    if (wF === 0) break;
+                    sumB += i * hist[i];
+                    let mB = sumB / wB;
+                    let mF = (sum - sumB) / wF;
+                    let varBetween = wB * wF * (mB - mF) * (mB - mF);
+                    if (varBetween > varMax) {
+                        varMax = varBetween;
+                        threshold = i;
+                    }
+                }
+
+                for (let i = 0; i < srcData.length; i += 4) {
+                    const gray = srcData[i] * 0.299 + srcData[i+1] * 0.587 + srcData[i+2] * 0.114;
+                    const val = gray > threshold ? 255 : 0;
+                    otsuDst[i] = val;
+                    otsuDst[i+1] = val;
+                    otsuDst[i+2] = val;
+                    otsuDst[i+3] = 255;
+                }
+                code = tryDecode(otsuData);
+                if (code) return code;
+
+                // 策略 4：暴力多阶阈值扫描（穷举）
+                const thresholds = [70, 90, 110, 130, 150, 170, 190, 210];
+                for (let t of thresholds) {
+                    const threshData = new ImageData(baseImageData.width, baseImageData.height);
+                    const dst = threshData.data;
+                    for (let i = 0; i < srcData.length; i += 4) {
+                        const gray = srcData[i] * 0.299 + srcData[i+1] * 0.587 + srcData[i+2] * 0.114;
+                        const val = gray > t ? 255 : 0;
+                        dst[i] = val;
+                        dst[i+1] = val;
+                        dst[i+2] = val;
+                        dst[i+3] = 255;
+                    }
+                    code = tryDecode(threshData);
+                    if (code) return code;
+                }
+
+                return null;
+            }
+
+            // =====================================================================================
+
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files.length > 0) decodeImage(this.files[0]);
             });
 
-            dropZone.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                this.classList.add('dragover');
-            });
-            dropZone.addEventListener('dragleave', function(e) {
-                e.preventDefault();
-                this.classList.remove('dragover');
-            });
+            dropZone.addEventListener('dragover', function(e) { e.preventDefault(); this.classList.add('dragover'); });
+            dropZone.addEventListener('dragleave', function(e) { e.preventDefault(); this.classList.remove('dragover'); });
             dropZone.addEventListener('drop', function(e) {
                 e.preventDefault();
                 this.classList.remove('dragover');
@@ -710,9 +479,7 @@
             });
 
             dropZone.addEventListener('click', function(e) {
-                if (e.target.tagName !== 'INPUT') {
-                    fileInput.click();
-                }
+                if (e.target.tagName !== 'INPUT') fileInput.click();
             });
 
             document.getElementById('clearDecodeBtn').addEventListener('click', function() {
@@ -722,7 +489,7 @@
                 decodeResult.innerHTML = `<span class="empty">等待图片</span>`;
             });
 
-            // 初始化
+            // 初始化占位符
             window.addEventListener('load', function() {
                 while (qrContainer.firstChild) qrContainer.removeChild(qrContainer.firstChild);
                 const ph = document.createElement('span');
