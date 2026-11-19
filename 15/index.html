@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>点击播放</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body {
+    height:100%;
+    background:#000;
+    overflow:hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #anim {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+
+  #startBtn {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    padding: 18px 52px;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: #fff;
+    background: rgba(0,0,0,.35);
+    border: 2px solid rgba(255,255,255,.7);
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform .15s, background .15s;
+  }
+  #startBtn:active {
+    transform: translate(-50%, -50%) scale(.95);
+    background: rgba(255,255,255,.2);
+  }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <button id="startBtn" type="button">点击播放</button>
+  <img id="anim" src="1.webp" alt="" hidden>
+
+  <!-- 关键变化：加了 loop -->
+  <audio id="audio" src="1.mp3" preload="auto" playsinline loop></audio>
+
+<script>
+(function () {
+  var btn   = document.getElementById('startBtn');
+  var anim  = document.getElementById('anim');
+  var audio = document.getElementById('audio');
+  var started = false;
+
+  new Image().src = '1.webp';
+
+  function start() {
+    if (started) return;
+    started = true;
+
+    btn.hidden  = true;
+    anim.hidden = false;
+
+    var p = audio.play();
+    if (p && p.catch) {
+      p.catch(function (err) {
+        console.warn('音频被拦截：', err);
+        document.addEventListener('click', function retry() {
+          audio.play().catch(function(){});
+          document.removeEventListener('click', retry);
+        }, { once: true });
+      });
+    }
+
+    var el = document.documentElement;
+    var req = el.requestFullscreen
+           || el.webkitRequestFullscreen
+           || el.mozRequestFullScreen
+           || el.msRequestFullscreen;
+    if (req) {
+      try { req.call(el).catch(function(){}); } catch (e) {}
+    }
+  }
+
+  btn.addEventListener('click', start);
+})();
+</script>
+</body>
+</html>
