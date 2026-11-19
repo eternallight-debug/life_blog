@@ -14,14 +14,17 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* 图片：固定定位 + inset:0 + margin:auto 实现水平垂直居中；
+     width/height 由 JS 精确计算；max-* 作为 JS 失效时的兜底。 */
   #anim {
     position: fixed;
     inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    margin: auto;
     display: block;
     pointer-events: none;
+    max-width: 100vw;
+    max-height: 100vh;
+    max-height: 100dvh;   /* 移动端地址栏兼容 */
   }
 
   #startBtn {
@@ -57,8 +60,6 @@
 
   <button id="startBtn" type="button">点击播放</button>
   <img id="anim" src="1.webp" alt="" hidden>
-
-  <!-- 关键变化：加了 loop -->
   <audio id="audio" src="1.mp3" preload="auto" playsinline loop></audio>
 
 <script>
@@ -68,6 +69,29 @@
   var audio = document.getElementById('audio');
   var started = false;
 
+  /* 核心：让图片最长边 = 视口最短边，保持原始宽高比居中 */
+  function fit() {
+    var vw = document.documentElement.clientWidth;
+    var vh = document.documentElement.clientHeight;
+    var shortSide = Math.min(vw, vh);
+
+    var nw = anim.naturalWidth;
+    var nh = anim.naturalHeight;
+    if (!nw || !nh) return;
+
+    // 缩放系数：把图片长边缩放到视口最短边
+    var k = shortSide / Math.max(nw, nh);
+    anim.style.width  = (nw * k) + 'px';
+    anim.style.height = (nh * k) + 'px';
+  }
+
+  // 图片可能已被缓存，load 事件不会触发，需要主动判断
+  if (anim.complete && anim.naturalWidth) fit();
+  anim.addEventListener('load', fit);
+  window.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', fit);
+
+  // 预热，点击后立即可显示
   new Image().src = '1.webp';
 
   function start() {
@@ -76,6 +100,7 @@
 
     btn.hidden  = true;
     anim.hidden = false;
+    fit();   // 确保尺寸已按当前视口计算
 
     var p = audio.play();
     if (p && p.catch) {
@@ -87,15 +112,7 @@
         }, { once: true });
       });
     }
-
-    var el = document.documentElement;
-    var req = el.requestFullscreen
-           || el.webkitRequestFullscreen
-           || el.mozRequestFullScreen
-           || el.msRequestFullscreen;
-    if (req) {
-      try { req.call(el).catch(function(){}); } catch (e) {}
-    }
+    // 不再调用 requestFullscreen()
   }
 
   btn.addEventListener('click', start);
